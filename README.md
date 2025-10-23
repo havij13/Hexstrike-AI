@@ -6,6 +6,7 @@
 ### AI-Powered MCP Cybersecurity Automation Platform
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://hub.docker.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Security](https://img.shields.io/badge/Security-Penetration%20Testing-red.svg)](https://github.com/0x4m4/hexstrike-ai)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-purple.svg)](https://github.com/0x4m4/hexstrike-ai)
@@ -16,7 +17,21 @@
 
 **Advanced AI-powered penetration testing MCP framework with 150+ security tools and 12+ autonomous AI agents**
 
-[📋 What's New](#whats-new-in-v60) • [🏗️ Architecture](#architecture-overview) • [🚀 Installation](#installation) • [🛠️ Features](#features) • [🤖 AI Agents](#ai-agents) • [📡 API Reference](#api-reference)
+[⚡ Quick Start](QUICKSTART.md) • [🐳 Docker Guide](DOCKER.md) • [🏗️ Architecture](#architecture-overview) • [🚀 Installation](#installation) • [🛠️ Features](#features) • [🤖 AI Agents](#ai-agents) • [📡 API Reference](#api-reference)
+
+---
+
+## ⚡ Quick Start (Docker)
+
+```bash
+# One-command deployment (requires Docker)
+git clone https://github.com/0x4m4/hexstrike-ai.git && cd hexstrike-ai
+make deploy-local  # Build, run, and test in one command
+
+# Access at http://localhost:8888
+```
+
+📖 **New to Docker?** Read the [Quick Start Guide](QUICKSTART.md) | Full [Docker Deployment Guide](DOCKER.md)
 
 </div>
 
@@ -245,6 +260,26 @@ docker-compose logs -f
 
 # Stop the service
 docker-compose down
+```
+
+#### Using Makefile (Easiest)
+
+For simplified management, use the included Makefile:
+
+```bash
+# Show all available commands
+make help
+
+# Build, run, and test (all-in-one)
+make deploy-local
+
+# Individual commands
+make build          # Build Docker image
+make run            # Start with docker-compose
+make logs           # View logs
+make test           # Run health checks
+make stop           # Stop containers
+make clean          # Clean up everything
 ```
 
 ### Deploy to Cloud Platforms (Free/Cheap Options)
