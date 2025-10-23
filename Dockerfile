@@ -83,8 +83,8 @@ WORKDIR /app
 COPY requirements.txt .
 
 # 安裝 Python 依賴
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel --break-system-packages && \
+    pip3 install --no-cache-dir -r requirements.txt --break-system-packages --ignore-installed
 
 # 複製專案檔案
 COPY hexstrike_server.py hexstrike_mcp.py ./
