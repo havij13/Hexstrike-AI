@@ -1,4 +1,4 @@
-FROM kalilinux/kali-rolling:2024.3
+FROM kalilinux/kali-last-release:latest
 
 # 設定環境變數
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -94,7 +94,7 @@ RUN pip3 install --no-cache-dir --upgrade pip && \
 
 # 複製專案檔案
 COPY hexstrike_server.py hexstrike_mcp.py ./
-COPY assets/ ./assets/ 2>/dev/null || true
+COPY assets/ ./assets/
 
 # 建立日誌目錄
 RUN mkdir -p /app/logs
@@ -117,5 +117,6 @@ USER hexstrike
 
 # 啟動服務
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
 
 
