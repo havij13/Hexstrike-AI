@@ -1,0 +1,41 @@
+services:
+  hexstrike:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hexstrike-ai:v6.0
+    container_name: hexstrike-ai-server
+    ports:
+      - "8888:8888"
+    environment:
+      - HEXSTRIKE_PORT=8888
+      - HEXSTRIKE_HOST=0.0.0.0
+      - CACHE_SIZE=1000
+      - CACHE_TTL=3600
+      - COMMAND_TIMEOUT=300
+    volumes:
+      # 持久化日誌
+      - ./logs:/app/logs
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - hexstrike-network
+
+networks:
+  hexstrike-network:
+    driver: bridge
+
+
+
