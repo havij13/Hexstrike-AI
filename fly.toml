@@ -1,0 +1,37 @@
+app = "hexstrike-ai"
+primary_region = "sea"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  HEXSTRIKE_PORT = "8888"
+  HEXSTRIKE_HOST = "0.0.0.0"
+  CACHE_SIZE = "1000"
+  CACHE_TTL = "3600"
+  COMMAND_TIMEOUT = "300"
+
+[http_service]
+  internal_port = 8888
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+[[http_service.checks]]
+  grace_period = "60s"
+  interval = "30s"
+  method = "GET"
+  timeout = "10s"
+  path = "/health"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 2
+  memory_mb = 4096
+

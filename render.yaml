@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: hexstrike-ai
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    envVars:
+      - key: HEXSTRIKE_PORT
+        value: 8888
+      - key: HEXSTRIKE_HOST
+        value: 0.0.0.0
+      - key: CACHE_SIZE
+        value: 1000
+      - key: CACHE_TTL
+        value: 3600
+      - key: COMMAND_TIMEOUT
+        value: 300
+    healthCheckPath: /health
+    autoDeploy: true
+    disk:
+      name: hexstrike-data
+      mountPath: /app/logs
+      sizeGB: 1
+
