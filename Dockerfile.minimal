@@ -1,0 +1,57 @@
+# Minimal Dockerfile for Fly.io / limited build time platforms
+# This version includes only core tools to reduce build time and image size
+FROM python:3.11-slim
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    HEXSTRIKE_PORT=8888 \
+    HEXSTRIKE_HOST=0.0.0.0
+
+# Install only essential tools (reduces build time from 30min to 5min)
+RUN apt-get update && apt-get install -y \
+    # Core network tools
+    nmap \
+    curl \
+    wget \
+    git \
+    # Build essentials for Python packages
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    # Clean up
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy and install Python dependencies
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir -r requirements.txt
+
+# Copy application files
+COPY hexstrike_server.py hexstrike_mcp.py ./
+COPY assets/ ./assets/ 2>/dev/null || true
+
+# Create logs directory
+RUN mkdir -p /app/logs
+
+# Copy and setup entrypoint
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Expose port
+EXPOSE 8888
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8888/health || exit 1
+
+# Use non-root user
+RUN useradd -m -u 1000 hexstrike && \
+    chown -R hexstrike:hexstrike /app
+USER hexstrike
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
