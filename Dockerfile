@@ -7,16 +7,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
     HEXSTRIKE_HOST=0.0.0.0
 
 # 更新系統並安裝核心安全工具包
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --fix-missing \
     # 網路掃描與偵察工具
     nmap \
-    masscan \
     amass \
     subfinder \
     fierce \
     dnsenum \
     theharvester \
-    responder \
     enum4linux-ng \
     # Web 應用程式安全測試工具
     gobuster \
@@ -36,7 +34,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     john \
     hashcat \
     medusa \
-    crackmapexec \
     evil-winrm \
     # 二進制分析與逆向工程工具
     radare2 \
