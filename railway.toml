@@ -11,4 +11,3 @@ restartPolicyMaxRetries = 10
 
 [[build.buildCommand]]
 command = "echo 'Building HexStrike AI v6.0...'"
-
