@@ -1,4 +1,4 @@
-FROM kalilinux/kali-rolling:latest
+FROM kalilinux/kali-rolling:2024.3
 
 # 設定環境變數
 ENV DEBIAN_FRONTEND=noninteractive \
