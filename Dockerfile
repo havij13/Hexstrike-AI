@@ -11,7 +11,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     # 網路掃描與偵察工具
     nmap \
     masscan \
-    rustscan \
     amass \
     subfinder \
     fierce \
@@ -30,7 +29,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     sqlmap \
     wpscan \
     arjun \
-    katana \
     httpx-toolkit \
     wafw00f \
     # 密碼破解與認證工具
@@ -49,7 +47,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     checksec \
     binutils \
     # 取證與 CTF 工具
-    volatility3 \
     foremost \
     steghide \
     exiftool \
