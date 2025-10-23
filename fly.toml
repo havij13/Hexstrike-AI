@@ -1,0 +1,29 @@
+# fly.toml app configuration file generated for hexstrike-ai on 2025-10-23
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+
+app = "hexstrike-ai"
+primary_region = "sea"
+
+[build]
+
+[env]
+  HEXSTRIKE_PORT = "8888"
+  HEXSTRIKE_HOST = "0.0.0.0"
+  CACHE_SIZE = "1000"
+  CACHE_TTL = "3600"
+  COMMAND_TIMEOUT = "300"
+
+[http_service]
+  internal_port = 8888
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+
