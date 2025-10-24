@@ -128,14 +128,14 @@ export function Dashboard() {
           title="CPU Usage"
           value={`${telemetry?.cpu_usage || 0}%`}
           icon={<Zap className="h-6 w-6" />}
-          status={telemetry?.cpu_usage > 80 ? 'warning' : 'success'}
+          status={(telemetry?.cpu_usage || 0) > 80 ? 'warning' : 'success'}
           loading={telemetryLoading}
         />
         <StatusCard
           title="Memory Usage"
           value={`${telemetry?.memory_usage || 0}%`}
           icon={<AlertCircle className="h-6 w-6" />}
-          status={telemetry?.memory_usage > 80 ? 'warning' : 'success'}
+          status={(telemetry?.memory_usage || 0) > 80 ? 'warning' : 'success'}
           loading={telemetryLoading}
         />
       </div>
