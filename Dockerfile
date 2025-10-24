@@ -47,7 +47,6 @@ RUN apt-get update && apt-get install -y \
     fierce \
     dnsenum \
     theharvester \
-    responder \
     enum4linux-ng \
     || echo "Some network tools failed to install, continuing..." \
     && apt-get clean \
@@ -69,7 +68,6 @@ RUN apt-get update && apt-get install -y \
 # 安裝密碼破解與認證工具
 RUN apt-get update && apt-get install -y \
     medusa \
-    crackmapexec \
     evil-winrm \
     || echo "Some auth tools failed to install, continuing..." \
     && apt-get clean \
@@ -145,4 +143,6 @@ USER hexstrike
 
 # 啟動服務
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+
 

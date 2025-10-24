@@ -36,3 +36,5 @@ echo "==========================================================================
 # 啟動 Flask 服務器
 exec python3 /app/hexstrike_server.py --port "${HEXSTRIKE_PORT:-8888}" "$@"
 
+
+
