@@ -26,9 +26,20 @@ RUN apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# 安裝網路掃描與偵察工具
+# 安裝核心安全工具（分批安裝以避免失敗）
 RUN apt-get update && apt-get install -y \
     nmap \
+    gobuster \
+    nikto \
+    sqlmap \
+    hydra \
+    john \
+    hashcat \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝額外工具
+RUN apt-get update && apt-get install -y \
     masscan \
     amass \
     subfinder \
@@ -37,19 +48,15 @@ RUN apt-get update && apt-get install -y \
     theharvester \
     responder \
     enum4linux-ng \
-    || echo "Some network tools failed to install, continuing..." \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # 安裝 Web 應用程式安全測試工具
 RUN apt-get update && apt-get install -y \
-    gobuster \
     ffuf \
     dirb \
     dirsearch \
     nuclei \
-    nikto \
-    sqlmap \
     wpscan \
     katana \
     httpx-toolkit \
@@ -59,9 +66,6 @@ RUN apt-get update && apt-get install -y \
 
 # 安裝密碼破解與認證工具
 RUN apt-get update && apt-get install -y \
-    hydra \
-    john \
-    hashcat \
     medusa \
     crackmapexec \
     evil-winrm \
