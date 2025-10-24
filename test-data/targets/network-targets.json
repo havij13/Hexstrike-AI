@@ -1,0 +1,57 @@
+{
+  "safe_network_targets": [
+    {
+      "name": "scanme.nmap.org",
+      "ip": "45.33.32.156",
+      "description": "Official Nmap scan target - safe for testing",
+      "type": "network_host",
+      "allowed_ports": [22, 80, 443, 9929, 31337],
+      "notes": "Official Nmap testing target"
+    },
+    {
+      "name": "scanme2.nmap.org",
+      "ip": "45.33.32.156",
+      "description": "Official Nmap scan target 2",
+      "type": "network_host",
+      "allowed_ports": [22, 80, 9929, 31337],
+      "notes": "Official Nmap testing target"
+    },
+    {
+      "name": "localhost",
+      "ip": "127.0.0.1",
+      "description": "Local loopback for testing",
+      "type": "local_host",
+      "allowed_ports": [22, 80, 443, 8080, 3000],
+      "notes": "Local testing only"
+    }
+  ],
+  "testing_ranges": [
+    {
+      "name": "private_class_a",
+      "range": "10.0.0.0/8",
+      "description": "Private Class A network",
+      "type": "private_network",
+      "notes": "For internal network testing only"
+    },
+    {
+      "name": "private_class_b",
+      "range": "172.16.0.0/12",
+      "description": "Private Class B network",
+      "type": "private_network",
+      "notes": "For internal network testing only"
+    },
+    {
+      "name": "private_class_c",
+      "range": "192.168.0.0/16",
+      "description": "Private Class C network",
+      "type": "private_network",
+      "notes": "For internal network testing only"
+    }
+  ],
+  "testing_guidelines": {
+    "scan_etiquette": "Always follow responsible disclosure practices",
+    "rate_limiting": "Use appropriate scan timing to avoid network congestion",
+    "legal_notice": "Only scan networks you own or have explicit permission to scan",
+    "documentation": "Document all scanning activities and results"
+  }
+}
