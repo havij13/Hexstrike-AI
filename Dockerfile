@@ -35,6 +35,7 @@ RUN apt-get update && apt-get install -y \
     hydra \
     john \
     hashcat \
+    || echo "Some core tools failed to install, continuing..." \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -48,6 +49,7 @@ RUN apt-get update && apt-get install -y \
     theharvester \
     responder \
     enum4linux-ng \
+    || echo "Some network tools failed to install, continuing..." \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -58,9 +60,9 @@ RUN apt-get update && apt-get install -y \
     dirsearch \
     nuclei \
     wpscan \
-    katana \
     httpx-toolkit \
     wafw00f \
+    || echo "Some web tools failed to install, continuing..." \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -69,6 +71,7 @@ RUN apt-get update && apt-get install -y \
     medusa \
     crackmapexec \
     evil-winrm \
+    || echo "Some auth tools failed to install, continuing..." \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -79,6 +82,7 @@ RUN apt-get update && apt-get install -y \
     gdb \
     checksec \
     binutils \
+    || echo "Some binary analysis tools failed to install, continuing..." \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -89,6 +93,7 @@ RUN apt-get update && apt-get install -y \
     exiftool \
     autopsy \
     sleuthkit \
+    || echo "Some forensics tools failed to install, continuing..." \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

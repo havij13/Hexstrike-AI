@@ -25,7 +25,7 @@ RUN apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# 安裝核心安全工具
+# 安裝核心安全工具（僅安裝絕對必要的）
 RUN apt-get update && apt-get install -y \
     nmap \
     gobuster \
@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y \
     hydra \
     john \
     hashcat \
-    || echo "Some core tools failed to install, continuing..." \
+    || echo "Some tools failed to install, continuing..." \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
