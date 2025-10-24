@@ -112,9 +112,11 @@ WORKDIR /app
 # 複製 Python 依賴檔案
 COPY requirements.txt .
 
-# 安裝 Python 依賴
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir -r requirements.txt
+# 安裝 Python 依賴（使用虛擬環境）
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # 複製專案檔案
 COPY hexstrike_server.py hexstrike_mcp.py ./
