@@ -1,4 +1,5 @@
-FROM kalilinux/kali-last-release:latest
+FROM kalilinux/kali-rolling:latest
+#FROM kalilinux/kali-rolling:2024.3
 
 # 設定環境變數
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -7,56 +8,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
     HEXSTRIKE_HOST=0.0.0.0
 
 # 更新系統並安裝核心安全工具包
-RUN apt-get update && apt-get upgrade -y && apt-get install -y --fix-missing \
-    # 網路掃描與偵察工具
-    nmap \
-    amass \
-    subfinder \
-    fierce \
-    dnsenum \
-    theharvester \
-    enum4linux-ng \
-    # Web 應用程式安全測試工具
-    gobuster \
-    feroxbuster \
-    ffuf \
-    dirb \
-    dirsearch \
-    nuclei \
-    nikto \
-    sqlmap \
-    wpscan \
-    arjun \
-    httpx-toolkit \
-    wafw00f \
-    # 密碼破解與認證工具
-    hydra \
-    john \
-    hashcat \
-    medusa \
-    evil-winrm \
-    # 二進制分析與逆向工程工具
-    radare2 \
-    ghidra \
-    binwalk \
-    gdb \
-    gdb-peda \
-    checksec \
-    binutils \
-    # 取證與 CTF 工具
-    foremost \
-    steghide \
-    exiftool \
-    autopsy \
-    sleuthkit \
-    # Python 與瀏覽器自動化
+RUN apt-get update && apt-get upgrade -y
+
+# 安裝基礎工具
+RUN apt-get install -y \
     python3 \
     python3-pip \
     python3-venv \
     python3-dev \
-    chromium \
-    chromium-driver \
-    # 系統工具
     git \
     curl \
     wget \
@@ -64,6 +23,75 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --fix-missing \
     build-essential \
     libssl-dev \
     libffi-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝核心安全工具（分批安裝以避免失敗）
+RUN apt-get update && apt-get install -y \
+    nmap \
+    gobuster \
+    nikto \
+    sqlmap \
+    hydra \
+    john \
+    hashcat \
+    || echo "Some core tools failed to install, continuing..." \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝額外工具
+RUN apt-get update && apt-get install -y \
+    masscan \
+    amass \
+    subfinder \
+    fierce \
+    dnsenum \
+    theharvester \
+    enum4linux-ng \
+    || echo "Some network tools failed to install, continuing..." \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝 Web 應用程式安全測試工具
+RUN apt-get update && apt-get install -y \
+    ffuf \
+    dirb \
+    dirsearch \
+    nuclei \
+    wpscan \
+    httpx-toolkit \
+    wafw00f \
+    || echo "Some web tools failed to install, continuing..." \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝密碼破解與認證工具
+RUN apt-get update && apt-get install -y \
+    medusa \
+    evil-winrm \
+    || echo "Some auth tools failed to install, continuing..." \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝二進制分析與逆向工程工具
+RUN apt-get update && apt-get install -y \
+    radare2 \
+    binwalk \
+    gdb \
+    checksec \
+    binutils \
+    || echo "Some binary analysis tools failed to install, continuing..." \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝取證與 CTF 工具
+RUN apt-get update && apt-get install -y \
+    foremost \
+    steghide \
+    exiftool \
+    autopsy \
+    sleuthkit \
+    || echo "Some forensics tools failed to install, continuing..." \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -82,13 +110,17 @@ WORKDIR /app
 # 複製 Python 依賴檔案
 COPY requirements.txt .
 
-# 安裝 Python 依賴
-RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel --break-system-packages && \
-    pip3 install --no-cache-dir -r requirements.txt --break-system-packages --ignore-installed
+# 安裝 Python 依賴（使用虛擬環境）
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # 複製專案檔案
 COPY hexstrike_server.py hexstrike_mcp.py ./
 COPY assets/ ./assets/
+COPY templates/ ./templates/
+COPY static/ ./static/
 
 # 建立日誌目錄
 RUN mkdir -p /app/logs

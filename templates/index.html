@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HexStrike AI - Blood-Red Offensive Intelligence Core</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="matrix-bg"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>██╗  ██╗███████╗██╗  ██╗███████╗████████╗██████╗ ██╗██╗  ██╗███████╗</h1>
+                <h1>██║  ██║██╔════╝╚██╗██╔╝██╔════╝╚══██╔══╝██╔══██╗██║██║ ██╔╝██╔════╝</h1>
+                <h1>███████║█████╗   ╚███╔╝ ███████╗   ██║   ██████╔╝██║█████╔╝ █████╗</h1>
+                <h1>██╔══██║██╔══╝   ██╔██╗ ╚════██║   ██║   ██╔══██╗██║██╔═██╗ ██╔══╝</h1>
+                <h1>██║  ██║███████╗██╔╝ ██╗███████║   ██║   ██║  ██║██║██║  ██╗███████╗</h1>
+                <h1>╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚══════╝</h1>
+            </div>
+            <div class="subtitle">
+                <h2>🚀 AI-Automated Recon | Exploitation | Analysis Pipeline</h2>
+                <h3>⚡ Bug Bounty | CTF | Red Team | Zero-Day Research</h3>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="main">
+        <div class="container">
+            <!-- Server Status -->
+            <section class="status-section">
+                <h2 class="section-title">📊 Server Status</h2>
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="status-indicator" id="server-status">🔄</div>
+                        <div class="status-info">
+                            <h3>Server Health</h3>
+                            <p id="server-health">Checking...</p>
+                        </div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-indicator">⚡</div>
+                        <div class="status-info">
+                            <h3>Available Tools</h3>
+                            <p id="tool-count">150+</p>
+                        </div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-indicator">🤖</div>
+                        <div class="status-info">
+                            <h3>AI Agents</h3>
+                            <p>12+ Active</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="actions-section">
+                <h2 class="section-title">⚡ Quick Actions</h2>
+                <div class="action-grid">
+                    <button class="action-btn" onclick="testHealth()">
+                        <span class="btn-icon">🏥</span>
+                        <span class="btn-text">Health Check</span>
+                    </button>
+                    <button class="action-btn" onclick="showNmapDemo()">
+                        <span class="btn-icon">🔍</span>
+                        <span class="btn-text">Nmap Scan</span>
+                    </button>
+                    <button class="action-btn" onclick="showWebScan()">
+                        <span class="btn-icon">🌐</span>
+                        <span class="btn-text">Web Scan</span>
+                    </button>
+                    <button class="action-btn" onclick="showAIAnalysis()">
+                        <span class="btn-icon">🧠</span>
+                        <span class="btn-text">AI Analysis</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- API Testing Interface -->
+            <section class="api-section">
+                <h2 class="section-title">🔧 API Testing Interface</h2>
+                <div class="api-tester">
+                    <div class="api-input">
+                        <label for="endpoint">Endpoint:</label>
+                        <select id="endpoint" onchange="updateEndpoint()">
+                            <option value="/health">Health Check</option>
+                            <option value="/api/tools/nmap">Nmap Scan</option>
+                            <option value="/api/tools/gobuster">Gobuster Scan</option>
+                            <option value="/api/tools/nuclei">Nuclei Scan</option>
+                            <option value="/api/intelligence/analyze-target">AI Target Analysis</option>
+                        </select>
+                    </div>
+                    <div class="api-input">
+                        <label for="target">Target:</label>
+                        <input type="text" id="target" placeholder="e.g., scanme.nmap.org" value="scanme.nmap.org">
+                    </div>
+                    <div class="api-input">
+                        <label for="method">Method:</label>
+                        <select id="method">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                        </select>
+                    </div>
+                    <button class="execute-btn" onclick="executeAPI()">🚀 Execute</button>
+                </div>
+                <div class="api-output">
+                    <h3>Output:</h3>
+                    <pre id="api-result">Ready to execute commands...</pre>
+                </div>
+            </section>
+
+            <!-- Tool Categories -->
+            <section class="tools-section">
+                <h2 class="section-title">🛠️ Security Tools Arsenal</h2>
+                <div class="tool-categories">
+                    <div class="tool-category">
+                        <h3>🔍 Network Reconnaissance</h3>
+                        <div class="tool-list">
+                            <span class="tool-tag">nmap</span>
+                            <span class="tool-tag">rustscan</span>
+                            <span class="tool-tag">masscan</span>
+                            <span class="tool-tag">autorecon</span>
+                            <span class="tool-tag">amass</span>
+                            <span class="tool-tag">subfinder</span>
+                            <span class="tool-tag">fierce</span>
+                            <span class="tool-tag">dnsenum</span>
+                        </div>
+                    </div>
+                    <div class="tool-category">
+                        <h3>🌐 Web Application Security</h3>
+                        <div class="tool-list">
+                            <span class="tool-tag">gobuster</span>
+                            <span class="tool-tag">feroxbuster</span>
+                            <span class="tool-tag">ffuf</span>
+                            <span class="tool-tag">nuclei</span>
+                            <span class="tool-tag">nikto</span>
+                            <span class="tool-tag">sqlmap</span>
+                            <span class="tool-tag">wpscan</span>
+                            <span class="tool-tag">dalfox</span>
+                        </div>
+                    </div>
+                    <div class="tool-category">
+                        <h3>🔐 Authentication & Password</h3>
+                        <div class="tool-list">
+                            <span class="tool-tag">hydra</span>
+                            <span class="tool-tag">john</span>
+                            <span class="tool-tag">hashcat</span>
+                            <span class="tool-tag">medusa</span>
+                            <span class="tool-tag">patator</span>
+                            <span class="tool-tag">netexec</span>
+                        </div>
+                    </div>
+                    <div class="tool-category">
+                        <h3>🔬 Binary Analysis</h3>
+                        <div class="tool-list">
+                            <span class="tool-tag">ghidra</span>
+                            <span class="tool-tag">radare2</span>
+                            <span class="tool-tag">gdb</span>
+                            <span class="tool-tag">binwalk</span>
+                            <span class="tool-tag">volatility</span>
+                            <span class="tool-tag">strings</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Usage Methods -->
+            <section class="usage-section">
+                <h2 class="section-title">📚 How to Use HexStrike AI</h2>
+                <div class="usage-methods">
+                    <div class="usage-method">
+                        <h3>🤖 AI Client Integration</h3>
+                        <p>Connect HexStrike to Claude Desktop, Cursor, or VS Code Copilot for natural language security testing.</p>
+                        <button class="method-btn" onclick="showMCPGuide()">Setup Guide</button>
+                    </div>
+                    <div class="usage-method">
+                        <h3>🔧 Direct API Usage</h3>
+                        <p>Use HTTP requests directly for custom integrations and automated security testing.</p>
+                        <button class="method-btn" onclick="showAPIDocs()">API Documentation</button>
+                    </div>
+                    <div class="usage-method">
+                        <h3>🌐 Web Interface</h3>
+                        <p>Use this interactive dashboard for quick testing and real-time monitoring.</p>
+                        <button class="method-btn" onclick="showWebGuide()">Usage Guide</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 HexStrike AI - Advanced Cybersecurity Automation Platform</p>
+            <p>🚀 Powered by AI | ⚡ 150+ Security Tools | 🎯 Blood-Red Intelligence Core</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="modal-title">Modal Title</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                Modal content here
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
