@@ -299,7 +299,7 @@ echo "==========================================================================
 echo "🔧 Error Handling"
 echo "============================================================================"
 
-test_json_endpoint "Error Statistics" "/api/error-handling/statistics" "GET" "total_errors"
+test_json_endpoint "Error Statistics" "/api/error-handling/statistics" "GET" "statistics"
 
 # Skip error recovery testing (requires specific error conditions)
 skip_test "Execute with Recovery" "Requires specific error conditions"

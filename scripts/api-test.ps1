@@ -314,7 +314,7 @@ Write-Host "====================================================================
 Write-Host "🔧 Error Handling" -ForegroundColor Cyan
 Write-Host "============================================================================" -ForegroundColor Cyan
 
-Test-JsonEndpoint "Error Statistics" "/api/error-handling/statistics" "GET" "total_errors"
+Test-JsonEndpoint "Error Statistics" "/api/error-handling/statistics" "GET" "statistics"
 
 # Skip error recovery testing (requires specific error conditions)
 Skip-Test "Execute with Recovery" "Requires specific error conditions"
