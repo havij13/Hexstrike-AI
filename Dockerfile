@@ -121,6 +121,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # 複製專案檔案
 COPY hexstrike_server.py hexstrike_mcp.py ./
 COPY assets/ ./assets/
+COPY templates/ ./templates/
+COPY static/ ./static/
 
 # 建立日誌目錄
 RUN mkdir -p /app/logs

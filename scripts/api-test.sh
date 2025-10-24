@@ -338,7 +338,7 @@ echo "==========================================================================
 echo "🔧 Additional Endpoints"
 echo "============================================================================"
 
-test_endpoint "Root Endpoint" "/" "GET" "404"
+test_endpoint "Root Endpoint" "/" "GET" "200"
 test_json_endpoint "Command Execution" "/api/command" "POST" "execution_time" '{"command": "echo Hello World"}'
 
 # ============================================================================

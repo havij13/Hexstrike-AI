@@ -353,7 +353,7 @@ Write-Host "====================================================================
 Write-Host "🔧 Additional Endpoints" -ForegroundColor Cyan
 Write-Host "============================================================================" -ForegroundColor Cyan
 
-Test-Endpoint "Root Endpoint" "/" "GET" "404"
+Test-Endpoint "Root Endpoint" "/" "GET" "200"
 Test-JsonEndpoint "Command Execution" "/api/command" "POST" "execution_time" '{"command": "echo Hello World"}'
 
 # ============================================================================

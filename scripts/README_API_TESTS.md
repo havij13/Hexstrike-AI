@@ -103,7 +103,7 @@ These tests are skipped in automated testing for good reasons:
 ### Known Issues and Expected Behaviors
 
 #### Expected Failures (Normal Behavior)
-- **Root Endpoint (404)** - Returns 404 until web UI is deployed to Render
+- **Root Endpoint** - Should return 200 after Dockerfile fixes (templates/static directories)
 - **Nmap Permission Issues** - Raw socket operations may fail in containerized environments
 - **Some Security Tools** - May not be installed or available in the deployment environment
 
