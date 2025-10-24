@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { 
-  Zap, 
+  Search, 
   Play, 
   Settings, 
   ArrowLeft,
@@ -11,7 +11,7 @@ import {
   Activity,
   Download,
   Eye,
-  Gauge
+  FileText
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -21,64 +21,66 @@ interface ScanProfile {
   description: string
   command: string
   estimatedTime: string
-  speed: string
+  extensions: string[]
 }
 
-export default function RustscanPage() {
-  const [target, setTarget] = useState('scanme.nmap.org')
-  const [scanType, setScanType] = useState('fast')
-  const [ports, setPorts] = useState('1-1000')
-  const [threads, setThreads] = useState(1000)
+export default function GobusterPage() {
+  const [url, setUrl] = useState('https://target.com')
+  const [mode, setMode] = useState('dir')
+  const [wordlist, setWordlist] = useState('common.txt')
+  const [extensions, setExtensions] = useState('php,html,txt')
+  const [threads, setThreads] = useState(50)
   const [isRunning, setIsRunning] = useState(false)
   const [results, setResults] = useState<any>(null)
 
   const scanProfiles: ScanProfile[] = [
     {
-      id: 'fast',
-      name: 'Fast Scan',
-      description: 'Ultra-fast port scanning with high thread count',
-      command: 'rustscan -a target -p 1-1000 -T 1000',
-      estimatedTime: '5-10 seconds',
-      speed: 'Ultra Fast'
+      id: 'quick',
+      name: 'Quick Directory Scan',
+      description: 'Fast directory enumeration with common extensions',
+      command: 'gobuster dir -u target -w common.txt -x php,html,txt',
+      estimatedTime: '30-60 seconds',
+      extensions: ['php', 'html', 'txt']
     },
     {
       id: 'comprehensive',
       name: 'Comprehensive Scan',
-      description: 'Full port range with service detection',
-      command: 'rustscan -a target -p 1-65535 -- -sV -sC',
-      estimatedTime: '30-60 seconds',
-      speed: 'Fast'
+      description: 'Full enumeration with multiple extensions',
+      command: 'gobuster dir -u target -w big.txt -x php,html,txt,jsp,asp',
+      estimatedTime: '5-10 minutes',
+      extensions: ['php', 'html', 'txt', 'jsp', 'asp']
     },
     {
-      id: 'stealth',
-      name: 'Stealth Scan',
-      description: 'Lower thread count for stealth scanning',
-      command: 'rustscan -a target -p 1-1000 -T 100 -- -sS',
-      estimatedTime: '15-30 seconds',
-      speed: 'Stealth'
+      id: 'files',
+      name: 'File Enumeration',
+      description: 'Focus on file discovery',
+      command: 'gobuster dir -u target -w files.txt -x php,html,txt,js,css',
+      estimatedTime: '2-5 minutes',
+      extensions: ['php', 'html', 'txt', 'js', 'css']
     },
     {
-      id: 'udp',
-      name: 'UDP Scan',
-      description: 'UDP port scanning with service detection',
-      command: 'rustscan -a target -p 1-1000 -- -sU',
-      estimatedTime: '60-120 seconds',
-      speed: 'Slow'
+      id: 'dns',
+      name: 'DNS Subdomain Scan',
+      description: 'Subdomain enumeration',
+      command: 'gobuster dns -d target.com -w subdomains.txt',
+      estimatedTime: '1-3 minutes',
+      extensions: []
     }
   ]
 
   const handleScan = async () => {
     setIsRunning(true)
     try {
-      const response = await fetch('https://hexstrike-ai-v6-0.onrender.com/api/tools/rustscan', {
+      const response = await fetch('https://hexstrike-ai-v6-0.onrender.com/api/tools/gobuster', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          target,
-          scan_type: scanType,
-          ports,
+          url,
+          mode,
+          wordlist,
+          extensions: extensions.split(','),
           threads,
         }),
       })
@@ -96,15 +98,15 @@ export default function RustscanPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Link href="/tools/network" className="text-cyber-primary hover:text-cyber-light transition-colors">
+          <Link href="/tools/web" className="text-cyber-primary hover:text-cyber-light transition-colors">
             <ArrowLeft className="h-6 w-6" />
           </Link>
           <div>
             <h1 className="text-3xl font-cyber font-bold text-neon-blue neon-glow">
-              RUSTSCAN
+              GOBUSTER
             </h1>
             <p className="text-cyber-light font-mono text-sm mt-1">
-              Ultra-fast port scanner written in Rust
+              Directory/file brute-forcing tool
             </p>
           </div>
         </div>
@@ -127,49 +129,64 @@ export default function RustscanPage() {
               </div>
             </div>
             <div className="terminal-content space-y-4">
-              {/* Target Input */}
+              {/* URL Input */}
               <div>
                 <label className="block text-sm font-medium text-cyber-light mb-2">
-                  Target
+                  Target URL
                 </label>
                 <input
-                  type="text"
-                  value={target}
-                  onChange={(e) => setTarget(e.target.value)}
+                  type="url"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
                   className="w-full px-3 py-2 bg-cyber-dark border border-neon-blue rounded text-cyber-primary font-mono"
-                  placeholder="scanme.nmap.org"
+                  placeholder="https://target.com"
                 />
               </div>
 
-              {/* Scan Type */}
+              {/* Mode */}
               <div>
                 <label className="block text-sm font-medium text-cyber-light mb-2">
-                  Scan Type
+                  Scan Mode
                 </label>
                 <select
-                  value={scanType}
-                  onChange={(e) => setScanType(e.target.value)}
+                  value={mode}
+                  onChange={(e) => setMode(e.target.value)}
                   className="w-full px-3 py-2 bg-cyber-dark border border-neon-blue rounded text-cyber-primary font-mono"
                 >
-                  {scanProfiles.map((profile) => (
-                    <option key={profile.id} value={profile.id}>
-                      {profile.name}
-                    </option>
-                  ))}
+                  <option value="dir">Directory Scan</option>
+                  <option value="dns">DNS Subdomain Scan</option>
+                  <option value="s3">S3 Bucket Scan</option>
                 </select>
               </div>
 
-              {/* Ports */}
+              {/* Wordlist */}
               <div>
                 <label className="block text-sm font-medium text-cyber-light mb-2">
-                  Ports
+                  Wordlist
+                </label>
+                <select
+                  value={wordlist}
+                  onChange={(e) => setWordlist(e.target.value)}
+                  className="w-full px-3 py-2 bg-cyber-dark border border-neon-blue rounded text-cyber-primary font-mono"
+                >
+                  <option value="common.txt">Common</option>
+                  <option value="big.txt">Big</option>
+                  <option value="subdomains.txt">Subdomains</option>
+                  <option value="files.txt">Files</option>
+                </select>
+              </div>
+
+              {/* Extensions */}
+              <div>
+                <label className="block text-sm font-medium text-cyber-light mb-2">
+                  Extensions
                 </label>
                 <input
                   type="text"
-                  value={ports}
-                  onChange={(e) => setPorts(e.target.value)}
+                  value={extensions}
+                  onChange={(e) => setExtensions(e.target.value)}
                   className="w-full px-3 py-2 bg-cyber-dark border border-neon-blue rounded text-cyber-primary font-mono"
-                  placeholder="1-1000"
+                  placeholder="php,html,txt"
                 />
               </div>
 
@@ -183,9 +200,9 @@ export default function RustscanPage() {
                   value={threads}
                   onChange={(e) => setThreads(parseInt(e.target.value))}
                   className="w-full px-3 py-2 bg-cyber-dark border border-neon-blue rounded text-cyber-primary font-mono"
-                  placeholder="1000"
+                  placeholder="50"
                   min="1"
-                  max="10000"
+                  max="200"
                 />
               </div>
 
@@ -224,23 +241,20 @@ export default function RustscanPage() {
                   <div
                     key={profile.id}
                     className={`p-3 border rounded cursor-pointer transition-colors ${
-                      scanType === profile.id
+                      mode === profile.id
                         ? 'border-neon-blue bg-neon-blue/10'
                         : 'border-neon-blue/30 hover:border-neon-blue/60'
                     }`}
-                    onClick={() => setScanType(profile.id)}
+                    onClick={() => {
+                      setMode(profile.id)
+                      setExtensions(profile.extensions.join(','))
+                    }}
                   >
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm font-medium">{profile.name}</span>
-                      <div className="flex items-center space-x-2">
-                        <Gauge className="h-3 w-3" />
-                        <span className="text-xs text-cyber-light">{profile.speed}</span>
-                      </div>
+                      <span className="text-xs text-cyber-light">{profile.estimatedTime}</span>
                     </div>
-                    <p className="text-xs text-cyber-light opacity-75 mb-1">{profile.description}</p>
-                    <div className="text-xs text-cyber-light opacity-75">
-                      ETA: {profile.estimatedTime}
-                    </div>
+                    <p className="text-xs text-cyber-light opacity-75">{profile.description}</p>
                   </div>
                 ))}
               </div>
@@ -271,39 +285,48 @@ export default function RustscanPage() {
                   <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
                       <div className="text-2xl font-cyber font-bold text-neon-blue">
-                        {results.ports?.length || 0}
+                        {results.directories_found?.length || 0}
                       </div>
-                      <div className="text-xs text-cyber-light">Open Ports</div>
+                      <div className="text-xs text-cyber-light">Directories Found</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-cyber font-bold text-neon-green">
-                        {results.execution_time}s
+                        {results.files_found?.length || 0}
                       </div>
-                      <div className="text-xs text-cyber-light">Scan Time</div>
+                      <div className="text-xs text-cyber-light">Files Found</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-cyber font-bold text-neon-pink">
-                        {threads}
+                        {results.total_requests || 0}
                       </div>
-                      <div className="text-xs text-cyber-light">Threads Used</div>
+                      <div className="text-xs text-cyber-light">Total Requests</div>
                     </div>
                   </div>
 
-                  {/* Ports */}
-                  {results.ports && results.ports.length > 0 && (
+                  {/* Directories */}
+                  {results.directories_found && results.directories_found.length > 0 && (
                     <div>
-                      <h3 className="text-sm font-medium text-neon-blue mb-3">Open Ports</h3>
+                      <h3 className="text-sm font-medium text-neon-blue mb-3">Directories Found</h3>
                       <div className="space-y-2">
-                        {results.ports.map((port: any, index: number) => (
-                          <div key={index} className="flex items-center justify-between p-2 border border-neon-blue/30 rounded">
-                            <div className="flex items-center space-x-3">
-                              <span className="text-sm font-mono text-neon-blue">{port.port}</span>
-                              <span className="text-sm text-cyber-light">{port.service}</span>
-                              {port.version && (
-                                <span className="text-xs text-cyber-light opacity-75">{port.version}</span>
-                              )}
-                            </div>
-                            <span className="text-xs text-green-400">{port.state}</span>
+                        {results.directories_found.map((dir: string, index: number) => (
+                          <div key={index} className="flex items-center space-x-3 p-2 border border-neon-blue/30 rounded">
+                            <FileText className="h-4 w-4 text-neon-blue" />
+                            <span className="text-sm font-mono text-cyber-primary">{dir}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Files */}
+                  {results.files_found && results.files_found.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium text-neon-blue mb-3">Files Found</h3>
+                      <div className="space-y-2">
+                        {results.files_found.map((file: string, index: number) => (
+                          <div key={index} className="flex items-center space-x-3 p-2 border border-neon-blue/30 rounded">
+                            <FileText className="h-4 w-4 text-neon-green" />
+                            <span className="text-sm font-mono text-cyber-primary">{file}</span>
                           </div>
                         ))}
                       </div>
@@ -320,7 +343,7 @@ export default function RustscanPage() {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <Zap className="h-16 w-16 text-neon-blue mx-auto mb-4 opacity-50" />
+                  <Search className="h-16 w-16 text-neon-blue mx-auto mb-4 opacity-50" />
                   <p className="text-cyber-light opacity-75">No scan results yet</p>
                   <p className="text-xs text-cyber-light opacity-50 mt-2">
                     Configure and run a scan to see results here

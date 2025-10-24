@@ -8,7 +8,7 @@ import { ProcessMonitor } from './ProcessMonitor'
 import { SystemMetrics } from './SystemMetrics'
 import { RecentActivity } from './RecentActivity'
 import { QuickActions } from './QuickActions'
-import { Alert, AlertCircle, CheckCircle, Clock, Zap } from 'lucide-react'
+import { AlertCircle, CheckCircle, Clock, Zap } from 'lucide-react'
 
 export function Dashboard() {
   const [alerts, setAlerts] = useState([
