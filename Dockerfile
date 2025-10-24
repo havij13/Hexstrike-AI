@@ -8,62 +8,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
     HEXSTRIKE_HOST=0.0.0.0
 
 # 更新系統並安裝核心安全工具包
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    # 網路掃描與偵察工具
-    nmap \
-    masscan \
-    rustscan \
-    amass \
-    subfinder \
-    fierce \
-    dnsenum \
-    theharvester \
-    responder \
-    enum4linux-ng \
-    # Web 應用程式安全測試工具
-    gobuster \
-    feroxbuster \
-    ffuf \
-    dirb \
-    dirsearch \
-    nuclei \
-    nikto \
-    sqlmap \
-    wpscan \
-    arjun \
-    katana \
-    httpx-toolkit \
-    wafw00f \
-    # 密碼破解與認證工具
-    hydra \
-    john \
-    hashcat \
-    medusa \
-    crackmapexec \
-    evil-winrm \
-    # 二進制分析與逆向工程工具
-    radare2 \
-    ghidra \
-    binwalk \
-    gdb \
-    gdb-peda \
-    checksec \
-    binutils \
-    # 取證與 CTF 工具
-    volatility3 \
-    foremost \
-    steghide \
-    exiftool \
-    autopsy \
-    sleuthkit \
-    # Python 與瀏覽器自動化
+RUN apt-get update && apt-get upgrade -y
+
+# 安裝基礎工具
+RUN apt-get install -y \
     python3 \
     python3-pip \
     python3-venv \
     python3-dev \
-    chromium \
-    chromium-driver \
-    # 系統工具
     git \
     curl \
     wget \
@@ -71,6 +23,68 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     build-essential \
     libssl-dev \
     libffi-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝網路掃描與偵察工具
+RUN apt-get update && apt-get install -y \
+    nmap \
+    masscan \
+    amass \
+    subfinder \
+    fierce \
+    dnsenum \
+    theharvester \
+    responder \
+    enum4linux-ng \
+    || echo "Some network tools failed to install, continuing..." \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝 Web 應用程式安全測試工具
+RUN apt-get update && apt-get install -y \
+    gobuster \
+    ffuf \
+    dirb \
+    dirsearch \
+    nuclei \
+    nikto \
+    sqlmap \
+    wpscan \
+    katana \
+    httpx-toolkit \
+    wafw00f \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝密碼破解與認證工具
+RUN apt-get update && apt-get install -y \
+    hydra \
+    john \
+    hashcat \
+    medusa \
+    crackmapexec \
+    evil-winrm \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝二進制分析與逆向工程工具
+RUN apt-get update && apt-get install -y \
+    radare2 \
+    binwalk \
+    gdb \
+    checksec \
+    binutils \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝取證與 CTF 工具
+RUN apt-get update && apt-get install -y \
+    foremost \
+    steghide \
+    exiftool \
+    autopsy \
+    sleuthkit \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

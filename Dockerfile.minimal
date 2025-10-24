@@ -1,57 +1,80 @@
-# Minimal Dockerfile for Fly.io / limited build time platforms
-# This version includes only core tools to reduce build time and image size
-FROM python:3.11-slim
+FROM kalilinux/kali-rolling:latest
 
+# 設定環境變數
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     HEXSTRIKE_PORT=8888 \
     HEXSTRIKE_HOST=0.0.0.0
 
-# Install only essential tools (reduces build time from 30min to 5min)
-RUN apt-get update && apt-get install -y \
-    # Core network tools
-    nmap \
+# 更新系統
+RUN apt-get update && apt-get upgrade -y
+
+# 安裝基礎工具
+RUN apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    git \
     curl \
     wget \
-    git \
-    # Build essentials for Python packages
+    unzip \
     build-essential \
     libssl-dev \
     libffi-dev \
-    python3-dev \
-    # Clean up
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# 安裝核心安全工具
+RUN apt-get update && apt-get install -y \
+    nmap \
+    gobuster \
+    nikto \
+    sqlmap \
+    hydra \
+    john \
+    hashcat \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝 Go 工具
+RUN apt-get update && apt-get install -y golang-go && apt-get clean
+
+# 安裝 pwntools
+RUN apt-get update && apt-get install -y python3-pwntools && apt-get clean
+
+# 設定工作目錄
 WORKDIR /app
 
-# Copy and install Python dependencies
+# 複製 Python 依賴檔案
 COPY requirements.txt .
+
+# 安裝 Python 依賴
 RUN pip3 install --no-cache-dir --upgrade pip && \
     pip3 install --no-cache-dir -r requirements.txt
 
-# Copy application files
+# 複製專案檔案
 COPY hexstrike_server.py hexstrike_mcp.py ./
-COPY assets/ ./assets/ 2>/dev/null || true
+COPY assets/ ./assets/
 
-# Create logs directory
+# 建立日誌目錄
 RUN mkdir -p /app/logs
 
-# Copy and setup entrypoint
+# 複製並設定啟動腳本
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-# Expose port
+# 暴露 API 端口
 EXPOSE 8888
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+# 健康檢查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8888/health || exit 1
 
-# Use non-root user
+# 使用非 root 用戶運行（安全考量）
 RUN useradd -m -u 1000 hexstrike && \
     chown -R hexstrike:hexstrike /app
 USER hexstrike
 
+# 啟動服務
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
