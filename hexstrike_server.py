@@ -94,6 +94,15 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
+# 導入並註冊 API 藍圖
+try:
+    from api import api_bp
+    app.register_blueprint(api_bp)
+    print("✅ API Blueprint registered successfully")
+except ImportError as e:
+    print(f"⚠️  API Blueprint import failed: {e}")
+    print("Continuing with legacy API endpoints...")
+
 # API Configuration
 API_PORT = int(os.environ.get('HEXSTRIKE_PORT', 8888))
 API_HOST = os.environ.get('HEXSTRIKE_HOST', '127.0.0.1')

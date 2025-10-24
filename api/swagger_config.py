@@ -58,3 +58,6 @@ api = Api(
 
 # 添加自定義標籤
 api.add_namespace = lambda ns: api.add_namespace(ns, path='/api')
+
+# OpenAPI JSON 端點將由 Flask-RESTX 自動生成
+# 訪問 /api/swagger.json 獲取 OpenAPI 3.0 規範
