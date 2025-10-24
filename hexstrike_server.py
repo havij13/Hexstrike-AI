@@ -39,7 +39,7 @@ import shutil
 import venv
 import zipfile
 from pathlib import Path
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, send_from_directory
 import psutil
 import signal
 import requests
@@ -9019,6 +9019,16 @@ class FileOperationsManager:
 file_manager = FileOperationsManager()
 
 # API Routes
+
+@app.route("/", methods=["GET"])
+def dashboard():
+    """Serve the main dashboard interface"""
+    return render_template('index.html')
+
+@app.route("/static/<path:filename>")
+def static_files(filename):
+    """Serve static files"""
+    return send_from_directory('static', filename)
 
 @app.route("/health", methods=["GET"])
 def health_check():
