@@ -36,7 +36,7 @@ export function ProcessMonitor({ dashboard, loading }: ProcessMonitorProps) {
       </div>
       <div className="terminal-content">
         <div className="space-y-4">
-          {dashboard?.processes?.length > 0 ? (
+          {(dashboard?.processes?.length || 0) > 0 ? (
             dashboard.processes.map((process) => (
               <div key={process.pid} className="border border-cyber-primary/30 rounded p-3">
                 <div className="flex items-center justify-between mb-2">
