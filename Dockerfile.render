@@ -1,5 +1,5 @@
 # Optimized Dockerfile for Render deployment
-# Build timestamp: 2025-10-25T01:40:00Z - Force rebuild
+# Build timestamp: 2025-10-25T02:30:00Z - Fix host argument and API module
 FROM python:3.11-slim
 
 # Set environment variables
@@ -40,12 +40,12 @@ RUN pip install --upgrade pip setuptools wheel && \
 
 # Copy application files
 COPY hexstrike_server.py hexstrike_mcp.py ./
+COPY api/ ./api/
+COPY templates/ ./templates/
+COPY static/ ./static/
 
-# Create necessary directories and files
-RUN mkdir -p /app/logs /app/data /app/config /app/assets /app/templates /app/static /app/api
-
-# Create minimal API structure
-RUN echo '{"version": "6.0", "status": "minimal"}' > /app/api/__init__.py
+# Create necessary directories
+RUN mkdir -p /app/logs /app/data /app/config /app/assets
 
 # Create basic entrypoint
 RUN echo '#!/bin/bash\necho "Starting HexStrike AI (Render)..."\nexec python3 hexstrike_server.py --port ${PORT:-8888}' > /entrypoint.sh && \
