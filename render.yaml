@@ -2,7 +2,7 @@ services:
   - type: web
     name: hexstrike-ai
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./Dockerfile.render
     plan: free
     region: oregon
     envVars:
