@@ -34,12 +34,13 @@ RUN apt-get update && apt-get install -y \
 # Install Go-based security tools
 RUN GO111MODULE=on go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest || echo "Nuclei installation failed"
 
-# Install nuclei templates
-RUN mkdir -p /root/.nuclei && \
-    nuclei -update-templates || echo "Nuclei templates installation skipped"
-
 # Set working directory
 WORKDIR /app
+
+# Install nuclei templates in app directory (accessible to app user)
+ENV NUCLEI_TEMPLATES_PATH=/app/.nuclei-templates
+RUN mkdir -p ${NUCLEI_TEMPLATES_PATH} && \
+    nuclei -update-templates -td ${NUCLEI_TEMPLATES_PATH} || echo "Nuclei templates installation skipped"
 
 # Copy requirements and install Python dependencies
 COPY requirements-minimal.txt requirements.txt

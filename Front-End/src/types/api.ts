@@ -148,6 +148,14 @@ export interface FileListResponse {
   total_count: number
 }
 
+// Tool Count
+export interface ToolCountResponse {
+  total_tools: number
+  categories: Record<string, string[]>
+  ai_agents: number
+  version: string
+}
+
 // Tool Execution
 export interface ToolExecution {
   execution_time: number

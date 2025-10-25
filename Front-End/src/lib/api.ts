@@ -160,6 +160,12 @@ class HexStrikeApiClient {
     return response.data
   }
 
+  // Tool Count
+  async getToolCount(): Promise<{total_tools: number, ai_agents: number, categories: Record<string, string[]>}> {
+    const response = await this.client.get('/api/tools/count')
+    return response.data
+  }
+
   // Cache Management
   async getCacheStats(): Promise<CacheStats> {
     const response = await this.client.get<CacheStats>('/api/cache/stats')

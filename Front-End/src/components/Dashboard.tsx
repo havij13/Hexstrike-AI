@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import { apiClient } from '@/lib/api'
 import { StatusCard } from './StatusCard'
+import { ServerStatus } from './ServerStatus'
 import { ProcessMonitor } from './ProcessMonitor'
 import { SystemMetrics } from './SystemMetrics'
 import { RecentActivity } from './RecentActivity'
@@ -107,6 +108,9 @@ export function Dashboard() {
           ))}
         </div>
       )}
+
+      {/* Server Status */}
+      <ServerStatus />
 
       {/* Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

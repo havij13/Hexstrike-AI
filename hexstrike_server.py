@@ -9149,6 +9149,32 @@ def health_check():
         "uptime": time.time() - telemetry.stats["start_time"]
     })
 
+@app.route("/api/tools/count", methods=["GET"])
+def get_tool_count():
+    """Get tool count and AI agent information"""
+    tools = {
+        "network": ["nmap", "rustscan", "masscan", "autorecon", "nbtscan", "arp-scan"],
+        "web": ["gobuster", "feroxbuster", "ffuf", "dirsearch", "katana", "httpx", "wafw00f"],
+        "vuln_scanning": ["nuclei", "wpscan", "nikto"],
+        "auth": ["hydra", "john", "hashcat", "medusa"],
+        "binary": ["ghidra", "radare2", "gdb", "binwalk", "checksec"],
+        "forensics": ["volatility3", "steghide", "foremost", "exiftool", "autopsy"],
+        "cloud": ["prowler", "trivy", "kube-hunter", "scout-suite"],
+        "osint": ["amass", "subfinder", "fierce", "theharvester", "sherlock"],
+        "exploitation": ["metasploit", "searchsploit"],
+        "database": ["sqlmap"],
+        "recon": ["enum4linux-ng", "responder"],
+    }
+    
+    total = sum(len(v) for v in tools.values())
+    
+    return jsonify({
+        "total_tools": total,
+        "categories": tools,
+        "ai_agents": 12,  # AI intelligence agents
+        "version": "6.0.0"
+    })
+
 @app.route("/api/command", methods=["POST"])
 def generic_command():
     """Execute any command provided in the request with enhanced logging"""
@@ -10339,6 +10365,15 @@ def create_comprehensive_bugbounty_assessment():
 # SECURITY TOOLS API ENDPOINTS
 # ============================================================================
 
+# Scan type mapping for semantic names
+SCAN_TYPE_MAPPING = {
+    "quick": "-F -sT",  # Fast scan, TCP connect (no root needed)
+    "comprehensive": "-sV -sC -A -sT",  # Service detection, scripts, OS detection
+    "stealth": "-sS -T2",  # SYN scan (requires root)
+    "udp": "-sU",  # UDP scan
+    "aggressive": "-A -T4",  # Aggressive scan
+}
+
 @app.route("/api/tools/nmap", methods=["POST"])
 def nmap():
     """Execute nmap scan with enhanced logging, caching, and intelligent error handling"""
@@ -10356,7 +10391,15 @@ def nmap():
                 "error": "Target parameter is required"
             }), 400
 
-        command = f"nmap {scan_type}"
+        # Check if scan_type is a semantic name and map it
+        if scan_type in SCAN_TYPE_MAPPING:
+            nmap_options = SCAN_TYPE_MAPPING[scan_type]
+            logger.info(f"🔍 Mapping semantic scan type '{scan_type}' to '{nmap_options}'")
+        else:
+            # Use scan_type as-is (raw nmap parameters)
+            nmap_options = scan_type
+
+        command = f"nmap {nmap_options}"
 
         if ports:
             command += f" -p {ports}"
