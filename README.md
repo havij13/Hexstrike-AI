@@ -6,6 +6,7 @@
 ### AI-Powered MCP Cybersecurity Automation Platform
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://hub.docker.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Security](https://img.shields.io/badge/Security-Penetration%20Testing-red.svg)](https://github.com/0x4m4/hexstrike-ai)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-purple.svg)](https://github.com/0x4m4/hexstrike-ai)
@@ -16,7 +17,21 @@
 
 **Advanced AI-powered penetration testing MCP framework with 150+ security tools and 12+ autonomous AI agents**
 
-[📋 What's New](#whats-new-in-v60) • [🏗️ Architecture](#architecture-overview) • [🚀 Installation](#installation) • [🛠️ Features](#features) • [🤖 AI Agents](#ai-agents) • [📡 API Reference](#api-reference)
+[⚡ Quick Start](QUICKSTART.md) • [🐳 Docker Guide](DOCKER.md) • [🏗️ Architecture](#architecture-overview) • [🚀 Installation](#installation) • [🛠️ Features](#features) • [🤖 AI Agents](#ai-agents) • [📡 API Reference](#api-reference)
+
+---
+
+## ⚡ Quick Start (Docker)
+
+```bash
+# One-command deployment (requires Docker)
+git clone https://github.com/0x4m4/hexstrike-ai.git && cd hexstrike-ai
+make deploy-local  # Build, run, and test in one command
+
+# Access at http://localhost:8888
+```
+
+📖 **New to Docker?** Read the [Quick Start Guide](QUICKSTART.md) | Full [Docker Deployment Guide](DOCKER.md)
 
 </div>
 
@@ -209,6 +224,164 @@ curl -X POST http://localhost:8888/api/intelligence/analyze-target \
   -H "Content-Type: application/json" \
   -d '{"target": "example.com", "analysis_type": "comprehensive"}'
 ```
+
+---
+
+## Docker Deployment
+
+### Quick Start with Docker
+
+HexStrike AI v6.0 now supports Docker deployment with pre-installed 150+ security tools for instant setup.
+
+#### Build and Run Locally
+
+```bash
+# 1. Build the Docker image
+docker build -t hexstrike-ai:v6.0 .
+
+# 2. Run the container
+docker run -d -p 8888:8888 --name hexstrike hexstrike-ai:v6.0
+
+# 3. Check server health
+curl http://localhost:8888/health
+
+# 4. View logs
+docker logs -f hexstrike
+```
+
+#### Using Docker Compose (Recommended)
+
+```bash
+# Start the service
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the service
+docker-compose down
+```
+
+#### Using Makefile (Easiest)
+
+For simplified management, use the included Makefile:
+
+```bash
+# Show all available commands
+make help
+
+# Build, run, and test (all-in-one)
+make deploy-local
+
+# Individual commands
+make build          # Build Docker image
+make run            # Start with docker-compose
+make logs           # View logs
+make test           # Run health checks
+make stop           # Stop containers
+make clean          # Clean up everything
+```
+
+### Deploy to Cloud Platforms (Free/Cheap Options)
+
+#### Railway Deployment
+
+1. Connect your GitHub repository to [Railway](https://railway.app)
+2. Create a new project and select your repository
+3. Railway will automatically detect the `Dockerfile`
+4. Set environment variables (optional):
+   - `HEXSTRIKE_PORT=8888`
+5. Deploy and get your public URL: `https://your-app.railway.app`
+
+**Configuration**: Uses `railway.toml` for automatic deployment settings.
+
+#### Render Deployment
+
+1. Sign up at [Render](https://render.com)
+2. Create a new **Web Service** from Git repository
+3. Select **Docker** as environment
+4. Render will use the `render.yaml` configuration
+5. Deploy and access via: `https://your-app.onrender.com`
+
+**Free Tier**: 750 hours/month, automatic HTTPS, global CDN.
+
+#### Fly.io Deployment
+
+```bash
+# 1. Install Fly CLI
+curl -L https://fly.io/install.sh | sh
+
+# 2. Login to Fly.io
+fly auth login
+
+# 3. Launch the app (uses fly.toml)
+fly launch
+
+# 4. Deploy
+fly deploy
+
+# 5. Open in browser
+fly open
+```
+
+**Free Tier**: 3 shared-cpu-1x VMs with 256MB RAM each.
+
+### MCP Client Configuration for Docker Deployment
+
+After deploying to a VPS, update your AI client's MCP configuration:
+
+**For Claude Desktop** (`~/.config/Claude/claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "hexstrike-ai": {
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike_mcp.py",
+        "--server",
+        "https://your-app.railway.app"
+      ],
+      "description": "HexStrike AI v6.0 - Cloud Deployed",
+      "timeout": 300
+    }
+  }
+}
+```
+
+**For Cursor/VS Code**: Update `.vscode/settings.json` similarly.
+
+See `hexstrike-ai-mcp.example.json` for more deployment examples.
+
+### Environment Variables
+
+Copy `env.example` to `.env` and customize:
+
+```bash
+HEXSTRIKE_PORT=8888          # Server port
+HEXSTRIKE_HOST=0.0.0.0       # Bind address
+CACHE_SIZE=1000              # Result cache size
+CACHE_TTL=3600               # Cache TTL in seconds
+COMMAND_TIMEOUT=300          # Command timeout
+```
+
+### Docker Image Details
+
+- **Base Image**: Kali Linux Rolling (latest security tools)
+- **Size**: ~3-5GB (150+ pre-installed security tools)
+- **Startup Time**: 30-60 seconds (tool verification)
+- **Memory**: 2GB minimum, 4GB recommended
+- **Included Tools**: nmap, gobuster, nuclei, sqlmap, hydra, ghidra, and 145+ more
+
+### Security Considerations for VPS Deployment
+
+⚠️ **Important**: This tool provides powerful security testing capabilities.
+
+- ✅ Only deploy for **authorized penetration testing**
+- ✅ Use in **isolated environments** or **dedicated security labs**
+- ✅ Ensure **proper authorization** before testing any targets
+- ⚠️ Consider adding **authentication layer** for public deployments
+- ⚠️ Be aware of VPS provider **Terms of Service** regarding security tools
+- ⚠️ Monitor resource usage to stay within free tier limits
 
 ---
 

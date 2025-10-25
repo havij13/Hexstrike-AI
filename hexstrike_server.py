@@ -39,7 +39,7 @@ import shutil
 import venv
 import zipfile
 from pathlib import Path
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, send_from_directory
 import psutil
 import signal
 import requests
@@ -93,6 +93,15 @@ logger = logging.getLogger(__name__)
 # Flask app configuration
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
+
+# 導入並註冊 API 藍圖
+try:
+    from api import api_bp
+    app.register_blueprint(api_bp)
+    print("✅ API Blueprint registered successfully")
+except ImportError as e:
+    print(f"⚠️  API Blueprint import failed: {e}")
+    print("Continuing with legacy API endpoints...")
 
 # API Configuration
 API_PORT = int(os.environ.get('HEXSTRIKE_PORT', 8888))
@@ -9019,6 +9028,16 @@ class FileOperationsManager:
 file_manager = FileOperationsManager()
 
 # API Routes
+
+@app.route("/", methods=["GET"])
+def dashboard():
+    """Serve the main dashboard interface"""
+    return render_template('index.html')
+
+@app.route("/static/<path:filename>")
+def static_files(filename):
+    """Serve static files"""
+    return send_from_directory('static', filename)
 
 @app.route("/health", methods=["GET"])
 def health_check():

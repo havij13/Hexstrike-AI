@@ -1,0 +1,52 @@
+{
+  "safe_testing_targets": [
+    {
+      "name": "httpbin.org",
+      "url": "https://httpbin.org",
+      "description": "HTTP testing service - safe for testing",
+      "type": "web_service",
+      "allowed_methods": ["GET", "POST"],
+      "notes": "Public testing service, safe for automated tests"
+    },
+    {
+      "name": "example.com",
+      "url": "https://example.com",
+      "description": "Example domain for testing",
+      "type": "web_application",
+      "allowed_methods": ["GET"],
+      "notes": "Standard example domain"
+    },
+    {
+      "name": "testphp.vulnweb.com",
+      "url": "http://testphp.vulnweb.com",
+      "description": "Intentionally vulnerable web application for testing",
+      "type": "vulnerable_app",
+      "allowed_methods": ["GET", "POST"],
+      "notes": "Educational purpose only - intentionally vulnerable"
+    }
+  ],
+  "local_testing_targets": [
+    {
+      "name": "localhost",
+      "url": "http://localhost:8080",
+      "description": "Local testing server",
+      "type": "local_server",
+      "allowed_methods": ["GET", "POST"],
+      "notes": "For local development testing"
+    },
+    {
+      "name": "127.0.0.1",
+      "url": "http://127.0.0.1:3000",
+      "description": "Local loopback testing",
+      "type": "local_server",
+      "allowed_methods": ["GET", "POST"],
+      "notes": "Local testing only"
+    }
+  ],
+  "testing_guidelines": {
+    "always_verify": "Always verify targets before testing",
+    "respect_robots_txt": "Check robots.txt before scanning",
+    "rate_limiting": "Implement rate limiting to avoid overwhelming targets",
+    "legal_notice": "Only test on systems you own or have explicit permission to test"
+  }
+}

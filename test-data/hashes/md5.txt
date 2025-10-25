@@ -1,0 +1,18 @@
+# MD5 Hash Examples for Testing
+# These are example hashes for testing password cracking tools
+# DO NOT use these in production - they are for educational purposes only
+
+# Common passwords
+5d41402abc4b2a76b9719d911017c592:hello
+098f6bcd4621d373cade4e832627b4f6:test
+e10adc3949ba59abbe56e057f20f883e:123456
+25d55ad283aa400af464c76d713c07ad:password
+5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8:password
+
+# Linux shadow file format examples
+$1$salt1234$hash1234567890abcdef
+$5$salt1234$hash1234567890abcdef1234567890abcdef
+$6$salt1234$hash1234567890abcdef1234567890abcdef1234567890abcdef
+
+# Windows NTLM examples
+aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0

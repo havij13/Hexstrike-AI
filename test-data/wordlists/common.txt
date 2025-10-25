@@ -1,0 +1,59 @@
+# Common Wordlist for Testing
+# This is a small wordlist for testing directory enumeration and password attacks
+# Based on common directories, files, and passwords
+
+# Common directories
+admin
+administrator
+api
+app
+assets
+backup
+bin
+config
+css
+data
+db
+download
+files
+images
+img
+js
+login
+logs
+media
+public
+scripts
+static
+temp
+test
+tmp
+uploads
+www
+
+# Common files
+index.html
+index.php
+login.php
+admin.php
+config.php
+readme.txt
+robots.txt
+sitemap.xml
+.htaccess
+.htpasswd
+web.config
+
+# Common passwords
+admin
+administrator
+password
+123456
+password123
+admin123
+root
+user
+guest
+test
+demo
+sample
