@@ -1,4 +1,5 @@
 # Optimized Dockerfile for Render deployment
+# Build timestamp: 2025-10-25T01:40:00Z - Force rebuild
 FROM python:3.11-slim
 
 # Set environment variables
