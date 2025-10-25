@@ -1,0 +1,60 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "rules/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # HexStrike AI Application Metrics
+  - job_name: 'hexstrike-ai'
+    static_configs:
+      - targets: ['hexstrike-ai:8888']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # System Metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # Docker Metrics
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['docker-exporter:9323']
+
+  # Redis Metrics
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+
+  # Elasticsearch Metrics
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch-exporter:9114']
+
+  # Kong API Gateway Metrics
+  - job_name: 'kong'
+    static_configs:
+      - targets: ['kong:8001']
+    metrics_path: '/metrics'
+
+  # Security Tool Metrics
+  - job_name: 'security-tools'
+    static_configs:
+      - targets: ['hexstrike-ai:8888']
+    metrics_path: '/api/metrics/tools'
+    scrape_interval: 30s
+
+  # Vulnerability Metrics
+  - job_name: 'vulnerabilities'
+    static_configs:
+      - targets: ['hexstrike-ai:8888']
+    metrics_path: '/api/metrics/vulnerabilities'
+    scrape_interval: 60s
