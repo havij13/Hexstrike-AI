@@ -113,6 +113,24 @@ graph TD
     style E fill:#ff8a80,stroke:#b71c1c,stroke-width:2px,color:#fffde7
 ```
 
+How to Use  HexStrike AI
+Method 1: Web Interface (After next deployment)
+Navigate to: https://hexstrike-ai-v6-0.onrender.com
+Use the interactive dashboard for real-time security testing
+Method 2: Direct API Usage (Available now)
+Base URL: https://hexstrike-ai-v6-0.onrender.com
+Use curl commands or custom clients
+Reference API_USAGE.md for complete documentation
+Method 3: AI Client Integration (Ready to configure)
+Follow AI_CLIENT_SETUP_GUIDE.md for your specific AI client
+Use natural language prompts for security testing
+Example: "I'm authorized to test example.com. Please use hexstrike AI tools to perform a security assessment."
+📚 Documentation Available
+API_USAGE.md - Complete API documentation with examples
+AI_CLIENT_SETUP_GUIDE.md - AI client integration guide
+USAGE_EXAMPLES.md - Practical examples for all methods
+DEPLOYMENT_TEST_RESULTS.md - Test results and quick start guide
+
 ### How It Works
 
 1. **AI Agent Connection** - Claude, GPT, or other MCP-compatible agents connect via FastMCP protocol

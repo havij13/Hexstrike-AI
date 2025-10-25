@@ -1,7 +1,6 @@
-Flask==2.3.3
-Flask-CORS==4.0.0
-flask-restx==1.3.0
-flask-swagger-ui==4.11.1
+Flask==2.2.5
+Flask-CORS==3.0.10
+flask-restx==1.2.0
 psutil==5.9.5
 requests==2.31.0
 beautifulsoup4==4.12.2
