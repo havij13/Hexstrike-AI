@@ -122,6 +122,44 @@ class HexStrikeApiClient {
     return response.data
   }
 
+  async rustscanScan(target: string, ports: string = '1-65535', timeout: number = 1000): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/rustscan', {
+      target,
+      ports,
+      timeout,
+    })
+    return response.data
+  }
+
+  async masscanScan(target: string, ports: string = '1-65535', rate: number = 1000): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/masscan', {
+      target,
+      ports,
+      rate,
+    })
+    return response.data
+  }
+
+  async feroxbusterScan(url: string, wordlist: string = '/usr/share/wordlists/dirb/common.txt', threads: number = 10, depth: number = 3): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/feroxbuster', {
+      url,
+      wordlist,
+      threads,
+      depth,
+    })
+    return response.data
+  }
+
+  async nucleiScan(target: string, severity: string = 'critical,high', tags: string = '', template: string = ''): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/nuclei', {
+      target,
+      severity,
+      tags,
+      template,
+    })
+    return response.data
+  }
+
   // Cache Management
   async getCacheStats(): Promise<CacheStats> {
     const response = await this.client.get<CacheStats>('/api/cache/stats')

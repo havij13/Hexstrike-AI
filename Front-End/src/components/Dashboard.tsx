@@ -119,7 +119,7 @@ export function Dashboard() {
         />
         <StatusCard
           title="Active Processes"
-          value={processDashboard?.total_processes?.toString() || '0'}
+          value={String(processDashboard?.total_processes ?? 0)}
           icon={<Clock className="h-6 w-6" />}
           status="info"
           loading={processLoading}

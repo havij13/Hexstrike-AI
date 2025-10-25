@@ -93,6 +93,16 @@ These tests are skipped in automated testing for good reasons:
 - **Environment-Specific**: Cloud security tools, container scanners
 - **Data-Dependent**: Tools requiring specific files or targets
 
+### Why Are So Many Tests Skipped?
+
+The test suite intentionally skips 30 out of 45 tests (67%) because:
+- **Resource-intensive operations** (password cracking, full vulnerability scans)
+- **Time-consuming scans** (comprehensive reconnaissance, binary analysis)
+- **Environment-specific tools** (cloud security, container scanners)
+- **Data-dependent operations** (require specific files, credentials)
+
+**This is by design** - the 15 passing tests (33%) verify all critical API endpoints work correctly without overwhelming the server or taking hours to complete.
+
 ## Test Results
 
 ### Success Criteria

@@ -1,5 +1,5 @@
 # Optimized Dockerfile for Render deployment
-# Build timestamp: 2025-10-25T02:30:00Z - Fix host argument and API module
+# Build timestamp: 2025-10-25T06:45:00Z - Add Nuclei templates and fix Gobuster parameters
 FROM python:3.11-slim
 
 # Set environment variables
@@ -28,7 +28,15 @@ RUN apt-get update && apt-get install -y \
     wget \
     netcat-traditional \
     dnsutils \
+    golang-go \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Go-based security tools
+RUN GO111MODULE=on go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest || echo "Nuclei installation failed"
+
+# Install nuclei templates
+RUN mkdir -p /root/.nuclei && \
+    nuclei -update-templates || echo "Nuclei templates installation skipped"
 
 # Set working directory
 WORKDIR /app

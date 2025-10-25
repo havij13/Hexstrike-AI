@@ -185,3 +185,43 @@ export interface CommandExecution {
   duration: number
   cached: boolean
 }
+
+// Tool-specific execution types
+export interface RustscanExecution extends ToolExecution {
+  open_ports: Array<{
+    port: number
+    state: string
+    service: string
+    version?: string
+  }>
+  scan_summary: string
+}
+
+export interface MasscanExecution extends ToolExecution {
+  open_ports: Array<{
+    port: number
+    state: string
+    service?: string
+  }>
+  scan_summary: string
+  rate: number
+}
+
+export interface FeroxbusterExecution extends ToolExecution {
+  found_directories: string[]
+  found_files: string[]
+  total_requests: number
+  status_codes: Record<string, number>
+}
+
+export interface NucleiExecution extends ToolExecution {
+  vulnerabilities: Array<{
+    template_id: string
+    name: string
+    severity: string
+    description: string
+    url: string
+    matched_at: string
+  }>
+  total_vulnerabilities: number
+}

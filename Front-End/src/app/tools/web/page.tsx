@@ -135,11 +135,10 @@ export default function WebToolsPage() {
       {/* Tools Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {webTools.map((tool) => (
-          <div
-            key={tool.id}
-            className={`terminal-window border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-cyber-dark transition-all duration-300 cursor-pointer group`}
-            onClick={() => setSelectedTool(tool.id)}
-          >
+          <Link key={tool.id} href={tool.href}>
+            <div
+              className={`terminal-window border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-cyber-dark transition-all duration-300 cursor-pointer group`}
+            >
             <div className="terminal-header">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -171,6 +170,7 @@ export default function WebToolsPage() {
               </div>
             </div>
           </div>
+          </Link>
         ))}
       </div>
 

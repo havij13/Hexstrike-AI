@@ -10394,7 +10394,7 @@ def gobuster():
     """Execute gobuster with enhanced logging and intelligent error handling"""
     try:
         params = request.json
-        url = params.get("url", "")
+        url = params.get("url") or params.get("target", "")
         mode = params.get("mode", "dir")
         wordlist = params.get("wordlist", "/usr/share/wordlists/dirb/common.txt")
         additional_args = params.get("additional_args", "")
@@ -10403,7 +10403,7 @@ def gobuster():
         if not url:
             logger.warning("🌐 Gobuster called without URL parameter")
             return jsonify({
-                "error": "URL parameter is required"
+                "error": "URL or target parameter is required"
             }), 400
 
         # Validate mode

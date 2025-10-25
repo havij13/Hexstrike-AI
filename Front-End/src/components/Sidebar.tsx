@@ -62,9 +62,10 @@ export function Sidebar() {
         <ul className="space-y-2">
           {sidebarItems.map((item) => (
             <li key={item.id}>
-              <button
+              <a
+                href={`/${item.id === 'dashboard' ? '' : item.id}`}
                 onClick={() => setActiveItem(item.id)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                className={`block w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   activeItem === item.id
                     ? 'bg-cyber-primary text-cyber-dark glow-border'
                     : 'text-cyber-light hover:text-cyber-primary hover:bg-cyber-gray'
@@ -72,7 +73,7 @@ export function Sidebar() {
               >
                 {item.icon}
                 <span className="font-medium">{item.label}</span>
-              </button>
+              </a>
             </li>
           ))}
         </ul>
