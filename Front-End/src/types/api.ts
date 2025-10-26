@@ -233,3 +233,84 @@ export interface NucleiExecution extends ToolExecution {
   }>
   total_vulnerabilities: number
 }
+
+export interface FFufExecution extends ToolExecution {
+  discovered_urls: string[]
+  total_requests: number
+  status_codes: Record<string, number>
+  wordlist_size: number
+}
+
+export interface NiktoExecution extends ToolExecution {
+  vulnerabilities_found: Array<{
+    id: string
+    severity: string
+    description: string
+  }>
+  services_detected: string[]
+  tests_performed: number
+}
+
+export interface HydraExecution extends ToolExecution {
+  successful_logins: Array<{
+    username: string
+    password: string
+    service: string
+  }>
+  attempts_made: number
+  successful_cracks: number
+}
+
+export interface JohnExecution extends ToolExecution {
+  cracked_hashes: Array<{
+    hash: string
+    password: string
+    hash_type: string
+  }>
+  attempts_made: number
+  success_rate: number
+}
+
+export interface HashcatExecution extends ToolExecution {
+  cracked_hashes: Array<{
+    hash: string
+    password: string
+    hash_type: string
+  }>
+  attempts_made: number
+  crack_time: string
+}
+
+export interface SQLMapExecution extends ToolExecution {
+  injection_points: Array<{
+    parameter: string
+    type: string
+    payload: string
+  }>
+  databases_found: string[]
+  tables_dumped: number
+}
+
+export interface WPScanExecution extends ToolExecution {
+  wordpress_version: string
+  plugins_detected: Array<{
+    name: string
+    version: string
+    vulnerabilities: string[]
+  }>
+  themes_detected: Array<{
+    name: string
+    version: string
+  }>
+  users_found: string[]
+}
+
+export interface DalfoxExecution extends ToolExecution {
+  xss_found: Array<{
+    parameter: string
+    payload: string
+    url: string
+  }>
+  blind_xss_detected: boolean
+  poc_urls: string[]
+}
