@@ -12,21 +12,21 @@ Write-Host ""
 
 # Define tools to generate (format: tool_name|category|api_endpoint|description)
 $tools = @(
-    # Web Security - Additional
-    "jwt-analyzer|web|/api/tools/jwt_analyzer|JWT security analyzer",
-    "api-schema-analyzer|web|/api/tools/api_schema_analyzer|API schema analysis",
-    "qsreplace|web|/api/tools/qsreplace|Query string replacement",
-    "x8|web|/api/tools/x8|Rust-based HTTP server",
+    # Cloud Security - Remaining
+    "clair|cloud|/api/tools/clair|Container vulnerability scanner",
+    "falco|cloud|/api/tools/falco|Runtime security monitoring",
+    "checkov|cloud|/api/tools/checkov|Infrastructure as code scanner",
+    "terrascan|cloud|/api/tools/terrascan|IaC security scanner",
     
-    # Forensics
-    "volatility3|forensics|/api/tools/volatility3|Advanced memory forensics",
+    # Network - Remaining
+    "smbmap|network|/api/tools/smbmap|SMB share enumeration",
+    "enum4linux-ng|network|/api/tools/enum4linux-ng|SMB enumeration",
+    "nmap-advanced|network|/api/tools/nmap-advanced|Advanced Nmap scans",
     
-    # Cloud Security
-    "scout-suite|cloud|/api/tools/scout-suite|Multi-cloud security auditing",
-    "cloudmapper|cloud|/api/tools/cloudmapper|AWS security analysis",
-    "pacu|cloud|/api/tools/pacu|AWS exploitation framework",
-    "kube-bench|cloud|/api/tools/kube-bench|Kubernetes CIS benchmark",
-    "docker-bench-security|cloud|/api/tools/docker-bench-security|Docker security bench"
+    # Web Security - Advanced
+    "zap|web|/api/tools/zap|OWASP ZAP security scanner",
+    "http-framework|web|/api/tools/http-framework|HTTP framework",
+    "browser-agent|web|/api/tools/browser-agent|Browser automation"
 )
 
 $current = 0
