@@ -1,7 +1,9 @@
 """
-HexStrike AI API Blueprint Package
-Advanced Penetration Testing Framework API with Swagger Documentation
+HexStrike AI - API Package
+This package contains all API blueprints, models, and utilities.
 """
+
+__version__ = '1.0.0'
 
 from flask import Blueprint
 from .swagger_config import api
