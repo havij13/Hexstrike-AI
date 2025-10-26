@@ -314,3 +314,475 @@ export interface DalfoxExecution extends ToolExecution {
   blind_xss_detected: boolean
   poc_urls: string[]
 }
+
+// Network Reconnaissance Tools
+export interface AmassExecution extends ToolExecution {
+  subdomains_found: string[]
+  ip_addresses: string[]
+  total_discovered: number
+}
+
+export interface SubfinderExecution extends ToolExecution {
+  subdomains: string[]
+  total_discovered: number
+}
+
+export interface FierceExecution extends ToolExecution {
+  dns_records: Array<{
+    type: string
+    name: string
+    value: string
+  }>
+  subdomains_found: string[]
+}
+
+export interface DNSenumExecution extends ToolExecution {
+  dns_records: Record<string, string[]>
+  subdomains: string[]
+  total_found: number
+}
+
+export interface AutoReconExecution extends ToolExecution {
+  services_detected: string[]
+  open_ports: number[]
+  vulnerabilities: string[]
+}
+
+export interface Enum4linuxExecution extends ToolExecution {
+  shares_found: string[]
+  users_found: string[]
+  groups_found: string[]
+}
+
+export interface ResponderExecution extends ToolExecution {
+  hashes_captured: string[]
+  authentication_events: number
+}
+
+export interface SMBmapExecution extends ToolExecution {
+  shares: Array<{
+    name: string
+    path: string
+    permissions: string
+  }>
+  accessible_shares: number
+}
+
+export interface RPCClientExecution extends ToolExecution {
+  commands_executed: string[]
+  results: string[]
+}
+
+export interface NBtscanExecution extends ToolExecution {
+  hosts_found: Array<{
+    ip: string
+    netbios_name: string
+    mac_address: string
+  }>
+}
+
+export interface ARPScanExecution extends ToolExecution {
+  devices_found: Array<{
+    ip: string
+    mac: string
+    vendor: string
+  }>
+}
+
+export interface NmapAdvancedExecution extends ToolExecution {
+  detailed_scan_results: {
+    os_detection: string
+    services: Array<{
+      port: number
+      service: string
+      version: string
+    }>
+  }
+}
+
+// Cloud Security Tools
+export interface ProwlerExecution extends ToolExecution {
+  findings: Array<{
+    check_id: string
+    status: string
+    severity: string
+    description: string
+  }>
+  total_findings: number
+  failed_checks: number
+}
+
+export interface TrivyExecution extends ToolExecution {
+  vulnerabilities: Array<{
+    id: string
+    severity: string
+    package: string
+    description: string
+  }>
+  total_vulnerabilities: number
+}
+
+export interface KubeHunterExecution extends ToolExecution {
+  vulnerabilities: Array<{
+    category: string
+    description: string
+    severity: string
+  }>
+  total_issues: number
+}
+
+export interface ScoutSuiteExecution extends ToolExecution {
+  findings: Array<{
+    service: string
+    issue: string
+    severity: string
+  }>
+  total_findings: number
+}
+
+export interface CloudMapperExecution extends ToolExecution {
+  network_map: Record<string, any>
+  security_issues: string[]
+}
+
+export interface PacuExecution extends ToolExecution {
+  modules_executed: string[]
+  results: Record<string, any>
+}
+
+export interface KubeBenchExecution extends ToolExecution {
+  test_results: Array<{
+    id: string
+    description: string
+    status: string
+  }>
+  passed: number
+  failed: number
+}
+
+export interface DockerBenchSecurityExecution extends ToolExecution {
+  checks: Array<{
+    id: string
+    description: string
+    status: string
+  }>
+  passed: number
+  failed: number
+}
+
+export interface ClairExecution extends ToolExecution {
+  vulnerabilities: Array<{
+    id: string
+    severity: string
+    package: string
+  }>
+}
+
+export interface FalcoExecution extends ToolExecution {
+  events: Array<{
+    timestamp: string
+    rule: string
+    priority: string
+  }>
+}
+
+export interface CheckovExecution extends ToolExecution {
+  violations: Array<{
+    check_id: string
+    severity: string
+    resource: string
+  }>
+}
+
+export interface TerrascanExecution extends ToolExecution {
+  violations: Array<{
+    rule_id: string
+    severity: string
+    description: string
+  }>
+}
+
+// Binary Analysis Tools
+export interface GhidraExecution extends ToolExecution {
+  functions_analyzed: number
+  strings_found: string[]
+  decompiled_code: string
+}
+
+export interface Radare2Execution extends ToolExecution {
+  functions: string[]
+  strings: string[]
+  analysis_complete: boolean
+}
+
+export interface GDBExecution extends ToolExecution {
+  breakpoints_set: number
+  variables_examined: string[]
+  stack_trace: string[]
+}
+
+export interface BinwalkExecution extends ToolExecution {
+  files_found: Array<{
+    offset: number
+    type: string
+    description: string
+  }>
+}
+
+export interface ChecksecExecution extends ToolExecution {
+  protections: {
+    nx: boolean
+    pie: boolean
+    relro: boolean
+    canary: boolean
+  }
+  vulnerabilities: string[]
+}
+
+export interface ROPGadgetExecution extends ToolExecution {
+  gadgets_found: number
+  rop_chains: string[]
+}
+
+export interface XXDExecution extends ToolExecution {
+  hexdump: string
+  length: number
+}
+
+export interface StringsExecution extends ToolExecution {
+  strings_found: string[]
+  total_strings: number
+}
+
+export interface ObjdumpExecution extends ToolExecution {
+  disassembly: string
+  sections: string[]
+}
+
+export interface PwntoolsExecution extends ToolExecution {
+  exploit_developed: boolean
+  shellcode: string
+}
+
+export interface OneGadgetExecution extends ToolExecution {
+  gadgets_found: Array<{
+    offset: string
+    constraints: string[]
+  }>
+}
+
+export interface LibcDatabaseExecution extends ToolExecution {
+  symbols_matched: string[]
+  libc_identified: string
+}
+
+export interface GDBPEDAExecution extends ToolExecution {
+  analysis_complete: boolean
+  exploits_suggested: string[]
+}
+
+export interface AngrExecution extends ToolExecution {
+  paths_explored: number
+  satisfiable_paths: number
+}
+
+export interface RopperExecution extends ToolExecution {
+  rop_chains: string[]
+  gadgets_found: number
+}
+
+export interface PwnInitExecution extends ToolExecution {
+  library_loaded: boolean
+  exploit_template: string
+}
+
+// Forensics Tools
+export interface VolatilityExecution extends ToolExecution {
+  processes: Array<{
+    pid: number
+    name: string
+    start_time: string
+  }>
+  network_connections: string[]
+}
+
+export interface Volatility3Execution extends ToolExecution {
+  plugins_executed: string[]
+  artifacts_found: string[]
+}
+
+export interface ForemostExecution extends ToolExecution {
+  files_recovered: Array<{
+    filename: string
+    size: number
+    type: string
+  }>
+}
+
+export interface StegHideExecution extends ToolExecution {
+  hidden_data_extracted: boolean
+  output_file: string
+}
+
+export interface ExifToolExecution extends ToolExecution {
+  metadata: Record<string, string>
+  gps_data?: {
+    latitude: number
+    longitude: number
+  }
+}
+
+export interface HashPumpExecution extends ToolExecution {
+  signature_forged: boolean
+  new_hash: string
+}
+
+// Exploitation Tools
+export interface MetasploitExecution extends ToolExecution {
+  exploit_executed: boolean
+  sessions_created: number
+}
+
+export interface MSFVenomExecution extends ToolExecution {
+  payload_generated: boolean
+  payload_size: number
+}
+
+// Additional Web Security Tools
+export interface GAUExecution extends ToolExecution {
+  urls_found: string[]
+  total_urls: number
+}
+
+export interface WaybackurlsExecution extends ToolExecution {
+  historical_urls: string[]
+  total_found: number
+}
+
+export interface ArjunExecution extends ToolExecution {
+  parameters_discovered: string[]
+  total_parameters: number
+}
+
+export interface ParamspiderExecution extends ToolExecution {
+  parameters_found: string[]
+  urls_processed: number
+}
+
+export interface JaelesExecution extends ToolExecution {
+  vulnerabilities: Array<{
+    name: string
+    severity: string
+    url: string
+  }>
+}
+
+export interface HakrawlerExecution extends ToolExecution {
+  endpoints_found: string[]
+  forms_discovered: string[]
+}
+
+export interface DotDotPwnExecution extends ToolExecution {
+  vulnerabilities_found: Array<{
+    path: string
+    type: string
+  }>
+}
+
+export interface XSSerExecution extends ToolExecution {
+  xss_payloads: string[]
+  vulnerable_urls: string[]
+}
+
+export interface WFuzzExecution extends ToolExecution {
+  discovered_paths: string[]
+  response_codes: Record<number, number>
+}
+
+export interface HTTPFrameworkExecution extends ToolExecution {
+  requests_sent: number
+  responses_received: number
+}
+
+export interface BrowserAgentExecution extends ToolExecution {
+  screenshots_captured: number
+  interactions_performed: number
+}
+
+export interface BurpsuiteAlternativeExecution extends ToolExecution {
+  requests_intercepted: number
+  vulnerabilities_detected: string[]
+}
+
+export interface ZAPExecution extends ToolExecution {
+  alerts: Array<{
+    severity: string
+    name: string
+    url: string
+  }>
+  total_alerts: number
+}
+
+export interface WafW00fExecution extends ToolExecution {
+  waf_detected: boolean
+  waf_name?: string
+  bypass_methods?: string[]
+}
+
+export interface JWTAnalyzerExecution extends ToolExecution {
+  vulnerabilities: string[]
+  jwt_decoded: Record<string, any>
+}
+
+export interface APISchemaAnalyzerExecution extends ToolExecution {
+  endpoints_analyzed: number
+  security_issues: string[]
+}
+
+export interface APIFuzzerExecution extends ToolExecution {
+  endpoints_tested: string[]
+  vulnerabilities: string[]
+}
+
+export interface GraphQLScannerExecution extends ToolExecution {
+  schema_introspected: boolean
+  vulnerabilities: string[]
+}
+
+export interface MedusaExecution extends ToolExecution {
+  successful_logins: Array<{
+    username: string
+    password: string
+  }>
+  attempts_made: number
+}
+
+export interface NetExecExecution extends ToolExecution {
+  hosts_compromised: string[]
+  commands_executed: string[]
+}
+
+export interface HTTPxExecution extends ToolExecution {
+  endpoints_discovered: string[]
+  technologies: string[]
+}
+
+export interface AnewExecution extends ToolExecution {
+  new_lines_added: number
+  duplicates_removed: number
+}
+
+export interface QSReplaceExecution extends ToolExecution {
+  modified_urls: string[]
+  total_modified: number
+}
+
+export interface UroExecution extends ToolExecution {
+  unique_urls: string[]
+  total_unique: number
+}
+
+export interface X8Execution extends ToolExecution {
+  servers_analyzed: number
+  issues_found: string[]
+}
