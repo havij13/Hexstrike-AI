@@ -12,21 +12,21 @@ Write-Host ""
 
 # Define tools to generate (format: tool_name|category|api_endpoint|description)
 $tools = @(
-    # Network & Infrastructure - Batch 2
-    "rpcclient|network|/api/tools/rpcclient|RPC enumeration",
-    "nbtscan|network|/api/tools/nbtscan|NetBIOS scanner",
-    "arp-scan|network|/api/tools/arp-scan|ARP scanner",
-    
     # Binary Analysis - Batch 3
-    "ropgadget|binary|/api/tools/ropgadget|ROP gadget finder",
-    "xxd|binary|/api/tools/xxd|Hexdump",
-    "strings|binary|/api/tools/strings|String extractor",
-    "objdump|binary|/api/tools/objdump|Binary disassembler",
-    "pwntools|binary|/api/tools/pwntools|CTF framework",
+    "one-gadget|binary|/api/tools/one-gadget|Gadget finder",
+    "libc-database|binary|/api/tools/libc-database|Libc database",
+    "gdb-peda|binary|/api/tools/gdb-peda|GDB enhancement",
+    "angr|binary|/api/tools/angr|Binary analysis framework",
+    "ropper|binary|/api/tools/ropper|ROP chain builder",
+    "pwninit|binary|/api/tools/pwninit|CTF setup tool",
     
     # Forensics - Batch 4
-    "foremost|forensics|/api/tools/foremost|File carving",
-    "steghide|forensics|/api/tools/steghide|Steganography tool"
+    "exiftool|forensics|/api/tools/exiftool|Metadata extractor",
+    "hashpump|forensics|/api/tools/hashpump|Hash extension",
+    
+    # Web Security - Additional
+    "api-fuzzer|web|/api/tools/api_fuzzer|API fuzzer",
+    "graphql-scanner|web|/api/tools/graphql_scanner|GraphQL security scanner"
 )
 
 $current = 0
