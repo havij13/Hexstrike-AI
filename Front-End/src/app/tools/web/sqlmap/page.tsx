@@ -73,8 +73,8 @@ export default function SQLMapPage() {
           risk
         }),
       })
-      const data = await response.json()
-      setResults(data)
+      const result = await response.json()
+      setResults(result)
     } catch (error) {
       console.error('Scan failed:', error)
     } finally {
