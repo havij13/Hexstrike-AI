@@ -12,21 +12,21 @@ Write-Host ""
 
 # Define tools to generate (format: tool_name|category|api_endpoint|description)
 $tools = @(
-    # Binary Analysis - Batch 3
-    "one-gadget|binary|/api/tools/one-gadget|Gadget finder",
-    "libc-database|binary|/api/tools/libc-database|Libc database",
-    "gdb-peda|binary|/api/tools/gdb-peda|GDB enhancement",
-    "angr|binary|/api/tools/angr|Binary analysis framework",
-    "ropper|binary|/api/tools/ropper|ROP chain builder",
-    "pwninit|binary|/api/tools/pwninit|CTF setup tool",
-    
-    # Forensics - Batch 4
-    "exiftool|forensics|/api/tools/exiftool|Metadata extractor",
-    "hashpump|forensics|/api/tools/hashpump|Hash extension",
-    
     # Web Security - Additional
-    "api-fuzzer|web|/api/tools/api_fuzzer|API fuzzer",
-    "graphql-scanner|web|/api/tools/graphql_scanner|GraphQL security scanner"
+    "jwt-analyzer|web|/api/tools/jwt_analyzer|JWT security analyzer",
+    "api-schema-analyzer|web|/api/tools/api_schema_analyzer|API schema analysis",
+    "qsreplace|web|/api/tools/qsreplace|Query string replacement",
+    "x8|web|/api/tools/x8|Rust-based HTTP server",
+    
+    # Forensics
+    "volatility3|forensics|/api/tools/volatility3|Advanced memory forensics",
+    
+    # Cloud Security
+    "scout-suite|cloud|/api/tools/scout-suite|Multi-cloud security auditing",
+    "cloudmapper|cloud|/api/tools/cloudmapper|AWS security analysis",
+    "pacu|cloud|/api/tools/pacu|AWS exploitation framework",
+    "kube-bench|cloud|/api/tools/kube-bench|Kubernetes CIS benchmark",
+    "docker-bench-security|cloud|/api/tools/docker-bench-security|Docker security bench"
 )
 
 $current = 0
