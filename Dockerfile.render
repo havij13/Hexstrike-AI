@@ -1,10 +1,11 @@
 # Optimized Dockerfile for Render deployment
-# Build timestamp: 2025-10-25T06:45:00Z - Add Nuclei templates and fix Gobuster parameters
+# Build timestamp: 2025-10-26T01:25:00Z - Fix PYTHONPATH and Nuclei templates installation
 FROM python:3.11-slim
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
     HEXSTRIKE_PORT=8888 \
     HEXSTRIKE_HOST=0.0.0.0 \
     PIP_NO_CACHE_DIR=1 \
@@ -38,9 +39,10 @@ RUN GO111MODULE=on go install -v github.com/projectdiscovery/nuclei/v3/cmd/nucle
 WORKDIR /app
 
 # Install nuclei templates in app directory (accessible to app user)
-ENV NUCLEI_TEMPLATES_PATH=/app/.nuclei-templates
+ENV NUCLEI_TEMPLATES_PATH=/app/.nuclei-templates \
+    PATH="/root/go/bin:${PATH}"
 RUN mkdir -p ${NUCLEI_TEMPLATES_PATH} && \
-    nuclei -update-templates -td ${NUCLEI_TEMPLATES_PATH} || echo "Nuclei templates installation skipped"
+    /root/go/bin/nuclei -update-templates -td ${NUCLEI_TEMPLATES_PATH} || echo "Nuclei templates installation skipped"
 
 # Copy requirements and install Python dependencies
 COPY requirements-minimal.txt requirements.txt
