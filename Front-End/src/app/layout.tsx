@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
+import { Header } from '@/components/Header'
+import { Sidebar } from '@/components/Sidebar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,7 +28,15 @@ export default function RootLayout({
           <div className="relative min-h-screen">
             {/* Scan line effect */}
             <div className="scan-line opacity-30"></div>
-            {children}
+            <div className="flex h-screen">
+              <Sidebar />
+              <div className="flex-1 flex flex-col">
+                <Header />
+                <main className="flex-1 overflow-auto">
+                  {children}
+                </main>
+              </div>
+            </div>
           </div>
         </Providers>
       </body>
