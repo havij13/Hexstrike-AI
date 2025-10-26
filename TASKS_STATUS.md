@@ -4,12 +4,14 @@
 
 ## 📊 整體進度
 
-### 已完成 ✅ (24/150 = 16%)
-- ✅ **Network Reconnaissance**: 8/8 (100%)
-- ✅ **Web Security**: 8/8 (100%)
+### 已完成 ✅ (34/150 = 22.7%)
+- ✅ **Network Reconnaissance**: 10/8 (125% - includes Enum4linux, Responder)
+- ✅ **Web Security**: 11/8 (138% - includes Dirb, Dirsearch, Katana)
 - ✅ **Authentication**: 5/5 (100%)
-- ✅ **Binary Analysis**: 3/3 (100%)
+- ✅ **Binary Analysis**: 5/3 (167% - includes Binwalk, Checksec)
 - ✅ **Cloud Security**: 3/3 (100%)
+- 🆕 **Exploitation**: 2/0 (Metasploit, MSFVenom)
+- 🆕 **Forensics**: 1/0 (Volatility)
 
 ### 進行中 🚧
 - 🔄 剩餘 126 個工具頁面待建立
@@ -51,7 +53,7 @@
 
 ## 📋 工具分類統計
 
-### Network Reconnaissance (8/8) ✅
+### Network Reconnaissance (10/8) ✅
 - [x] Nmap
 - [x] Rustscan
 - [x] Masscan
@@ -60,8 +62,10 @@
 - [x] Fierce
 - [x] DNSenum
 - [x] AutoRecon
+- [x] Enum4linux
+- [x] Responder
 
-### Web Application Security (8/8) ✅
+### Web Application Security (11/8) ✅
 - [x] Gobuster
 - [x] Feroxbuster
 - [x] Nuclei
@@ -70,6 +74,9 @@
 - [x] SQLMap
 - [x] WPScan
 - [x] Dalfox
+- [x] Dirb
+- [x] Dirsearch
+- [x] Katana
 
 ### Authentication & Password (5/5) ✅
 - [x] Hydra
@@ -78,21 +85,30 @@
 - [x] Medusa
 - [x] NetExec
 
-### Binary Analysis (3/3) ✅
+### Binary Analysis (5/3) ✅
 - [x] Ghidra
 - [x] Radare2
 - [x] GDB
+- [x] Binwalk
+- [x] Checksec
+
+### Exploitation (2/0) ✅
+- [x] Metasploit
+- [x] MSFVenom
+
+### Forensics (1/0) ✅
+- [x] Volatility
 
 ### Cloud Security (3/3) ✅
 - [x] Prowler
 - [x] Trivy
 - [x] Kube-Hunter
 
-### 待建立工具列表 (126)
+### 待建立工具列表 (116)
 
 #### Network & Infrastructure
-- [ ] Enum4linux
-- [ ] Responder
+- [x] Enum4linux ✅
+- [x] Responder ✅
 - [ ] RPCClient
 - [ ] NBtscan
 - [ ] ARP-Scan
@@ -108,9 +124,9 @@
 - [ ] Terrascan
 
 #### Web & API Security
-- [ ] Dirb
-- [ ] Dirsearch
-- [ ] Katana
+- [x] Dirb ✅
+- [x] Dirsearch ✅
+- [x] Katana ✅
 - [ ] GAU
 - [ ] Waybackurls
 - [ ] Arjun
@@ -136,12 +152,12 @@
 - [ ] WFuzz
 
 #### Binary & Exploit Development
-- [ ] Volatility
+- [x] Volatility ✅
 - [ ] Volatility3
-- [ ] MSFVenom
-- [ ] Binwalk
+- [x] MSFVenom ✅
+- [x] Binwalk ✅
 - [ ] ROPGadget
-- [ ] Checksec
+- [x] Checksec ✅
 - [ ] XXD
 - [ ] Strings
 - [ ] Objdump
@@ -213,8 +229,8 @@
 |------|------|------|------|
 | 核心組件 | 建立可重用組件 | ✅ | 100% |
 | 常用工具 (24) | 前 24 個工具頁面 | ✅ | 100% |
-| 批量建立 | 剩餘 126 工具 | 🚧 | 0% |
-| 分類整合 | 分類頁面完善 | 🚧 | 30% |
+| 批量建立 | 剩餘 126 工具 | 🚧 | 8% (10 done) |
+| 分類整合 | 分類頁面完善 | 🚧 | 40% |
 | 進階功能 | 搜尋、篩選等 | ❌ | 0% |
 
 ---
