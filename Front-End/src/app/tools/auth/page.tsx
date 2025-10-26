@@ -52,6 +52,51 @@ export default function AuthToolsPage() {
   ]
 
   const handleToolClick = (tool: typeof authTools[0]) => {
+    if (tool.href) {
+      window.location.href = tool.href
+    }
+  }
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Link href="/tools" className="text-cyber-primary hover:text-cyber-light transition-colors">
+            <ArrowLeft className="h-6 w-6" />
+          </Link>
+          <div>
+            <h1 className="text-3xl font-cyber font-bold text-neon-blue neon-glow">
+              AUTHENTICATION & PASSWORD SECURITY TOOLS
+            </h1>
+            <p className="text-cyber-light font-mono text-sm mt-1">
+              5 authentication and password security tools
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-4">
+          <input
+            type="text"
+            placeholder="Search tools..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="px-4 py-2 bg-cyber-dark border border-neon-blue rounded text-cyber-primary font-mono placeholder-cyber-light placeholder-opacity-50 focus:outline-none focus:border-neon-blue"
+          />
+        </div>
+      </div>
+
+      {/* Tools with Pagination */}
+      <ToolPagination 
+        tools={authTools}
+        searchQuery={searchQuery}
+        onToolClick={handleToolClick}
+      />
+    </div>
+  )
+}
+
+
+  const handleToolClick = (tool: typeof authTools[0]) => {
     window.location.href = tool.href
   }
 
