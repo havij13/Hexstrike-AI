@@ -9,6 +9,7 @@ interface Tool {
   description: string
   status: 'available' | 'unavailable' | 'installed'
   category: string
+  href?: string
 }
 
 interface ToolPaginationProps {
