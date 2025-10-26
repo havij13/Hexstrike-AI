@@ -49,7 +49,7 @@ export function ValidatedInput({
   }
 
   const hasError = errors.length > 0
-  const showValidation = value.length > 0 && validationRules.length > 0
+  const showValidation = String(value).length > 0 && validationRules.length > 0
 
   return (
     <div className="space-y-2">
