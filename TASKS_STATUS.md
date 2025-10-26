@@ -219,21 +219,29 @@
 
 ---
 
-## 💡 建議
+## 💡 實施方案
 
-鑒於剩餘 **126 個工具頁面**的工作量，建議：
+已完成 **選項 B + C 結合**實施：
 
-### 選項 A: 批量生成腳本
-建立自動生成腳本，根據後端 API 定義自動生成前端頁面
+### ✅ 批量生成腳本已建立
+- [x] Single Tool Generator (`generate-tool-page.sh`)
+- [x] Batch Tool Generator (`generate-multiple-tools.sh`)
+- [x] 完整文檔說明 (`README_GENERATORS.md`)
 
-### 選項 B: 分階段實作
-優先完成最常用的 20-30 個工具，其他作為後續迭代
+### 📋 使用方式
+```bash
+# 單一工具生成
+bash scripts/generate-tool-page.sh dirb web /api/tools/dirb "Web directory brute forcer"
 
-### 選項 C: 動態工具加載
-使用動態路由和動態組件加載，減少重複代碼
+# 批量工具生成
+bash scripts/generate-multiple-tools.sh
+```
 
-**推薦**: 選項 B + 選項 C 結合
+### 🎯 下一步
+1. 使用生成器批量生成前 20-30 個常用工具
+2. 手動自訂參數和配置
+3. 分階段完成剩餘工具
 
 ---
 
-最後更新: 2025-10-26 11:32
+最後更新: 2025-10-26 11:45
