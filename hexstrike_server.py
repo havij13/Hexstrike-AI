@@ -10367,7 +10367,7 @@ def create_comprehensive_bugbounty_assessment():
 
 # Scan type mapping for semantic names
 SCAN_TYPE_MAPPING = {
-    "quick": "-F -sT",  # Fast scan, TCP connect (no root needed)
+    "quick": "-F -sT",  # Fast scan top 100 ports
     "comprehensive": "-sV -sC -A -sT",  # Service detection, scripts, OS detection
     "stealth": "-sS -T2",  # SYN scan (requires root)
     "udp": "-sU",  # UDP scan
@@ -10399,10 +10399,16 @@ def nmap():
             # Use scan_type as-is (raw nmap parameters)
             nmap_options = scan_type
 
-        command = f"nmap {nmap_options}"
-
-        if ports:
-            command += f" -p {ports}"
+        # Handle ports parameter - if scan_type is "quick" and uses -F, don't add -p
+        # because -F already scans top 100 ports
+        if ports and scan_type == "quick" and "-F" in nmap_options:
+            # If user wants specific ports with quick scan, remove -F and just use -sT
+            nmap_options = "-sT"  # TCP connect scan without fast flag
+            command = f"nmap {nmap_options} -p {ports}"
+        else:
+            command = f"nmap {nmap_options}"
+            if ports:
+                command += f" -p {ports}"
 
         if additional_args:
             command += f" {additional_args}"
@@ -10455,6 +10461,11 @@ def gobuster():
             return jsonify({
                 "error": f"Invalid mode: {mode}. Must be one of: dir, dns, fuzz, vhost"
             }), 400
+
+        # If wordlist is just a name (not a full path), add the standard path
+        if wordlist and "/" not in wordlist:
+            wordlist = f"/usr/share/wordlists/dirb/{wordlist}.txt"
+            logger.info(f"📁 Expanded wordlist to: {wordlist}")
 
         command = f"gobuster {mode} -u {url} -w {wordlist}"
 
