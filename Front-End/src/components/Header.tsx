@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Zap, Globe, Settings, User } from 'lucide-react'
+import { MenuBar } from './MenuBar'
 
 export function Header() {
   const [isOnline, setIsOnline] = useState(true)
@@ -10,6 +11,7 @@ export function Header() {
     <header className="bg-cyber-dark border-b border-cyber-primary px-6 py-4">
       <div className="flex items-center justify-between">
         {/* Logo and Title */}
+        <MenuBar />
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <Zap className="h-8 w-8 text-cyber-primary animate-pulse-neon" />

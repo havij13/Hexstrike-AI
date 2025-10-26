@@ -12,21 +12,23 @@ Write-Host ""
 
 # Define tools to generate (format: tool_name|category|api_endpoint|description)
 $tools = @(
-    # Cloud Security - Remaining
-    "clair|cloud|/api/tools/clair|Container vulnerability scanner",
-    "falco|cloud|/api/tools/falco|Runtime security monitoring",
-    "checkov|cloud|/api/tools/checkov|Infrastructure as code scanner",
-    "terrascan|cloud|/api/tools/terrascan|IaC security scanner",
+    # Note: Most tools from hexstrike_server.py are already implemented
+    # This batch focuses on any remaining critical tools
     
-    # Network - Remaining
-    "smbmap|network|/api/tools/smbmap|SMB share enumeration",
-    "enum4linux-ng|network|/api/tools/enum4linux-ng|SMB enumeration",
-    "nmap-advanced|network|/api/tools/nmap-advanced|Advanced Nmap scans",
+    # Add any remaining high-priority tools here
+    # (List is currently complete for major categories)
     
-    # Web Security - Advanced
-    "zap|web|/api/tools/zap|OWASP ZAP security scanner",
-    "http-framework|web|/api/tools/http-framework|HTTP framework",
-    "browser-agent|web|/api/tools/browser-agent|Browser automation"
+    # Placeholder entries - remove or replace with actual tools
+    "placeholder-tool-1|web|/api/tools/placeholder1|Placeholder 1",
+    "placeholder-tool-2|web|/api/tools/placeholder2|Placeholder 2",
+    "placeholder-tool-3|web|/api/tools/placeholder3|Placeholder 3",
+    "placeholder-tool-4|web|/api/tools/placeholder4|Placeholder 4",
+    "placeholder-tool-5|web|/api/tools/placeholder5|Placeholder 5",
+    "placeholder-tool-6|web|/api/tools/placeholder6|Placeholder 6",
+    "placeholder-tool-7|web|/api/tools/placeholder7|Placeholder 7",
+    "placeholder-tool-8|web|/api/tools/placeholder8|Placeholder 8",
+    "placeholder-tool-9|web|/api/tools/placeholder9|Placeholder 9",
+    "placeholder-tool-10|web|/api/tools/placeholder10|Placeholder 10"
 )
 
 $current = 0
