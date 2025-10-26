@@ -9,16 +9,61 @@ echo ""
 
 # Define tools to generate (format: tool_name,category,api_endpoint,description)
 TOOLS=(
+  # Web Security (more)
   "dirb,web,/api/tools/dirb,Web directory brute forcer"
   "dirsearch,web,/api/tools/dirsearch,Web path scanner"
   "katana,web,/api/tools/katana,Crawler & spider"
+  "gau,web,/api/tools/gau,Subdomain finder"
+  "waybackurls,web,/api/tools/waybackurls,URL discovery"
+  "arjun,web,/api/tools/arjun,Parameter discovery"
+  "httpx,web,/api/tools/httpx,HTTP probe"
+  "anew,web,/api/tools/anew,Line processor"
+  "uro,web,/api/tools/uro,URL cleaner"
+  "paramspider,web,/api/tools/paramspider,Parameter finder"
+  "jaeles,web,/api/tools/jaeles,Web vulnerability scanner"
+  "hakrawler,web,/api/tools/hakrawler,Web crawler"
+  "dotdotpwn,web,/api/tools/dotdotpwn,Path traversal scanner"
+  "xsser,web,/api/tools/xsser,XSS scanner"
+  "wfuzz,web,/api/tools/wfuzz,Web fuzzer"
+  "wafw00f,web,/api/tools/wafw00f,WAF detector"
+  "burpsuite-alternative,web,/api/tools/burpsuite-alternative,Web vulnerability scanner"
+  "api-fuzzer,web,/api/tools/api_fuzzer,API fuzzer"
+  "graphql-scanner,web,/api/tools/graphql_scanner,GraphQL security scanner"
+  "jwt-analyzer,web,/api/tools/jwt_analyzer,JWT security analyzer"
+  "api-schema-analyzer,web,/api/tools/api_schema_analyzer,API schema analysis"
+  
+  # Network & Infrastructure
   "enum4linux,network,/api/tools/enum4linux,SMB enumeration"
   "responder,network,/api/tools/responder,LLMNR/NBT-NS/mDNS responder"
+  "rpcclient,network,/api/tools/rpcclient,RPC enumeration"
+  "nbtscan,network,/api/tools/nbtscan,NetBIOS scanner"
+  "arp-scan,network,/api/tools/arp-scan,ARP scanner"
+  
+  # Exploitation
   "metasploit,exploitation,/api/tools/metasploit,Exploitation framework"
   "msfvenom,exploitation,/api/tools/msfvenom,Payload generator"
-  "volatility,forensics,/api/tools/volatility,Memory forensics"
+  
+  # Binary Analysis
   "binwalk,binary,/api/tools/binwalk,Binary analysis"
   "checksec,binary,/api/tools/checksec,Binary security check"
+  "ropgadget,binary,/api/tools/ropgadget,ROP gadget finder"
+  "xxd,binary,/api/tools/xxd,Hexdump"
+  "strings,binary,/api/tools/strings,String extractor"
+  "objdump,binary,/api/tools/objdump,Binary disassembler"
+  "pwntools,binary,/api/tools/pwntools,CTF framework"
+  "one-gadget,binary,/api/tools/one-gadget,Gadget finder"
+  "libc-database,binary,/api/tools/libc-database,Libc database"
+  "gdb-peda,binary,/api/tools/gdb-peda,GDB enhancement"
+  "angr,binary,/api/tools/angr,Binary analysis framework"
+  "ropper,binary,/api/tools/ropper,ROP chain builder"
+  "pwninit,binary,/api/tools/pwninit,CTF setup tool"
+  
+  # Forensics
+  "volatility,forensics,/api/tools/volatility,Memory forensics"
+  "foremost,forensics,/api/tools/foremost,File carving"
+  "steghide,forensics,/api/tools/steghide,Steganography tool"
+  "exiftool,forensics,/api/tools/exiftool,Metadata extractor"
+  "hashpump,forensics,/api/tools/hashpump,Hash extension"
 )
 
 # Count total
