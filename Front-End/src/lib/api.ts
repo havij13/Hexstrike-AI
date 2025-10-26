@@ -160,6 +160,54 @@ class HexStrikeApiClient {
     return response.data
   }
 
+  // Web Application Security Tools
+  async ffufScan(url: string, wordlist: string, method: string = 'GET', threads: number = 10, match: string = '200,204,301,302'): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/ffuf', {
+      url,
+      wordlist,
+      method,
+      threads,
+      match,
+    })
+    return response.data
+  }
+
+  async niktoScan(url: string, tuning: string = '1', format: string = 'txt', timeout: number = 10, ssl: boolean = false): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/nikto', {
+      url,
+      tuning,
+      format,
+      timeout,
+      ssl,
+    })
+    return response.data
+  }
+
+  // Authentication & Password Security Tools
+  async hydraScan(target: string, service: string, username: string, password: string, port: number, threads: number = 16, timeout: number = 30): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/hydra', {
+      target,
+      service,
+      username,
+      password,
+      port,
+      threads,
+      timeout,
+    })
+    return response.data
+  }
+
+  async johnCrack(hash: string, hashType: string = 'auto', wordlist: string = 'rockyou.txt', rules: string = 'Single', incremental: boolean = false): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/john', {
+      hash,
+      hashType,
+      wordlist,
+      rules,
+      incremental,
+    })
+    return response.data
+  }
+
   // Tool Count
   async getToolCount(): Promise<{total_tools: number, ai_agents: number, categories: Record<string, string[]>}> {
     const response = await this.client.get('/api/tools/count')
