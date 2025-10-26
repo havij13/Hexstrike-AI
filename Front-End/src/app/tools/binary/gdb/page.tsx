@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, Debug } from 'lucide-react'
+import { ArrowLeft, Code } from 'lucide-react'
 import Link from 'next/link'
 import { ToolForm } from '@/components/forms/ToolForm'
 import { FormField } from '@/components/forms/FormField'
@@ -50,7 +50,7 @@ export default function GDBPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1 space-y-6">
-          <ToolForm title="Debug Configuration" subtitle="Configure GDB" icon={<Debug className="h-5 w-5 text-neon-blue" />} isRunning={isRunning} onSubmit={handleScan}>
+          <ToolForm title="Debug Configuration" subtitle="Configure GDB" icon={<Code className="h-5 w-5 text-neon-blue" />} isRunning={isRunning} onSubmit={handleScan}>
             <FormField label="Binary File" type="file" value={binaryFile} onChange={setBinaryFile} placeholder="Upload binary..." required />
             <FormField label="GDB Command" type="textarea" value={command} onChange={setCommand} placeholder="run, break main, disass main" />
           </ToolForm>

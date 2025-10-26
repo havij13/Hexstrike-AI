@@ -61,7 +61,7 @@ export function ToolSearch({ tools, onSelect }: ToolSearchProps) {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, filteredTools, selectedIndex])
+  }, [isOpen, filteredTools, selectedIndex, handleSelect])
 
   const handleSelect = useCallback((tool: Tool) => {
     onSelect?.(tool)

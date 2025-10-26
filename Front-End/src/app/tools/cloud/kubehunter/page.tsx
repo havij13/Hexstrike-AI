@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, Kubernetes } from 'lucide-react'
+import { ArrowLeft, Cloud } from 'lucide-react'
 import Link from 'next/link'
 import { ToolForm } from '@/components/forms/ToolForm'
 import { FormField } from '@/components/forms/FormField'
@@ -51,7 +51,7 @@ export default function KubeHunterPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1 space-y-6">
-          <ToolForm title="Scan Configuration" subtitle="Configure Kube-Hunter" icon={<Kubernetes className="h-5 w-5 text-neon-blue" />} isRunning={isRunning} onSubmit={handleScan}>
+          <ToolForm title="Scan Configuration" subtitle="Configure Kube-Hunter" icon={<Cloud className="h-5 w-5 text-neon-blue" />} isRunning={isRunning} onSubmit={handleScan}>
             <FormField label="Target IP" type="text" value={target} onChange={setTarget} placeholder="10.0.0.1" />
             <FormField label="CIDR" type="text" value={cidr} onChange={setCidr} placeholder="10.0.0.0/8" />
             <FormField label="Active Hunt" type="checkbox" value={active} onChange={setActive} helperText="Perform active exploitation" />
