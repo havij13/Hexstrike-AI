@@ -51,7 +51,7 @@ export default function AuthToolsPage() {
     }
   ]
 
-  const handleToolClick = (tool: typeof authTools[0]) => {
+  const handleToolClick = (tool: { id: string; name: string; description: string; status: 'available' | 'unavailable' | 'installed'; category: string; href?: string }) => {
     if (tool.href) {
       window.location.href = tool.href
     }

@@ -86,8 +86,10 @@ export default function WebToolsPage() {
     }
   ]
 
-  const handleToolClick = (tool: typeof webTools[0]) => {
-    window.location.href = tool.href
+  const handleToolClick = (tool: { id: string; name: string; description: string; status: 'available' | 'unavailable' | 'installed'; category: string; href?: string }) => {
+    if (tool.href) {
+      window.location.href = tool.href
+    }
   }
 
   return (

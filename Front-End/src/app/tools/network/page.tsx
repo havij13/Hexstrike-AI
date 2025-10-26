@@ -75,7 +75,7 @@ export default function NetworkToolsPage() {
     }
   ]
 
-  const handleToolClick = (tool: typeof networkTools[0]) => {
+  const handleToolClick = (tool: { id: string; name: string; description: string; status: 'available' | 'unavailable' | 'installed'; category: string; href?: string }) => {
     if (tool.href) {
       window.location.href = tool.href
     }
