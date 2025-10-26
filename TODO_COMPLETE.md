@@ -2,7 +2,7 @@
 
 更新日期: 2025-10-26
 
-## ✅ 已完成的任務 (100%)
+## ✅ 已完成的任務 (100% + 新增 API 架構)
 
 ### 前端核心功能 ✅
 - [x] 創建通用工具組件（表單、輸出、進度條等）
@@ -20,6 +20,9 @@
 - [x] 添加 nuclei-templates 安裝到 Dockerfile.render
 - [x] 修復 Python 依賴版本衝突
 - [x] 移除不必要的 mitmproxy 依賴
+- [x] **創建 API 藍圖目錄結構** ✨ NEW
+- [x] **創建 Swagger 配置文件** ✨ NEW
+- [x] **定義所有 API 的 Swagger models/schemas** ✨ NEW
 
 ### 部署與配置 ✅
 - [x] 修復 .dockerignore 文件
@@ -38,9 +41,9 @@
 ### P1 - 高優先級（核心功能）
 
 #### API 文檔與 OpenAPI 支持
-- [ ] 創建 API 藍圖目錄結構
-- [ ] 創建 Swagger 配置文件
-- [ ] 定義所有 API 的 Swagger models/schemas
+- [x] 創建 API 藍圖目錄結構 ✅
+- [x] 創建 Swagger 配置文件 ✅
+- [x] 定義所有 API 的 Swagger models/schemas ✅
 - [ ] 重構工具端點為 Flask-RESTX 命名空間
 - [ ] 重構 AI 智能端點為 Flask-RESTX 命名空間
 - [ ] 重構進程管理端點為 Flask-RESTX 命名空間
