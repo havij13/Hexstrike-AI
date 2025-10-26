@@ -30,6 +30,12 @@ export function ToolSearch({ tools, onSelect }: ToolSearchProps) {
     return matchesQuery && matchesCategory
   })
 
+  const handleSelect = useCallback((tool: Tool) => {
+    onSelect?.(tool)
+    setIsOpen(false)
+    setQuery('')
+  }, [onSelect])
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -62,12 +68,6 @@ export function ToolSearch({ tools, onSelect }: ToolSearchProps) {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, filteredTools, selectedIndex, handleSelect])
-
-  const handleSelect = useCallback((tool: Tool) => {
-    onSelect?.(tool)
-    setIsOpen(false)
-    setQuery('')
-  }, [onSelect])
 
   if (!isOpen) {
     return (
