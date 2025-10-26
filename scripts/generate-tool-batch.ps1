@@ -12,17 +12,21 @@ Write-Host ""
 
 # Define tools to generate (format: tool_name|category|api_endpoint|description)
 $tools = @(
-    # Web Security - Batch 1
-    "anew|web|/api/tools/anew|Line processor",
-    "uro|web|/api/tools/uro|URL cleaner",
-    "paramspider|web|/api/tools/paramspider|Parameter finder",
-    "jaeles|web|/api/tools/jaeles|Web vulnerability scanner",
-    "hakrawler|web|/api/tools/hakrawler|Web crawler",
-    "dotdotpwn|web|/api/tools/dotdotpwn|Path traversal scanner",
-    "xsser|web|/api/tools/xsser|XSS scanner",
-    "wfuzz|web|/api/tools/wfuzz|Web fuzzer",
-    "wafw00f|web|/api/tools/wafw00f|WAF detector",
-    "burpsuite-alternative|web|/api/tools/burpsuite-alternative|Web vulnerability scanner"
+    # Network & Infrastructure - Batch 2
+    "rpcclient|network|/api/tools/rpcclient|RPC enumeration",
+    "nbtscan|network|/api/tools/nbtscan|NetBIOS scanner",
+    "arp-scan|network|/api/tools/arp-scan|ARP scanner",
+    
+    # Binary Analysis - Batch 3
+    "ropgadget|binary|/api/tools/ropgadget|ROP gadget finder",
+    "xxd|binary|/api/tools/xxd|Hexdump",
+    "strings|binary|/api/tools/strings|String extractor",
+    "objdump|binary|/api/tools/objdump|Binary disassembler",
+    "pwntools|binary|/api/tools/pwntools|CTF framework",
+    
+    # Forensics - Batch 4
+    "foremost|forensics|/api/tools/foremost|File carving",
+    "steghide|forensics|/api/tools/steghide|Steganography tool"
 )
 
 $current = 0
@@ -47,7 +51,9 @@ foreach ($toolString in $tools) {
     }
     
     # Capitalize tool name for component
-    $toolNameCapitalized = (Get-Culture).TextInfo.ToTitleCase($tool_name -replace '-', ' ')
+    $temp = $tool_name -replace '-', ' '
+    $temp = $temp -replace '_', ' '
+    $toolNameCapitalized = (Get-Culture).TextInfo.ToTitleCase($temp.ToLower())
     $toolNameCapitalized = $toolNameCapitalized -replace ' ', ''
     
     # Generate page
