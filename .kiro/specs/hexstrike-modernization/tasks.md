@@ -69,7 +69,10 @@
 
 ## Phase 2: Authentication and Security
 
-- [ ] 2. Add authentication with Auth0
+- [-] 2. Add authentication with Auth0
+
+
+
   - Set up Auth0 application and configure domain, client ID, and secrets
   - Install and configure authlib and python-jose dependencies
   - Implement JWT token validation middleware
@@ -79,7 +82,8 @@
   - Add logout functionality and token revocation
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 2.1 Configure Auth0 integration
+- [-] 2.1 Configure Auth0 integration
+
   - Create Auth0 application in dashboard
   - Set up environment variables for Auth0 configuration
   - Configure callback URLs and CORS settings
