@@ -1,0 +1,103 @@
+# Prometheus configuration for HexStrike AI monitoring
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'hexstrike-ai'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "rules/*.yml"
+
+# Scrape configuration
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+  # HexStrike AI application metrics
+  - job_name: 'hexstrike-ai'
+    static_configs:
+      - targets: ['hexstrike-ai:5000']
+    scrape_interval: 15s
+    metrics_path: /metrics
+    scrape_timeout: 10s
+    honor_labels: true
+    params:
+      format: ['prometheus']
+
+  # Node Exporter for system metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+  # cAdvisor for container metrics
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+  # Grafana metrics
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+  # Redis metrics (if Redis exporter is available)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+  # PostgreSQL metrics (if postgres exporter is available)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+  # Custom security tools metrics
+  - job_name: 'security-tools'
+    static_configs:
+      - targets: ['hexstrike-ai:5000']
+    scrape_interval: 15s
+    metrics_path: /tools/metrics
+    scrape_timeout: 10s
+
+  # Webhook system metrics
+  - job_name: 'webhooks'
+    static_configs:
+      - targets: ['hexstrike-ai:5000']
+    scrape_interval: 30s
+    metrics_path: /webhooks/metrics
+    scrape_timeout: 10s
+
+# Remote write configuration (for long-term storage)
+# remote_write:
+#   - url: "http://thanos-receive:19291/api/v1/receive"
+#     queue_config:
+#       max_samples_per_send: 1000
+#       max_shards: 200
+#       capacity: 2500
+
+# Remote read configuration (for querying historical data)
+# remote_read:
+#   - url: "http://thanos-query:9090/api/v1/read"
+#     read_recent: true

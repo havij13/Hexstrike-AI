@@ -1,0 +1,53 @@
+# Prometheus datasource provisioning for Grafana
+# This file configures the Prometheus data source automatically when Grafana starts
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    jsonData:
+      httpMethod: POST
+      queryTimeout: 60s
+      timeInterval: 30s
+      # Enable exemplars for better tracing integration
+      exemplarTraceIdDestinations:
+        - name: trace_id
+          datasourceUid: jaeger
+      # Prometheus configuration
+      prometheusType: Prometheus
+      prometheusVersion: 2.40.0
+      # Custom query parameters
+      customQueryParameters: ''
+      # Disable metrics lookup for better performance
+      disableMetricsLookup: false
+      # Enable incremental queries
+      incrementalQuerying: true
+      # Query splitting interval
+      incrementalQueryOverlapWindow: 10m
+    # Basic auth credentials (if needed)
+    # basicAuth: false
+    # basicAuthUser: ''
+    # secureJsonData:
+    #   basicAuthPassword: ''
+    
+  # Additional datasource for long-term storage (if using Thanos or similar)
+  - name: Prometheus-LongTerm
+    type: prometheus
+    access: proxy
+    url: http://thanos-query:9090
+    isDefault: false
+    jsonData:
+      httpMethod: POST
+      queryTimeout: 120s
+      timeInterval: 5m
+      prometheusType: Thanos
+      # Longer timeout for historical queries
+      exemplarTraceIdDestinations:
+        - name: trace_id
+          datasourceUid: jaeger
+    # Hide from explore by default
+    hide: true

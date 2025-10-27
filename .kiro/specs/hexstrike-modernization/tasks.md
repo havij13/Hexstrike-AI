@@ -131,7 +131,12 @@
   - Configure dashboard permissions and user access
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [ ] 3.1 Set up Grafana infrastructure
+- [x] 3.1 Set up Grafana infrastructure
+
+
+
+
+
   - Install Grafana server and configure basic settings
   - Set up data source connections to Prometheus
   - Configure authentication and user management

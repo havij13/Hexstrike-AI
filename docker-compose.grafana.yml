@@ -1,0 +1,154 @@
+# Docker Compose configuration for Grafana infrastructure
+# This extends the main docker-compose.yml with Grafana and Prometheus services
+
+version: '3.8'
+
+services:
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:v2.40.0
+    container_name: hexstrike-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./docker/prometheus/rules:/etc/prometheus/rules
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    networks:
+      - hexstrike-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Grafana for visualization and dashboards
+  grafana:
+    build:
+      context: ./docker/grafana
+      dockerfile: Dockerfile
+    container_name: hexstrike-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - grafana_logs:/var/log/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      # Basic configuration
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_SECURITY_SECRET_KEY=${GRAFANA_SECRET_KEY:-SW2YcwTIb9zpOOhoPsMm}
+      - GF_SECURITY_DISABLE_GRAVATAR=true
+      
+      # Users and organizations
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_USERS_ALLOW_ORG_CREATE=false
+      - GF_USERS_AUTO_ASSIGN_ORG=true
+      - GF_USERS_AUTO_ASSIGN_ORG_ROLE=Viewer
+      
+      # Server configuration
+      - GF_SERVER_DOMAIN=${GRAFANA_DOMAIN:-localhost}
+      - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL:-http://localhost:3000}
+      - GF_SERVER_SERVE_FROM_SUB_PATH=false
+      
+      # Database configuration (using SQLite by default)
+      - GF_DATABASE_TYPE=sqlite3
+      - GF_DATABASE_PATH=/var/lib/grafana/grafana.db
+      
+      # Auth0 OAuth configuration (optional)
+      - GF_AUTH_GENERIC_OAUTH_ENABLED=${GRAFANA_AUTH0_ENABLED:-false}
+      - GF_AUTH_GENERIC_OAUTH_NAME=Auth0
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP=${GRAFANA_AUTH0_ENABLED:-false}
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=${GRAFANA_AUTH0_CLIENT_ID:-}
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=${GRAFANA_AUTH0_CLIENT_SECRET:-}
+      - GF_AUTH_GENERIC_OAUTH_SCOPES=openid profile email
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL=https://${GRAFANA_AUTH0_DOMAIN:-}/authorize
+      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=https://${GRAFANA_AUTH0_DOMAIN:-}/oauth/token
+      - GF_AUTH_GENERIC_OAUTH_API_URL=https://${GRAFANA_AUTH0_DOMAIN:-}/userinfo
+      - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH=contains(groups[*], 'admin') && 'Admin' || contains(groups[*], 'editor') && 'Editor' || 'Viewer'
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN=true
+      
+      # Logging
+      - GF_LOG_MODE=console file
+      - GF_LOG_LEVEL=info
+      
+      # Analytics and reporting
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+      
+      # Feature toggles
+      - GF_FEATURE_TOGGLES_ENABLE=
+      
+    depends_on:
+      - prometheus
+    networks:
+      - hexstrike-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Node Exporter for system metrics
+  node-exporter:
+    image: prom/node-exporter:v1.6.0
+    container_name: hexstrike-node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - hexstrike-network
+
+  # cAdvisor for container metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: hexstrike-cadvisor
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+    networks:
+      - hexstrike-network
+
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  grafana_logs:
+    driver: local
+
+networks:
+  hexstrike-network:
+    driver: bridge
+    external: false

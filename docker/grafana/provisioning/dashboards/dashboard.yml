@@ -1,0 +1,49 @@
+# Dashboard provisioning configuration for Grafana
+# This file tells Grafana where to find dashboard JSON files
+
+apiVersion: 1
+
+providers:
+  # HexStrike System dashboards
+  - name: 'hexstrike-system'
+    orgId: 1
+    folder: 'HexStrike System'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/system
+
+  # Security Scans dashboards  
+  - name: 'security-scans'
+    orgId: 1
+    folder: 'Security Scans'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/scans
+
+  # Tool Performance dashboards
+  - name: 'tool-performance'
+    orgId: 1
+    folder: 'Tool Performance'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/tools
+
+  # User Analytics dashboards
+  - name: 'user-analytics'
+    orgId: 1
+    folder: 'User Analytics'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/users

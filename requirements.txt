@@ -34,6 +34,12 @@ webdriver-manager>=4.0.0,<5.0.0 # ChromeDriver management (referenced in code)
 aiohttp>=3.8.0,<4.0.0           # Async HTTP (aiohttp import)
 
 # ============================================================================
+# MONITORING & OBSERVABILITY (GRAFANA INFRASTRUCTURE)
+# ============================================================================
+prometheus-client>=0.17.0,<1.0.0  # Prometheus metrics collection
+grafana-api>=1.0.3,<2.0.0       # Grafana API client for setup automation
+
+# ============================================================================
 # PROXY & TESTING (ACTUALLY USED)
 # ============================================================================
 mitmproxy>=9.0.0,<11.0.0        # HTTP proxy (mitmproxy imports)

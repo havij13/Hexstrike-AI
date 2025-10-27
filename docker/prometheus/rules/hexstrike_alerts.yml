@@ -1,0 +1,213 @@
+# Prometheus alerting rules for HexStrike AI
+
+groups:
+  - name: hexstrike.rules
+    rules:
+      # High-level system health alerts
+      - alert: HexStrikeDown
+        expr: up{job="hexstrike-ai"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: hexstrike-ai
+        annotations:
+          summary: "HexStrike AI service is down"
+          description: "HexStrike AI service has been down for more than 1 minute."
+
+      - alert: HighErrorRate
+        expr: rate(hexstrike_http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }} errors per second for the last 5 minutes."
+
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(hexstrike_http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s for the last 5 minutes."
+
+      # Scan-specific alerts
+      - alert: HighScanFailureRate
+        expr: rate(hexstrike_scan_requests_total{status="failed"}[10m]) / rate(hexstrike_scan_requests_total[10m]) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: scanner
+        annotations:
+          summary: "High scan failure rate"
+          description: "Scan failure rate is {{ $value | humanizePercentage }} over the last 10 minutes."
+
+      - alert: LongRunningScan
+        expr: hexstrike_active_scans > 0 and increase(hexstrike_scan_duration_seconds_sum[30m]) / increase(hexstrike_scan_duration_seconds_count[30m]) > 1800
+        for: 10m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: scanner
+        annotations:
+          summary: "Long running scans detected"
+          description: "Average scan duration is {{ $value }}s over the last 30 minutes."
+
+      - alert: TooManyActiveScan
+        expr: hexstrike_active_scans > 50
+        for: 5m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: scanner
+        annotations:
+          summary: "Too many active scans"
+          description: "There are {{ $value }} active scans, which may impact system performance."
+
+      # Tool-specific alerts
+      - alert: ToolExecutionFailure
+        expr: rate(hexstrike_tool_executions_total{status="failed"}[10m]) > 0.5
+        for: 3m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: tools
+        annotations:
+          summary: "High tool execution failure rate"
+          description: "Tool {{ $labels.tool }} has a failure rate of {{ $value }} executions per second."
+
+      - alert: ToolTimeout
+        expr: rate(hexstrike_tool_timeouts_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: tools
+        annotations:
+          summary: "Tool timeouts detected"
+          description: "Tool {{ $labels.tool }} is experiencing timeouts at {{ $value }} per second."
+
+      # System resource alerts
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}."
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value }}% on {{ $labels.instance }}."
+
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Disk space low"
+          description: "Disk usage is {{ $value }}% on {{ $labels.instance }} filesystem {{ $labels.mountpoint }}."
+
+      # Database and cache alerts
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: redis
+        annotations:
+          summary: "Redis is down"
+          description: "Redis service has been down for more than 1 minute."
+
+      - alert: HighRedisMemoryUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+          service: redis
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is {{ $value }}%."
+
+      # Authentication and security alerts
+      - alert: HighAuthenticationFailures
+        expr: rate(hexstrike_auth_failures_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: auth
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Authentication failure rate is {{ $value }} per second."
+
+      - alert: SuspiciousActivity
+        expr: rate(hexstrike_suspicious_requests_total[5m]) > 1
+        for: 1m
+        labels:
+          severity: critical
+          service: hexstrike-ai
+          component: security
+        annotations:
+          summary: "Suspicious activity detected"
+          description: "Suspicious request rate is {{ $value }} per second."
+
+      # Webhook system alerts
+      - alert: WebhookDeliveryFailures
+        expr: rate(hexstrike_webhook_delivery_failures_total[10m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: webhooks
+        annotations:
+          summary: "Webhook delivery failures"
+          description: "Webhook delivery failure rate is {{ $value }} per second for endpoint {{ $labels.endpoint }}."
+
+      - alert: WebhookQueueBacklog
+        expr: hexstrike_webhook_queue_size > 1000
+        for: 5m
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: webhooks
+        annotations:
+          summary: "Webhook queue backlog"
+          description: "Webhook queue has {{ $value }} pending deliveries."
+
+  - name: grafana.rules
+    rules:
+      # Grafana-specific alerts
+      - alert: GrafanaDown
+        expr: up{job="grafana"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          service: grafana
+        annotations:
+          summary: "Grafana is down"
+          description: "Grafana service has been down for more than 2 minutes."
+
+      - alert: GrafanaHighResponseTime
+        expr: histogram_quantile(0.95, rate(grafana_http_request_duration_seconds_bucket[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: grafana
+        annotations:
+          summary: "Grafana high response time"
+          description: "Grafana 95th percentile response time is {{ $value }}s."
