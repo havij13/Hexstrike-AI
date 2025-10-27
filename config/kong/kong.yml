@@ -1,0 +1,75 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: hexstrike-api
+    url: http://hexstrike-ai:8888
+    plugins:
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+          policy: local
+      - name: key-auth
+        config:
+          key_names: ["X-API-Key"]
+      - name: prometheus
+        config:
+          per_consumer: true
+      - name: request-size-limiting
+        config:
+          allowed_payload_size: 10
+      - name: cors
+        config:
+          origins: ["*"]
+          methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+          headers: ["Accept", "Accept-Version", "Content-Length", "Content-MD5", "Content-Type", "Date", "X-Auth-Token", "X-API-Key"]
+          exposed_headers: ["X-Auth-Token"]
+          credentials: true
+          max_age: 3600
+
+routes:
+  - name: api-route
+    service: hexstrike-api
+    paths:
+      - /api
+    strip_path: false
+    
+  - name: health-route
+    service: hexstrike-api
+    paths:
+      - /health
+    strip_path: false
+    plugins:
+      - name: rate-limiting
+        config:
+          minute: 200
+          hour: 2000
+
+  - name: metrics-route
+    service: hexstrike-api
+    paths:
+      - /metrics
+    strip_path: false
+    plugins:
+      - name: ip-restriction
+        config:
+          allow: ["127.0.0.1", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+
+consumers:
+  - username: hexstrike-admin
+    keyauth_credentials:
+      - key: hexstrike-admin-key-2024
+    
+  - username: hexstrike-user
+    keyauth_credentials:
+      - key: hexstrike-user-key-2024
+
+plugins:
+  - name: prometheus
+    config:
+      per_consumer: true
+      status_code_metrics: true
+      latency_metrics: true
+      bandwidth_metrics: true
+      upstream_health_metrics: true

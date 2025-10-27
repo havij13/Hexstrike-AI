@@ -1,13 +1,31 @@
 [build]
-builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
+builder = "dockerfile"
+dockerfilePath = "Dockerfile.render"
 
 [deploy]
-startCommand = "/docker-entrypoint.sh"
 healthcheckPath = "/health"
-healthcheckTimeout = 100
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
 
-[[build.buildCommand]]
-command = "echo 'Building HexStrike AI v6.0...'"
+[[deploy.environmentVariables]]
+name = "HEXSTRIKE_PORT"
+value = "8888"
+
+[[deploy.environmentVariables]]
+name = "HEXSTRIKE_HOST"
+value = "0.0.0.0"
+
+[[deploy.environmentVariables]]
+name = "PYTHON_ENV"
+value = "production"
+
+[[deploy.environmentVariables]]
+name = "LOG_LEVEL"
+value = "INFO"
+
+[environments.production]
+variables = { PYTHON_ENV = "production", LOG_LEVEL = "INFO" }
+
+[environments.staging]
+variables = { PYTHON_ENV = "staging", LOG_LEVEL = "DEBUG" }

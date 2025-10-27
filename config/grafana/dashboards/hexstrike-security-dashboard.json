@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "HexStrike AI Security Dashboard",
+    "tags": ["hexstrike", "security", "monitoring"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Security Scan Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(hexstrike_scans_total)",
+            "legendFormat": "Total Scans"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 100},
+                {"color": "red", "value": 1000}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Vulnerabilities Found",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(hexstrike_vulnerabilities_total)",
+            "legendFormat": "Total Vulnerabilities"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 10},
+                {"color": "red", "value": 50}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Critical Vulnerabilities",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(hexstrike_vulnerabilities_total{severity=\"critical\"})",
+            "legendFormat": "Critical"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 1},
+                {"color": "red", "value": 5}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "System Performance",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "avg(hexstrike_cpu_usage_percent)",
+            "legendFormat": "CPU Usage %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 70},
+                {"color": "red", "value": 90}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Scan Results Over Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(hexstrike_scans_total[5m])",
+            "legendFormat": "Scans per minute"
+          },
+          {
+            "expr": "rate(hexstrike_vulnerabilities_total[5m])",
+            "legendFormat": "Vulnerabilities per minute"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Tool Usage Distribution",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum by (tool) (hexstrike_tool_usage_total)",
+            "legendFormat": "{{tool}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 7,
+        "title": "Risk Heatmap",
+        "type": "heatmap",
+        "targets": [
+          {
+            "expr": "hexstrike_risk_score_by_target",
+            "legendFormat": "{{target}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s"
+  }
+}

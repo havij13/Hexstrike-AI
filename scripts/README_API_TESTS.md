@@ -93,6 +93,40 @@ These tests are skipped in automated testing for good reasons:
 - **Environment-Specific**: Cloud security tools, container scanners
 - **Data-Dependent**: Tools requiring specific files or targets
 
+### Why Are So Many Tests Skipped?
+
+The test suite intentionally skips 30 out of 45 tests (67%) because:
+- **Resource-intensive operations** (password cracking, full vulnerability scans)
+- **Time-consuming scans** (comprehensive reconnaissance, binary analysis)
+- **Environment-specific tools** (cloud security, container scanners)
+- **Data-dependent operations** (require specific files, credentials)
+
+**This is by design** - the 15 passing tests (33%) verify all critical API endpoints work correctly without overwhelming the server or taking hours to complete.
+
+## Lightweight Test Suite
+
+For CI/CD and quick validation, use the lightweight test suite:
+
+```bash
+./scripts/api-test-lightweight.sh
+```
+
+This runs minimal versions of all tools:
+- Completes in ~2 minutes (vs hours for full tests)
+- Safe for automated testing
+- Validates all API endpoints work
+- Uses safe, non-intrusive parameters
+- Each test completes in < 10 seconds
+
+The lightweight suite covers:
+- Network tools: Nmap (single port), Rustscan (single port), Masscan (low rate)
+- Web tools: Gobuster (quick scan), Feroxbuster (depth 1), Nuclei (single template)
+- Authentication tools: Hydra (list mode), John (single hash), Hashcat (version)
+- Binary analysis: Ghidra/Radare2/GDB (version/info checks)
+- Cloud security: Prowler (list checks), Trivy (version), Kube-Hunter (list mode)
+
+**Recommended**: Run lightweight tests in CI/CD, run full tests manually before releases.
+
 ## Test Results
 
 ### Success Criteria

@@ -48,7 +48,7 @@ docs/
 
 # Docker
 .dockerignore
-Dockerfile
+# Dockerfile - 允許 Dockerfile 被包含在構建中
 docker-compose.yml
 
 # CI/CD
