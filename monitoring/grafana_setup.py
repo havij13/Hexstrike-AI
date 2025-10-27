@@ -250,7 +250,8 @@ class GrafanaSetup:
             ("Users", self.setup_users),
             ("Folders", self.setup_folders),
             ("Auth0 integration", self.configure_auth0_integration),
-            ("System monitoring dashboards", self.setup_system_dashboards)
+            ("System monitoring dashboards", self.setup_system_dashboards),
+            ("Security monitoring dashboards", self.setup_security_dashboards)
         ]
         
         for step_name, step_func in steps:
@@ -268,7 +269,16 @@ class GrafanaSetup:
             from monitoring.dashboard_manager import DashboardManager
             
             dashboard_manager = DashboardManager()
-            results = dashboard_manager.deploy_all_dashboards()
+            
+            # Deploy system dashboards only
+            system_dashboards = ["system-overview", "performance-monitoring", "resource-utilization"]
+            results = {}
+            
+            for dashboard_name in system_dashboards:
+                if dashboard_name in dashboard_manager.dashboard_configs:
+                    config = dashboard_manager.dashboard_configs[dashboard_name]
+                    success = dashboard_manager.create_or_update_dashboard(config)
+                    results[dashboard_name] = success
             
             # Check if all dashboards were deployed successfully
             successful_deployments = sum(1 for success in results.values() if success)
@@ -278,12 +288,36 @@ class GrafanaSetup:
                 logger.info(f"All {total_dashboards} system monitoring dashboards deployed successfully")
                 return True
             else:
-                logger.warning(f"Only {successful_deployments}/{total_dashboards} dashboards deployed successfully")
+                logger.warning(f"Only {successful_deployments}/{total_dashboards} system dashboards deployed successfully")
                 # Return True if at least some dashboards were deployed
                 return successful_deployments > 0
                 
         except Exception as e:
             logger.error(f"Error setting up system monitoring dashboards: {str(e)}")
+            return False
+    
+    def setup_security_dashboards(self) -> bool:
+        """Set up security monitoring dashboards"""
+        try:
+            from monitoring.dashboard_manager import DashboardManager
+            
+            dashboard_manager = DashboardManager()
+            results = dashboard_manager.deploy_security_dashboards()
+            
+            # Check if all security dashboards were deployed successfully
+            successful_deployments = sum(1 for success in results.values() if success)
+            total_dashboards = len(results)
+            
+            if successful_deployments == total_dashboards:
+                logger.info(f"All {total_dashboards} security monitoring dashboards deployed successfully")
+                return True
+            else:
+                logger.warning(f"Only {successful_deployments}/{total_dashboards} security dashboards deployed successfully")
+                # Return True if at least some dashboards were deployed
+                return successful_deployments > 0
+                
+        except Exception as e:
+            logger.error(f"Error setting up security monitoring dashboards: {str(e)}")
             return False
     
     def get_health_status(self) -> Dict[str, Any]:

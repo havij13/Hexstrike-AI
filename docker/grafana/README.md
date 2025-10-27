@@ -4,11 +4,17 @@ This directory contains the Grafana configuration and dashboards for HexStrike A
 
 ## Overview
 
-The monitoring system provides three main dashboards:
+The monitoring system provides six main dashboards:
 
+### System Monitoring Dashboards
 1. **System Overview** - High-level system health and activity metrics
 2. **Performance Monitoring** - API response times and performance metrics  
 3. **Resource Utilization** - CPU, memory, disk, and network usage
+
+### Security Monitoring Dashboards
+4. **Scan Activity** - Real-time scan progress and activity monitoring
+5. **Vulnerability Trends** - Vulnerability discovery trends with severity breakdown
+6. **Tool Performance** - Security tool success rates and execution times
 
 ## Directory Structure
 
@@ -22,10 +28,14 @@ docker/grafana/
     │   └── prometheus.yml              # Prometheus datasource config
     └── dashboards/
         ├── dashboard.yml               # Dashboard provider config
-        └── system/                     # System monitoring dashboards
-            ├── overview-dashboard.json
-            ├── performance-dashboard.json
-            └── resource-utilization-dashboard.json
+        ├── system/                     # System monitoring dashboards
+        │   ├── overview-dashboard.json
+        │   ├── performance-dashboard.json
+        │   └── resource-utilization-dashboard.json
+        └── security/                   # Security monitoring dashboards
+            ├── scan-activity-dashboard.json
+            ├── vulnerability-trends-dashboard.json
+            └── tool-performance-dashboard.json
 ```
 
 ## Quick Start
@@ -47,20 +57,29 @@ Using Python script:
 # Deploy all system monitoring dashboards
 python scripts/deploy-dashboards.py deploy
 
+# Deploy security-specific dashboards
+python scripts/deploy-security-dashboards.py deploy
+
 # Validate deployment
 python scripts/deploy-dashboards.py validate
+python scripts/deploy-security-dashboards.py validate
 
 # Show dashboard URLs
 python scripts/deploy-dashboards.py urls
+python scripts/deploy-security-dashboards.py urls
 ```
 
 Using PowerShell (Windows):
 ```powershell
-# Deploy dashboards
+# Deploy all dashboards
 .\scripts\deploy-dashboards.ps1 deploy
+
+# Deploy security dashboards
+.\scripts\deploy-security-dashboards.ps1 deploy
 
 # Check Grafana health
 .\scripts\deploy-dashboards.ps1 health
+.\scripts\deploy-security-dashboards.ps1 health
 ```
 
 ### 3. Access Dashboards
@@ -74,10 +93,78 @@ Dashboard URLs:
 - System Overview: http://localhost:3000/d/hexstrike-overview
 - Performance Monitoring: http://localhost:3000/d/hexstrike-performance  
 - Resource Utilization: http://localhost:3000/d/hexstrike-resources
+- Scan Activity: http://localhost:3000/d/hexstrike-scan-activity
+- Vulnerability Trends: http://localhost:3000/d/hexstrike-vulnerability-trends
+- Tool Performance: http://localhost:3000/d/hexstrike-tool-performance
 
 ## Dashboard Details
 
-### System Overview Dashboard
+### Security Monitoring Dashboards
+
+#### Scan Activity Dashboard
+
+**Purpose**: Provides real-time monitoring of security scan activities and progress
+
+**Key Metrics**:
+- Scan request rate (per 5 minutes)
+- Active scans gauge
+- Scan requests by tool (pie chart)
+- Scan requests by target type (pie chart)
+- Scan duration percentiles (95th and 50th)
+- Scan status distribution (success, failed, timeout)
+
+**Use Cases**:
+- Real-time scan monitoring
+- Identifying scan bottlenecks
+- Tracking scan performance
+- Monitoring scan queue status
+
+#### Vulnerability Trends Dashboard
+
+**Purpose**: Tracks vulnerability discovery trends with detailed severity breakdown
+
+**Key Metrics**:
+- Total vulnerabilities found (24h)
+- Critical vulnerabilities count (24h)
+- High vulnerabilities count (24h)
+- High-risk vulnerability ratio
+- Vulnerability distribution by severity (pie chart)
+- Vulnerabilities by detection tool (pie chart)
+- Vulnerability discovery rate by severity (time series)
+- CVSS score distribution (percentiles)
+- Vulnerabilities by type (pie chart)
+
+**Use Cases**:
+- Security posture assessment
+- Vulnerability trend analysis
+- Risk prioritization
+- Tool effectiveness evaluation
+- Compliance reporting
+
+#### Tool Performance Dashboard
+
+**Purpose**: Monitors security tool performance, success rates, and execution metrics
+
+**Key Metrics**:
+- Tool success rates (bar gauge)
+- Tool execution time percentiles (95th and 50th)
+- Tool execution rate by status
+- Tool execution status distribution (success, failed, timeout)
+- Tool usage distribution
+- Tool timeout rates
+- Top 10 most used tools (24h)
+- Top 10 vulnerability detection tools (24h)
+
+**Use Cases**:
+- Tool performance optimization
+- Identifying unreliable tools
+- Resource allocation planning
+- Tool effectiveness comparison
+- Performance troubleshooting
+
+### System Monitoring Dashboards
+
+#### System Overview Dashboard
 
 **Purpose**: Provides a high-level view of system health and activity
 

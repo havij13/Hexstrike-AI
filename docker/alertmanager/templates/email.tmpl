@@ -1,0 +1,248 @@
+{{ define "email.subject" }}
+[HexStrike AI] {{ .GroupLabels.alertname }} - {{ .Status | title }}
+{{ end }}
+
+{{ define "email.html" }}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HexStrike AI Alert</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+        .alert-container {
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+        }
+        .alert {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .alert:last-child {
+            border-bottom: none;
+        }
+        .alert.critical {
+            border-left: 5px solid #dc3545;
+            background-color: #f8d7da;
+        }
+        .alert.warning {
+            border-left: 5px solid #ffc107;
+            background-color: #fff3cd;
+        }
+        .alert.info {
+            border-left: 5px solid #17a2b8;
+            background-color: #d1ecf1;
+        }
+        .alert.resolved {
+            border-left: 5px solid #28a745;
+            background-color: #d4edda;
+        }
+        .alert-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .alert-description {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .alert-details {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        .detail-label {
+            font-weight: bold;
+            min-width: 120px;
+            color: #495057;
+        }
+        .detail-value {
+            flex: 1;
+        }
+        .labels, .annotations {
+            margin-top: 15px;
+        }
+        .labels h4, .annotations h4 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        .label-item, .annotation-item {
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            margin: 5px 5px 5px 0;
+            border-radius: 3px;
+            display: inline-block;
+            font-size: 12px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 10px 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-firing {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status-resolved {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="alert-container">
+        <div class="header">
+            <h1>🛡️ HexStrike AI Security Platform</h1>
+            <h2>Alert Notification</h2>
+            <span class="status-badge status-{{ .Status }}">{{ .Status | title }}</span>
+        </div>
+        
+        {{ range .Alerts }}
+        <div class="alert {{ .Labels.severity }}">
+            <div class="alert-title">
+                {{ if eq .Labels.severity "critical" }}🚨{{ else if eq .Labels.severity "warning" }}⚠️{{ else }}ℹ️{{ end }}
+                {{ .Annotations.summary }}
+            </div>
+            
+            <div class="alert-description">
+                {{ .Annotations.description }}
+            </div>
+            
+            <div class="alert-details">
+                <div class="detail-row">
+                    <div class="detail-label">Severity:</div>
+                    <div class="detail-value">{{ .Labels.severity | title }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Service:</div>
+                    <div class="detail-value">{{ .Labels.service | default "Unknown" }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Component:</div>
+                    <div class="detail-value">{{ .Labels.component | default "Unknown" }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Instance:</div>
+                    <div class="detail-value">{{ .Labels.instance | default "Unknown" }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Started:</div>
+                    <div class="detail-value">{{ .StartsAt.Format "2006-01-02 15:04:05 UTC" }}</div>
+                </div>
+                {{ if .EndsAt }}
+                <div class="detail-row">
+                    <div class="detail-label">Ended:</div>
+                    <div class="detail-value">{{ .EndsAt.Format "2006-01-02 15:04:05 UTC" }}</div>
+                </div>
+                {{ end }}
+            </div>
+            
+            {{ if .Labels }}
+            <div class="labels">
+                <h4>Labels:</h4>
+                {{ range .Labels.SortedPairs }}
+                <span class="label-item">{{ .Name }}: {{ .Value }}</span>
+                {{ end }}
+            </div>
+            {{ end }}
+            
+            {{ if .Annotations }}
+            <div class="annotations">
+                <h4>Additional Information:</h4>
+                {{ range .Annotations.SortedPairs }}
+                {{ if ne .Name "summary" }}{{ if ne .Name "description" }}
+                <span class="annotation-item">{{ .Name }}: {{ .Value }}</span>
+                {{ end }}{{ end }}
+                {{ end }}
+            </div>
+            {{ end }}
+            
+            {{ if .Annotations.runbook_url }}
+            <div style="margin-top: 15px;">
+                <a href="{{ .Annotations.runbook_url }}" class="button">📖 View Runbook</a>
+                <a href="http://localhost:3000/d/hexstrike-overview" class="button">📊 View Dashboard</a>
+            </div>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+    
+    <div class="footer">
+        <p>This alert was generated by the HexStrike AI Monitoring System</p>
+        <p>For support, contact: <a href="mailto:support@hexstrike.ai">support@hexstrike.ai</a></p>
+        <p>Alert generated at: {{ .CommonAnnotations.timestamp | default now.Format "2006-01-02 15:04:05 UTC" }}</p>
+    </div>
+</body>
+</html>
+{{ end }}
+
+{{ define "email.text" }}
+HexStrike AI Alert - {{ .Status | title }}
+
+{{ range .Alerts }}
+Alert: {{ .Annotations.summary }}
+Description: {{ .Annotations.description }}
+Severity: {{ .Labels.severity | title }}
+Service: {{ .Labels.service | default "Unknown" }}
+Component: {{ .Labels.component | default "Unknown" }}
+Instance: {{ .Labels.instance | default "Unknown" }}
+Started: {{ .StartsAt.Format "2006-01-02 15:04:05 UTC" }}
+{{ if .EndsAt }}Ended: {{ .EndsAt.Format "2006-01-02 15:04:05 UTC" }}{{ end }}
+
+Labels:
+{{ range .Labels.SortedPairs }}  {{ .Name }}: {{ .Value }}
+{{ end }}
+
+{{ if .Annotations.runbook_url }}Runbook: {{ .Annotations.runbook_url }}{{ end }}
+
+---
+{{ end }}
+
+This alert was generated by HexStrike AI Monitoring System.
+Dashboard: http://localhost:3000/d/hexstrike-overview
+Support: support@hexstrike.ai
+{{ end }}

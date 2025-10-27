@@ -44,6 +44,27 @@ class DashboardManager:
                 "title": "HexStrike AI - Resource Utilization",
                 "uid": "hexstrike-resources",
                 "tags": ["hexstrike", "resources", "system"]
+            },
+            "scan-activity": {
+                "file": "docker/grafana/provisioning/dashboards/security/scan-activity-dashboard.json",
+                "folder": "Security Scans",
+                "title": "HexStrike AI - Scan Activity",
+                "uid": "hexstrike-scan-activity",
+                "tags": ["hexstrike", "security", "scans"]
+            },
+            "vulnerability-trends": {
+                "file": "docker/grafana/provisioning/dashboards/security/vulnerability-trends-dashboard.json",
+                "folder": "Security Scans",
+                "title": "HexStrike AI - Vulnerability Trends",
+                "uid": "hexstrike-vulnerability-trends",
+                "tags": ["hexstrike", "security", "vulnerabilities"]
+            },
+            "tool-performance": {
+                "file": "docker/grafana/provisioning/dashboards/security/tool-performance-dashboard.json",
+                "folder": "Tool Performance",
+                "title": "HexStrike AI - Tool Performance",
+                "uid": "hexstrike-tool-performance",
+                "tags": ["hexstrike", "security", "tools", "performance"]
             }
         }
     
@@ -177,7 +198,7 @@ class DashboardManager:
         """Deploy all system monitoring dashboards"""
         results = {}
         
-        logger.info("Starting deployment of system monitoring dashboards...")
+        logger.info("Starting deployment of all dashboards...")
         
         for dashboard_name, config in self.dashboard_configs.items():
             logger.info(f"Deploying dashboard: {dashboard_name}")
@@ -194,6 +215,41 @@ class DashboardManager:
         total = len(results)
         
         logger.info(f"Dashboard deployment completed: {successful}/{total} successful")
+        
+        return results
+    
+    def deploy_security_dashboards(self) -> Dict[str, bool]:
+        """Deploy security-specific dashboards"""
+        results = {}
+        
+        security_dashboards = [
+            "scan-activity",
+            "vulnerability-trends", 
+            "tool-performance"
+        ]
+        
+        logger.info("Starting deployment of security dashboards...")
+        
+        for dashboard_name in security_dashboards:
+            if dashboard_name in self.dashboard_configs:
+                config = self.dashboard_configs[dashboard_name]
+                logger.info(f"Deploying security dashboard: {dashboard_name}")
+                success = self.create_or_update_dashboard(config)
+                results[dashboard_name] = success
+                
+                if success:
+                    logger.info(f"✅ Successfully deployed {dashboard_name}")
+                else:
+                    logger.error(f"❌ Failed to deploy {dashboard_name}")
+            else:
+                logger.error(f"Dashboard configuration not found: {dashboard_name}")
+                results[dashboard_name] = False
+        
+        # Summary
+        successful = sum(1 for success in results.values() if success)
+        total = len(results)
+        
+        logger.info(f"Security dashboard deployment completed: {successful}/{total} successful")
         
         return results
     
@@ -330,12 +386,23 @@ def main():
     print()
     
     # Deploy all dashboards
-    print("Deploying system monitoring dashboards...")
+    print("Deploying all dashboards...")
     results = manager.deploy_all_dashboards()
     
     print()
     print("Deployment Results:")
     for dashboard_name, success in results.items():
+        status = "✅ SUCCESS" if success else "❌ FAILED"
+        print(f"  {dashboard_name}: {status}")
+    
+    print()
+    
+    # Deploy security dashboards specifically
+    print("Deploying security-specific dashboards...")
+    security_results = manager.deploy_security_dashboards()
+    
+    print("Security Dashboard Results:")
+    for dashboard_name, success in security_results.items():
         status = "✅ SUCCESS" if success else "❌ FAILED"
         print(f"  {dashboard_name}: {status}")
     

@@ -1,0 +1,181 @@
+# Grafana notification channels configuration
+# This file configures notification channels for Grafana alerting
+
+notifiers:
+  # Email notification channel
+  - name: email-alerts
+    type: email
+    uid: email_alerts
+    org_id: 1
+    is_default: true
+    send_reminder: true
+    disable_resolve_message: false
+    frequency: "10s"
+    settings:
+      addresses: "${ALERT_EMAIL_ADDRESSES}"
+      subject: "[HexStrike AI] {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}"
+      body: |
+        {{ range .Alerts }}
+        **Alert:** {{ .Annotations.summary }}
+        **Description:** {{ .Annotations.description }}
+        **Severity:** {{ .Labels.severity }}
+        **Service:** {{ .Labels.service }}
+        **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+        
+        **Labels:**
+        {{ range .Labels.SortedPairs }}
+        - {{ .Name }}: {{ .Value }}
+        {{ end }}
+        {{ end }}
+
+  # Slack notification channel
+  - name: slack-alerts
+    type: slack
+    uid: slack_alerts
+    org_id: 1
+    is_default: false
+    send_reminder: true
+    disable_resolve_message: false
+    frequency: "10s"
+    settings:
+      url: "${SLACK_WEBHOOK_URL}"
+      channel: "${SLACK_CHANNEL:#alerts}"
+      username: "HexStrike AI"
+      title: "{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}"
+      text: |
+        {{ range .Alerts }}
+        **{{ .Labels.severity | upper }}**: {{ .Annotations.summary }}
+        
+        {{ .Annotations.description }}
+        
+        **Service:** {{ .Labels.service }}
+        **Component:** {{ .Labels.component }}
+        **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+        {{ end }}
+      iconEmoji: ":rotating_light:"
+      iconUrl: ""
+
+  # Discord notification channel
+  - name: discord-alerts
+    type: discord
+    uid: discord_alerts
+    org_id: 1
+    is_default: false
+    send_reminder: true
+    disable_resolve_message: false
+    frequency: "10s"
+    settings:
+      url: "${DISCORD_WEBHOOK_URL}"
+      username: "HexStrike AI"
+      avatar_url: ""
+      content: |
+        {{ range .Alerts }}
+        🚨 **{{ .Labels.severity | upper }}**: {{ .Annotations.summary }}
+        
+        {{ .Annotations.description }}
+        
+        **Service:** {{ .Labels.service }}
+        **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+        {{ end }}
+
+  # Generic webhook notification channel
+  - name: webhook-alerts
+    type: webhook
+    uid: webhook_alerts
+    org_id: 1
+    is_default: false
+    send_reminder: true
+    disable_resolve_message: false
+    frequency: "10s"
+    settings:
+      url: "${ALERT_WEBHOOK_URL}"
+      httpMethod: "POST"
+      maxAlerts: 0
+      title: "{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}"
+      body: |
+        {
+          "alerts": [
+            {{ range .Alerts }}
+            {
+              "status": "{{ .Status }}",
+              "labels": {
+                {{ range .Labels.SortedPairs }}
+                "{{ .Name }}": "{{ .Value }}",
+                {{ end }}
+              },
+              "annotations": {
+                {{ range .Annotations.SortedPairs }}
+                "{{ .Name }}": "{{ .Value }}",
+                {{ end }}
+              },
+              "startsAt": "{{ .StartsAt }}",
+              "endsAt": "{{ .EndsAt }}",
+              "generatorURL": "{{ .GeneratorURL }}"
+            },
+            {{ end }}
+          ],
+          "groupLabels": {
+            {{ range .GroupLabels.SortedPairs }}
+            "{{ .Name }}": "{{ .Value }}",
+            {{ end }}
+          },
+          "commonLabels": {
+            {{ range .CommonLabels.SortedPairs }}
+            "{{ .Name }}": "{{ .Value }}",
+            {{ end }}
+          },
+          "commonAnnotations": {
+            {{ range .CommonAnnotations.SortedPairs }}
+            "{{ .Name }}": "{{ .Value }}",
+            {{ end }}
+          },
+          "externalURL": "{{ .ExternalURL }}",
+          "version": "4",
+          "groupKey": "{{ .GroupKey }}",
+          "truncatedAlerts": {{ .TruncatedAlerts }},
+          "orgId": {{ .OrgID }},
+          "title": "{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}",
+          "state": "{{ .Status }}",
+          "message": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}"
+        }
+
+  # PagerDuty integration (if configured)
+  - name: pagerduty-alerts
+    type: pagerduty
+    uid: pagerduty_alerts
+    org_id: 1
+    is_default: false
+    send_reminder: true
+    disable_resolve_message: false
+    frequency: "10s"
+    settings:
+      integrationKey: "${PAGERDUTY_INTEGRATION_KEY}"
+      severity: "{{ .CommonLabels.severity }}"
+      class: "HexStrike AI Alert"
+      component: "{{ .CommonLabels.service }}"
+      group: "{{ .CommonLabels.component }}"
+      summary: "{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}"
+
+  # Microsoft Teams notification channel
+  - name: teams-alerts
+    type: teams
+    uid: teams_alerts
+    org_id: 1
+    is_default: false
+    send_reminder: true
+    disable_resolve_message: false
+    frequency: "10s"
+    settings:
+      url: "${TEAMS_WEBHOOK_URL}"
+      title: "HexStrike AI Alert"
+      sectionTitle: "{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}"
+      text: |
+        {{ range .Alerts }}
+        **{{ .Labels.severity | upper }}**: {{ .Annotations.summary }}
+        
+        {{ .Annotations.description }}
+        
+        **Service:** {{ .Labels.service }}
+        **Component:** {{ .Labels.component }}
+        **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+        {{ end }}

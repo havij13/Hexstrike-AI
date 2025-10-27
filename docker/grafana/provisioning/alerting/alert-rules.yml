@@ -1,0 +1,466 @@
+# Grafana alert rules configuration
+# This file defines alert rules that will be automatically provisioned
+
+groups:
+  # System Health Alerts
+  - name: system-health
+    orgId: 1
+    folder: System Alerts
+    interval: 1m
+    rules:
+      - uid: hexstrike_down
+        title: HexStrike AI Service Down
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: up{job="hexstrike-ai"} == 0
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          summary: "HexStrike AI service is down"
+          description: "The HexStrike AI service has been unreachable for more than 1 minute."
+          runbook_url: "https://docs.hexstrike.ai/runbooks/service-down"
+        labels:
+          severity: critical
+          service: hexstrike-ai
+          team: platform
+
+      - uid: high_cpu_usage
+        title: High CPU Usage
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is above 80% for more than 5 minutes on {{ $labels.instance }}"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/high-cpu"
+        labels:
+          severity: warning
+          service: system
+          team: infrastructure
+
+      - uid: high_memory_usage
+        title: High Memory Usage
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is above 85% for more than 5 minutes on {{ $labels.instance }}"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/high-memory"
+        labels:
+          severity: warning
+          service: system
+          team: infrastructure
+
+      - uid: disk_space_low
+        title: Disk Space Low
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})) * 100 > 90
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: "Disk space critically low"
+          description: "Disk usage is above 90% on {{ $labels.instance }} filesystem {{ $labels.mountpoint }}"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/disk-space"
+        labels:
+          severity: critical
+          service: system
+          team: infrastructure
+
+  # Application Performance Alerts
+  - name: application-performance
+    orgId: 1
+    folder: Application Alerts
+    interval: 1m
+    rules:
+      - uid: high_error_rate
+        title: High Error Rate
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: rate(hexstrike_http_requests_total{status=~"5.."}[5m]) > 0.1
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 2m
+        annotations:
+          summary: "High HTTP error rate detected"
+          description: "HTTP 5xx error rate is {{ $value }} errors per second for the last 5 minutes"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/high-error-rate"
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          team: backend
+
+      - uid: high_response_time
+        title: High Response Time
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: histogram_quantile(0.95, rate(hexstrike_http_request_duration_seconds_bucket[5m])) > 2
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s for the last 5 minutes"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/high-response-time"
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          team: backend
+
+  # Security Scanning Alerts
+  - name: security-scanning
+    orgId: 1
+    folder: Security Alerts
+    interval: 1m
+    rules:
+      - uid: high_scan_failure_rate
+        title: High Scan Failure Rate
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: rate(hexstrike_scan_requests_total{status="failed"}[10m]) / rate(hexstrike_scan_requests_total[10m]) > 0.2
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: "High scan failure rate detected"
+          description: "Scan failure rate is {{ $value | humanizePercentage }} over the last 10 minutes"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/scan-failures"
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: scanner
+          team: security
+
+      - uid: long_running_scans
+        title: Long Running Scans
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: hexstrike_active_scans > 0 and increase(hexstrike_scan_duration_seconds_sum[30m]) / increase(hexstrike_scan_duration_seconds_count[30m]) > 1800
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 10m
+        annotations:
+          summary: "Long running scans detected"
+          description: "Average scan duration is {{ $value }}s over the last 30 minutes"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/long-scans"
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: scanner
+          team: security
+
+      - uid: too_many_active_scans
+        title: Too Many Active Scans
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: hexstrike_active_scans > 50
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: "Too many active scans"
+          description: "There are {{ $value }} active scans, which may impact system performance"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/scan-overload"
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: scanner
+          team: security
+
+  # Tool Performance Alerts
+  - name: tool-performance
+    orgId: 1
+    folder: Tool Alerts
+    interval: 1m
+    rules:
+      - uid: tool_execution_failures
+        title: Tool Execution Failures
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: rate(hexstrike_tool_executions_total{status="failed"}[10m]) > 0.5
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 3m
+        annotations:
+          summary: "High tool execution failure rate"
+          description: "Tool {{ $labels.tool }} has a failure rate of {{ $value }} executions per second"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/tool-failures"
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: tools
+          team: security
+
+      - uid: tool_timeouts
+        title: Tool Timeouts
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: rate(hexstrike_tool_timeouts_total[5m]) > 0.1
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 2m
+        annotations:
+          summary: "Tool timeouts detected"
+          description: "Tool {{ $labels.tool }} is experiencing timeouts at {{ $value }} per second"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/tool-timeouts"
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: tools
+          team: security
+
+  # Authentication and Security Alerts
+  - name: authentication-security
+    orgId: 1
+    folder: Security Alerts
+    interval: 1m
+    rules:
+      - uid: high_auth_failures
+        title: High Authentication Failures
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: rate(hexstrike_auth_failures_total[5m]) > 5
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 2m
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Authentication failure rate is {{ $value }} per second - possible brute force attack"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/auth-failures"
+        labels:
+          severity: warning
+          service: hexstrike-ai
+          component: auth
+          team: security
+
+      - uid: suspicious_activity
+        title: Suspicious Activity Detected
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: rate(hexstrike_suspicious_requests_total[5m]) > 1
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          summary: "Suspicious activity detected"
+          description: "Suspicious request rate is {{ $value }} per second - immediate investigation required"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/suspicious-activity"
+        labels:
+          severity: critical
+          service: hexstrike-ai
+          component: security
+          team: security
+
+  # Infrastructure Alerts
+  - name: infrastructure
+    orgId: 1
+    folder: Infrastructure Alerts
+    interval: 1m
+    rules:
+      - uid: redis_down
+        title: Redis Service Down
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: up{job="redis"} == 0
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          summary: "Redis service is down"
+          description: "Redis service has been unreachable for more than 1 minute"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/redis-down"
+        labels:
+          severity: critical
+          service: redis
+          team: infrastructure
+
+      - uid: high_redis_memory
+        title: High Redis Memory Usage
+        condition: A
+        data:
+          - refId: A
+            queryType: ""
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasource:
+              type: prometheus
+              uid: prometheus
+            model:
+              expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 90
+              interval: ""
+              refId: A
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is {{ $value }}% - consider increasing memory or clearing cache"
+          runbook_url: "https://docs.hexstrike.ai/runbooks/redis-memory"
+        labels:
+          severity: warning
+          service: redis
+          team: infrastructure

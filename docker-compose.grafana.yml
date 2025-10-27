@@ -4,6 +4,32 @@
 version: '3.8'
 
 services:
+  # Alertmanager for alert routing and notifications
+  alertmanager:
+    image: prom/alertmanager:v0.25.0
+    container_name: hexstrike-alertmanager
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./docker/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ./docker/alertmanager/templates:/etc/alertmanager/templates
+      - alertmanager_data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=http://localhost:9093'
+      - '--cluster.advertise-address=0.0.0.0:9093'
+      - '--log.level=info'
+    networks:
+      - hexstrike-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
   # Prometheus for metrics collection
   prometheus:
     image: prom/prometheus:v2.40.0
@@ -23,6 +49,9 @@ services:
       - '--storage.tsdb.retention.time=15d'
       - '--web.enable-lifecycle'
       - '--web.enable-admin-api'
+      - '--alertmanager.url=http://alertmanager:9093'
+    depends_on:
+      - alertmanager
     networks:
       - hexstrike-network
     healthcheck:
@@ -91,8 +120,22 @@ services:
       # Feature toggles
       - GF_FEATURE_TOGGLES_ENABLE=
       
+      # Alerting configuration
+      - GF_ALERTING_ENABLED=true
+      - GF_UNIFIED_ALERTING_ENABLED=true
+      - GF_ALERTING_EXECUTE_ALERTS=true
+      
+      # SMTP configuration for Grafana alerts
+      - GF_SMTP_ENABLED=${SMTP_HOST:+true}
+      - GF_SMTP_HOST=${SMTP_HOST}:${SMTP_PORT:-587}
+      - GF_SMTP_USER=${SMTP_USER}
+      - GF_SMTP_PASSWORD=${SMTP_PASSWORD}
+      - GF_SMTP_FROM_ADDRESS=${ALERT_FROM_EMAIL:-alerts@hexstrike.ai}
+      - GF_SMTP_FROM_NAME=HexStrike AI Alerts
+      
     depends_on:
       - prometheus
+      - alertmanager
     networks:
       - hexstrike-network
     healthcheck:
@@ -146,6 +189,8 @@ volumes:
   grafana_data:
     driver: local
   grafana_logs:
+    driver: local
+  alertmanager_data:
     driver: local
 
 networks:

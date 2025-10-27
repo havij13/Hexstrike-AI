@@ -1,0 +1,370 @@
+# Alertmanager configuration for HexStrike AI
+# This file configures how alerts are routed and sent to notification channels
+
+global:
+  # SMTP configuration for email alerts
+  smtp_smarthost: '${SMTP_HOST}:${SMTP_PORT}'
+  smtp_from: '${ALERT_FROM_EMAIL}'
+  smtp_auth_username: '${SMTP_USER}'
+  smtp_auth_password: '${SMTP_PASSWORD}'
+  smtp_require_tls: true
+  
+  # Slack configuration
+  slack_api_url: '${SLACK_WEBHOOK_URL}'
+  
+  # Default template paths
+  templates:
+    - '/etc/alertmanager/templates/*.tmpl'
+
+# Route configuration - defines how alerts are routed to receivers
+route:
+  # Default receiver for all alerts
+  receiver: 'default-notifications'
+  
+  # Group alerts by these labels
+  group_by: ['alertname', 'cluster', 'service']
+  
+  # Wait time before sending initial notification
+  group_wait: 10s
+  
+  # Wait time before sending additional notifications for new alerts in the same group
+  group_interval: 10s
+  
+  # Wait time before re-sending notifications for the same alert
+  repeat_interval: 1h
+  
+  # Routing rules for different alert types
+  routes:
+    # Critical alerts - immediate notification to all channels
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      group_wait: 0s
+      group_interval: 5s
+      repeat_interval: 15m
+      routes:
+        # Security-related critical alerts
+        - match:
+            component: security
+          receiver: 'security-critical'
+          group_wait: 0s
+          repeat_interval: 5m
+        
+        # Infrastructure critical alerts
+        - match:
+            service: system
+          receiver: 'infrastructure-critical'
+          repeat_interval: 10m
+    
+    # Warning alerts - moderate notification schedule
+    - match:
+        severity: warning
+      receiver: 'warning-alerts'
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      routes:
+        # Tool-related warnings
+        - match:
+            component: tools
+          receiver: 'tool-warnings'
+          repeat_interval: 2h
+        
+        # Scan-related warnings
+        - match:
+            component: scanner
+          receiver: 'scan-warnings'
+          repeat_interval: 1h
+    
+    # Info alerts - minimal notifications
+    - match:
+        severity: info
+      receiver: 'info-alerts'
+      group_wait: 5m
+      group_interval: 10m
+      repeat_interval: 24h
+    
+    # Maintenance and testing alerts
+    - match:
+        alertname: 'TestAlert'
+      receiver: 'test-notifications'
+      group_wait: 0s
+      repeat_interval: 1m
+
+# Inhibition rules - suppress certain alerts when others are firing
+inhibit_rules:
+  # Suppress warning alerts when critical alerts are firing for the same service
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'service', 'instance']
+  
+  # Suppress info alerts when warning or critical alerts are firing
+  - source_match_re:
+      severity: 'critical|warning'
+    target_match:
+      severity: 'info'
+    equal: ['alertname', 'service']
+  
+  # Suppress individual tool alerts when system is down
+  - source_match:
+      alertname: 'HexStrikeDown'
+    target_match_re:
+      alertname: 'Tool.*'
+    equal: ['instance']
+
+# Receivers define how to send notifications
+receivers:
+  # Default receiver - basic notifications
+  - name: 'default-notifications'
+    email_configs:
+      - to: '${ALERT_TO_EMAILS}'
+        subject: '[HexStrike AI] {{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Severity: {{ .Labels.severity }}
+          Service: {{ .Labels.service }}
+          Time: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+        headers:
+          X-HexStrike-Alert: 'true'
+    
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '${SLACK_CHANNEL}'
+        username: 'HexStrike AI'
+        icon_emoji: ':warning:'
+        title: 'HexStrike AI Alert'
+        text: |
+          {{ range .Alerts }}
+          *{{ .Labels.severity | upper }}*: {{ .Annotations.summary }}
+          {{ .Annotations.description }}
+          *Service:* {{ .Labels.service }}
+          *Time:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+
+  # Critical alerts receiver - all notification channels
+  - name: 'critical-alerts'
+    email_configs:
+      - to: '${ALERT_TO_EMAILS}'
+        cc: '${ALERT_CC_EMAILS}'
+        subject: '[CRITICAL] HexStrike AI Alert: {{ .GroupLabels.alertname }}'
+        body: |
+          🚨 CRITICAL ALERT 🚨
+          
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Service: {{ .Labels.service }}
+          Component: {{ .Labels.component }}
+          Time: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          Runbook: {{ .Annotations.runbook_url }}
+          
+          Labels:
+          {{ range .Labels.SortedPairs }}
+          - {{ .Name }}: {{ .Value }}
+          {{ end }}
+          {{ end }}
+        headers:
+          X-Priority: 'High'
+          X-HexStrike-Severity: 'critical'
+    
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '${SLACK_CHANNEL}'
+        username: 'HexStrike AI'
+        icon_emoji: ':rotating_light:'
+        color: 'danger'
+        title: '🚨 CRITICAL ALERT'
+        text: |
+          {{ range .Alerts }}
+          *CRITICAL*: {{ .Annotations.summary }}
+          {{ .Annotations.description }}
+          *Service:* {{ .Labels.service }}
+          *Component:* {{ .Labels.component }}
+          *Time:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ if .Annotations.runbook_url }}*Runbook:* {{ .Annotations.runbook_url }}{{ end }}
+          {{ end }}
+    
+    webhook_configs:
+      - url: '${DISCORD_WEBHOOK_URL}'
+        send_resolved: true
+        http_config:
+          follow_redirects: true
+        title: 'HexStrike AI Critical Alert'
+        body: |
+          {
+            "username": "HexStrike AI",
+            "embeds": [
+              {
+                "title": "🚨 CRITICAL ALERT",
+                "color": 16711680,
+                "fields": [
+                  {{ range .Alerts }}
+                  {
+                    "name": "{{ .Annotations.summary }}",
+                    "value": "{{ .Annotations.description }}\n**Service:** {{ .Labels.service }}\n**Time:** {{ .StartsAt.Format \"2006-01-02 15:04:05\" }}",
+                    "inline": false
+                  }{{ if not (last $index $.Alerts) }},{{ end }}
+                  {{ end }}
+                ]
+              }
+            ]
+          }
+
+  # Security critical alerts - immediate escalation
+  - name: 'security-critical'
+    email_configs:
+      - to: '${ALERT_TO_EMAILS}'
+        cc: 'security-team@hexstrike.ai,incident-response@hexstrike.ai'
+        subject: '[SECURITY INCIDENT] HexStrike AI: {{ .GroupLabels.alertname }}'
+        body: |
+          🔒 SECURITY INCIDENT DETECTED 🔒
+          
+          This is an automated security alert from HexStrike AI.
+          Immediate investigation and response required.
+          
+          {{ range .Alerts }}
+          Incident: {{ .Annotations.summary }}
+          Details: {{ .Annotations.description }}
+          Service: {{ .Labels.service }}
+          Component: {{ .Labels.component }}
+          Detected: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          
+          Security Labels:
+          {{ range .Labels.SortedPairs }}
+          - {{ .Name }}: {{ .Value }}
+          {{ end }}
+          {{ end }}
+          
+          Please follow the incident response procedures immediately.
+        headers:
+          X-Priority: 'Urgent'
+          X-HexStrike-Security: 'incident'
+    
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#security-incidents'
+        username: 'HexStrike Security'
+        icon_emoji: ':lock:'
+        color: 'danger'
+        title: '🔒 SECURITY INCIDENT'
+        text: |
+          <!channel> SECURITY INCIDENT DETECTED
+          {{ range .Alerts }}
+          *INCIDENT*: {{ .Annotations.summary }}
+          {{ .Annotations.description }}
+          *Service:* {{ .Labels.service }}
+          *Detected:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+
+  # Infrastructure critical alerts
+  - name: 'infrastructure-critical'
+    email_configs:
+      - to: '${ALERT_TO_EMAILS}'
+        cc: 'devops@hexstrike.ai,platform-team@hexstrike.ai'
+        subject: '[INFRASTRUCTURE] Critical Issue: {{ .GroupLabels.alertname }}'
+        body: |
+          ⚠️ INFRASTRUCTURE CRITICAL ALERT ⚠️
+          
+          {{ range .Alerts }}
+          Issue: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          System: {{ .Labels.instance }}
+          Service: {{ .Labels.service }}
+          Time: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+    
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#infrastructure'
+        username: 'HexStrike Infrastructure'
+        icon_emoji: ':warning:'
+        color: 'danger'
+        title: '⚠️ Infrastructure Alert'
+
+  # Warning alerts receiver
+  - name: 'warning-alerts'
+    email_configs:
+      - to: '${ALERT_TO_EMAILS}'
+        subject: '[WARNING] HexStrike AI: {{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          Warning: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Service: {{ .Labels.service }}
+          Time: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+    
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '${SLACK_CHANNEL}'
+        username: 'HexStrike AI'
+        icon_emoji: ':warning:'
+        color: 'warning'
+        title: 'Warning Alert'
+
+  # Tool-specific warnings
+  - name: 'tool-warnings'
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#tool-alerts'
+        username: 'HexStrike Tools'
+        icon_emoji: ':wrench:'
+        color: 'warning'
+        title: 'Tool Performance Warning'
+        text: |
+          {{ range .Alerts }}
+          *Tool Issue*: {{ .Annotations.summary }}
+          {{ .Annotations.description }}
+          *Tool:* {{ .Labels.tool }}
+          *Time:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+
+  # Scan-specific warnings
+  - name: 'scan-warnings'
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#scan-alerts'
+        username: 'HexStrike Scanner'
+        icon_emoji: ':mag:'
+        color: 'warning'
+        title: 'Scan Performance Warning'
+
+  # Info alerts receiver
+  - name: 'info-alerts'
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '${SLACK_CHANNEL}'
+        username: 'HexStrike AI'
+        icon_emoji: ':information_source:'
+        color: 'good'
+        title: 'Information Alert'
+
+  # Test notifications receiver
+  - name: 'test-notifications'
+    email_configs:
+      - to: '${ALERT_TO_EMAILS}'
+        subject: '[TEST] HexStrike AI Alert Test'
+        body: |
+          This is a test alert from HexStrike AI monitoring system.
+          
+          {{ range .Alerts }}
+          Test: {{ .Annotations.summary }}
+          Time: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+    
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '${SLACK_CHANNEL}'
+        username: 'HexStrike AI Test'
+        icon_emoji: ':test_tube:'
+        color: 'good'
+        title: 'Test Alert'
+        text: |
+          {{ range .Alerts }}
+          This is a test alert: {{ .Annotations.summary }}
+          {{ end }}

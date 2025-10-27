@@ -24,7 +24,7 @@ providers:
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/scans
+      path: /etc/grafana/provisioning/dashboards/security
 
   # Tool Performance dashboards
   - name: 'tool-performance'

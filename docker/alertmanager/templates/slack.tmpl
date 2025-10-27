@@ -1,0 +1,124 @@
+{{ define "slack.title" }}
+{{ if eq .Status "firing" }}🚨 Alert Firing{{ else }}✅ Alert Resolved{{ end }} - {{ .GroupLabels.alertname }}
+{{ end }}
+
+{{ define "slack.text" }}
+{{ range .Alerts }}
+{{ if eq .Labels.severity "critical" }}🚨 *CRITICAL*{{ else if eq .Labels.severity "warning" }}⚠️ *WARNING*{{ else }}ℹ️ *INFO*{{ end }}: {{ .Annotations.summary }}
+
+{{ .Annotations.description }}
+
+*Service:* {{ .Labels.service | default "Unknown" }}
+*Component:* {{ .Labels.component | default "Unknown" }}
+*Instance:* {{ .Labels.instance | default "Unknown" }}
+*Started:* {{ .StartsAt.Format "2006-01-02 15:04:05 UTC" }}
+{{ if .EndsAt }}*Resolved:* {{ .EndsAt.Format "2006-01-02 15:04:05 UTC" }}{{ end }}
+{{ if .Annotations.runbook_url }}*Runbook:* {{ .Annotations.runbook_url }}{{ end }}
+
+{{ end }}
+{{ end }}
+
+{{ define "slack.color" }}
+{{ if eq .Status "firing" }}
+  {{ if eq .CommonLabels.severity "critical" }}danger{{ else if eq .CommonLabels.severity "warning" }}warning{{ else }}#439FE0{{ end }}
+{{ else }}good{{ end }}
+{{ end }}
+
+{{ define "slack.pretext" }}
+{{ if eq .Status "firing" }}
+  {{ if eq .CommonLabels.severity "critical" }}🚨 Critical Alert Detected{{ else if eq .CommonLabels.severity "warning" }}⚠️ Warning Alert{{ else }}ℹ️ Information Alert{{ end }}
+{{ else }}✅ Alert Resolved{{ end }}
+{{ end }}
+
+{{ define "slack.fallback" }}
+{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}
+{{ end }}
+
+{{ define "slack.fields" }}
+[
+  {{ range .Alerts }}
+  {
+    "title": "Alert",
+    "value": "{{ .Annotations.summary }}",
+    "short": false
+  },
+  {
+    "title": "Description", 
+    "value": "{{ .Annotations.description }}",
+    "short": false
+  },
+  {
+    "title": "Severity",
+    "value": "{{ .Labels.severity | title }}",
+    "short": true
+  },
+  {
+    "title": "Service",
+    "value": "{{ .Labels.service | default "Unknown" }}",
+    "short": true
+  },
+  {
+    "title": "Component",
+    "value": "{{ .Labels.component | default "Unknown" }}",
+    "short": true
+  },
+  {
+    "title": "Instance",
+    "value": "{{ .Labels.instance | default "Unknown" }}",
+    "short": true
+  },
+  {
+    "title": "Started",
+    "value": "{{ .StartsAt.Format "2006-01-02 15:04:05 UTC" }}",
+    "short": true
+  }
+  {{ if .EndsAt }},
+  {
+    "title": "Resolved",
+    "value": "{{ .EndsAt.Format "2006-01-02 15:04:05 UTC" }}",
+    "short": true
+  }
+  {{ end }}
+  {{ if not (last $index $.Alerts) }},{{ end }}
+  {{ end }}
+]
+{{ end }}
+
+{{ define "slack.actions" }}
+[
+  {{ range .Alerts }}
+  {{ if .Annotations.runbook_url }}
+  {
+    "type": "button",
+    "text": "📖 View Runbook",
+    "url": "{{ .Annotations.runbook_url }}"
+  },
+  {{ end }}
+  {
+    "type": "button", 
+    "text": "📊 Dashboard",
+    "url": "http://localhost:3000/d/hexstrike-overview"
+  },
+  {
+    "type": "button",
+    "text": "🔍 Prometheus",
+    "url": "http://localhost:9090/alerts"
+  }
+  {{ if not (last $index $.Alerts) }},{{ end }}
+  {{ end }}
+]
+{{ end }}
+
+{{ define "slack.footer" }}
+HexStrike AI Monitoring | {{ .CommonAnnotations.timestamp | default now.Format "2006-01-02 15:04:05 UTC" }}
+{{ end }}
+
+{{ define "slack.icon_emoji" }}
+{{ if eq .Status "firing" }}
+  {{ if eq .CommonLabels.severity "critical" }}:rotating_light:{{ else if eq .CommonLabels.severity "warning" }}:warning:{{ else }}:information_source:{{ end }}
+{{ else }}:white_check_mark:{{ end }}
+{{ end }}
+
+{{ define "slack.username" }}
+HexStrike AI{{ if eq .CommonLabels.severity "critical" }} - CRITICAL{{ end }}
+{{ end }}
