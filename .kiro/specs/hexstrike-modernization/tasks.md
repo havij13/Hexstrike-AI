@@ -69,7 +69,9 @@
 
 ## Phase 2: Authentication and Security
 
-- [-] 2. Add authentication with Auth0
+- [x] 2. Add authentication with Auth0
+
+
 
 
 
@@ -109,7 +111,8 @@
   - Add tenant-based access control for multi-tenancy
   - _Requirements: 2.2, 2.3_
 
-- [-] 2.4 Write authentication tests
+- [x] 2.4 Write authentication tests
+
 
   - Test JWT token validation and expiration
   - Test role-based access control
