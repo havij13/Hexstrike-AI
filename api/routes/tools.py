@@ -5,7 +5,7 @@ This module handles tool-related API endpoints.
 """
 
 from flask import Blueprint, request, jsonify, current_app
-from api.middleware.auth_middleware import require_auth, get_current_user
+from api.middleware.auth_middleware import require_auth, require_any_scope, get_current_user
 from tools.tool_registry import tool_registry
 import asyncio
 import logging
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 @tools_bp.route('/', methods=['GET'])
-@require_auth()
+@require_auth('read:tools')
 def list_tools():
     """List available tools"""
     try:

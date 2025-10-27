@@ -11,12 +11,25 @@ from api.middleware.auth_middleware import (
     get_token_from_header,
     verify_jwt_token,
     has_scope,
+    has_any_scope,
+    has_all_scopes,
     require_auth,
+    require_any_scope,
+    require_all_scopes,
     require_role,
     get_current_user,
+    get_user_id,
+    get_user_email,
+    get_user_name,
+    get_user_roles,
+    get_user_permissions,
     get_user_tenant_id,
     is_admin,
+    is_analyst,
+    is_viewer,
     can_access_tenant,
+    refresh_token_if_needed,
+    enrich_user_payload,
     MOCK_USERS
 )
 
@@ -85,8 +98,9 @@ class TestAuthMiddleware:
     def test_has_scope_admin_user(self):
         """Test scope checking for admin user"""
         admin_payload = {
-            'user_id': 'admin_1',
-            'roles': ['admin']
+            'sub': 'auth0|admin_1',
+            'roles': ['admin'],
+            'permissions': ['read:all', 'write:all', 'delete:all', 'manage:users']
         }
         
         # Admin should have all scopes
@@ -97,8 +111,9 @@ class TestAuthMiddleware:
     def test_has_scope_analyst_user(self):
         """Test scope checking for analyst user"""
         analyst_payload = {
-            'user_id': 'user_123',
-            'roles': ['analyst']
+            'sub': 'auth0|user_123',
+            'roles': ['analyst'],
+            'permissions': ['read:scans', 'write:scans', 'read:tools', 'write:tools']
         }
         
         # Analyst should have read/write scans but not manage users
@@ -109,8 +124,9 @@ class TestAuthMiddleware:
     def test_has_scope_viewer_user(self):
         """Test scope checking for viewer user"""
         viewer_payload = {
-            'user_id': 'user_456',
-            'roles': ['viewer']
+            'sub': 'auth0|user_456',
+            'roles': ['viewer'],
+            'permissions': ['read:scans', 'read:results', 'read:vulnerabilities']
         }
         
         # Viewer should only have read access
@@ -125,12 +141,145 @@ class TestAuthMiddleware:
     def test_has_scope_unknown_scope(self):
         """Test scope checking with unknown scope"""
         user_payload = {
-            'user_id': 'user_123',
-            'roles': ['analyst']
+            'sub': 'auth0|user_123',
+            'roles': ['analyst'],
+            'permissions': ['read:scans', 'write:scans']
         }
         
         # Unknown scope should default to no access
         assert has_scope(user_payload, 'unknown:scope') is False
+
+    def test_has_any_scope_success(self):
+        """Test has_any_scope with user having one of required scopes"""
+        user_payload = {
+            'sub': 'auth0|user_123',
+            'roles': ['analyst'],
+            'permissions': ['read:scans', 'write:scans']
+        }
+        
+        required_scopes = ['read:scans', 'manage:users']
+        assert has_any_scope(user_payload, required_scopes) is True
+
+    def test_has_any_scope_failure(self):
+        """Test has_any_scope with user having none of required scopes"""
+        user_payload = {
+            'sub': 'auth0|user_123',
+            'roles': ['viewer'],
+            'permissions': ['read:scans']
+        }
+        
+        required_scopes = ['write:scans', 'manage:users']
+        assert has_any_scope(user_payload, required_scopes) is False
+
+    def test_has_all_scopes_success(self):
+        """Test has_all_scopes with user having all required scopes"""
+        user_payload = {
+            'sub': 'auth0|admin_1',
+            'roles': ['admin'],
+            'permissions': ['read:all', 'write:all', 'manage:users']
+        }
+        
+        required_scopes = ['read:all', 'write:all']
+        assert has_all_scopes(user_payload, required_scopes) is True
+
+    def test_has_all_scopes_failure(self):
+        """Test has_all_scopes with user missing some required scopes"""
+        user_payload = {
+            'sub': 'auth0|user_123',
+            'roles': ['analyst'],
+            'permissions': ['read:scans', 'write:scans']
+        }
+        
+        required_scopes = ['read:scans', 'manage:users']
+        assert has_all_scopes(user_payload, required_scopes) is False
+
+    def test_enrich_user_payload(self):
+        """Test user payload enrichment with roles and permissions"""
+        base_payload = {
+            'sub': 'auth0|user_123',
+            'email': 'test@example.com',
+            'https://hexstrike-ai.com/roles': ['analyst']
+        }
+        
+        enriched = enrich_user_payload(base_payload)
+        
+        assert 'roles' in enriched
+        assert 'permissions' in enriched
+        assert 'tenant_id' in enriched
+        assert enriched['roles'] == ['analyst']
+        assert 'read:scans' in enriched['permissions']
+        assert 'write:scans' in enriched['permissions']
+
+    def test_get_user_id(self, app):
+        """Test getting user ID from current user"""
+        with app.test_request_context():
+            g.current_user = {'sub': 'auth0|user_123', 'email': 'test@example.com'}
+            
+            user_id = get_user_id()
+            assert user_id == 'auth0|user_123'
+
+    def test_get_user_email(self, app):
+        """Test getting user email from current user"""
+        with app.test_request_context():
+            g.current_user = {'sub': 'auth0|user_123', 'email': 'test@example.com'}
+            
+            email = get_user_email()
+            assert email == 'test@example.com'
+
+    def test_get_user_name(self, app):
+        """Test getting user name from current user"""
+        with app.test_request_context():
+            g.current_user = {'sub': 'auth0|user_123', 'name': 'Test User'}
+            
+            name = get_user_name()
+            assert name == 'Test User'
+
+    def test_get_user_roles(self, app):
+        """Test getting user roles from current user"""
+        with app.test_request_context():
+            g.current_user = {'sub': 'auth0|user_123', 'roles': ['analyst', 'viewer']}
+            
+            roles = get_user_roles()
+            assert roles == ['analyst', 'viewer']
+
+    def test_get_user_permissions(self, app):
+        """Test getting user permissions from current user"""
+        with app.test_request_context():
+            g.current_user = {
+                'sub': 'auth0|user_123', 
+                'permissions': ['read:scans', 'write:scans']
+            }
+            
+            permissions = get_user_permissions()
+            assert permissions == ['read:scans', 'write:scans']
+
+    def test_is_analyst_true(self, app):
+        """Test is_analyst function with analyst user"""
+        with app.test_request_context():
+            g.current_user = {'roles': ['analyst']}
+            
+            assert is_analyst() is True
+
+    def test_is_analyst_admin(self, app):
+        """Test is_analyst function with admin user (should also return True)"""
+        with app.test_request_context():
+            g.current_user = {'roles': ['admin']}
+            
+            assert is_analyst() is True
+
+    def test_is_viewer_true(self, app):
+        """Test is_viewer function with viewer user"""
+        with app.test_request_context():
+            g.current_user = {'roles': ['viewer']}
+            
+            assert is_viewer() is True
+
+    def test_is_viewer_analyst(self, app):
+        """Test is_viewer function with analyst user (should also return True)"""
+        with app.test_request_context():
+            g.current_user = {'roles': ['analyst']}
+            
+            assert is_viewer() is True
 
     def test_require_auth_decorator_valid_token(self, app):
         """Test require_auth decorator with valid token"""
@@ -190,6 +339,54 @@ class TestAuthMiddleware:
             return {'success': True}
         
         # Analyst doesn't have manage:users scope
+        with app.test_request_context(headers={'Authorization': 'Bearer mock_jwt_token_12345'}):
+            result = test_route()
+            
+            # Should return 403 error
+            assert isinstance(result, tuple)
+            assert result[1] == 403
+
+    def test_require_any_scope_decorator_success(self, app):
+        """Test require_any_scope decorator with user having one required scope"""
+        @require_any_scope(['read:scans', 'manage:users'])
+        def test_route():
+            return {'success': True}
+        
+        with app.test_request_context(headers={'Authorization': 'Bearer mock_jwt_token_12345'}):
+            result = test_route()
+            
+            assert result == {'success': True}
+
+    def test_require_any_scope_decorator_failure(self, app):
+        """Test require_any_scope decorator with user having no required scopes"""
+        @require_any_scope(['manage:users', 'delete:all'])
+        def test_route():
+            return {'success': True}
+        
+        with app.test_request_context(headers={'Authorization': 'Bearer mock_jwt_token_12345'}):
+            result = test_route()
+            
+            # Should return 403 error
+            assert isinstance(result, tuple)
+            assert result[1] == 403
+
+    def test_require_all_scopes_decorator_success(self, app):
+        """Test require_all_scopes decorator with admin user"""
+        @require_all_scopes(['read:all', 'write:all'])
+        def test_route():
+            return {'success': True}
+        
+        with app.test_request_context(headers={'Authorization': 'Bearer admin_token_67890'}):
+            result = test_route()
+            
+            assert result == {'success': True}
+
+    def test_require_all_scopes_decorator_failure(self, app):
+        """Test require_all_scopes decorator with user missing some scopes"""
+        @require_all_scopes(['read:scans', 'manage:users'])
+        def test_route():
+            return {'success': True}
+        
         with app.test_request_context(headers={'Authorization': 'Bearer mock_jwt_token_12345'}):
             result = test_route()
             

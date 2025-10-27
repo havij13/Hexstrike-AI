@@ -5,7 +5,10 @@ This module handles scan-related API endpoints.
 """
 
 from flask import Blueprint, request, jsonify, current_app
-from api.middleware.auth_middleware import require_auth, get_current_user
+from api.middleware.auth_middleware import (
+    require_auth, require_any_scope, get_current_user, 
+    get_user_id, get_user_tenant_id, can_access_tenant
+)
 from core.decision_engine import IntelligentDecisionEngine
 from agents.bugbounty_agent import BugBountyWorkflowManager
 from agents.ctf_agent import CTFWorkflowManager
@@ -25,7 +28,7 @@ ctf_agent = CTFWorkflowManager()
 
 
 @scans_bp.route('/', methods=['GET'])
-@require_auth()
+@require_auth('read:scans')
 def list_scans():
     """List user's scans"""
     try:
