@@ -5,7 +5,7 @@
 set -e
 
 # Configuration
-HEXSTRIKE_URL="${HEXSTRIKE_URL:-https://hexstrike-ai.onrender.com}"
+HEXSTRIKE_URL="${HEXSTRIKE_URL:-https://hexstrike-ai.dennisleehappy.org/}"
 TEST_TIMEOUT="${TEST_TIMEOUT:-30}"
 VERBOSE="${VERBOSE:-false}"
 

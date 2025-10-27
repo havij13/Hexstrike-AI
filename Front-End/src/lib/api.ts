@@ -122,6 +122,98 @@ class HexStrikeApiClient {
     return response.data
   }
 
+  async rustscanScan(target: string, ports: string = '1-65535', timeout: number = 1000): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/rustscan', {
+      target,
+      ports,
+      timeout,
+    })
+    return response.data
+  }
+
+  async masscanScan(target: string, ports: string = '1-65535', rate: number = 1000): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/masscan', {
+      target,
+      ports,
+      rate,
+    })
+    return response.data
+  }
+
+  async feroxbusterScan(url: string, wordlist: string = '/usr/share/wordlists/dirb/common.txt', threads: number = 10, depth: number = 3): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/feroxbuster', {
+      url,
+      wordlist,
+      threads,
+      depth,
+    })
+    return response.data
+  }
+
+  async nucleiScan(target: string, severity: string = 'critical,high', tags: string = '', template: string = ''): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/nuclei', {
+      target,
+      severity,
+      tags,
+      template,
+    })
+    return response.data
+  }
+
+  // Web Application Security Tools
+  async ffufScan(url: string, wordlist: string, method: string = 'GET', threads: number = 10, match: string = '200,204,301,302'): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/ffuf', {
+      url,
+      wordlist,
+      method,
+      threads,
+      match,
+    })
+    return response.data
+  }
+
+  async niktoScan(url: string, tuning: string = '1', format: string = 'txt', timeout: number = 10, ssl: boolean = false): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/nikto', {
+      url,
+      tuning,
+      format,
+      timeout,
+      ssl,
+    })
+    return response.data
+  }
+
+  // Authentication & Password Security Tools
+  async hydraScan(target: string, service: string, username: string, password: string, port: number, threads: number = 16, timeout: number = 30): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/hydra', {
+      target,
+      service,
+      username,
+      password,
+      port,
+      threads,
+      timeout,
+    })
+    return response.data
+  }
+
+  async johnCrack(hash: string, hashType: string = 'auto', wordlist: string = 'rockyou.txt', rules: string = 'Single', incremental: boolean = false): Promise<ToolExecution> {
+    const response = await this.client.post<ToolExecution>('/api/tools/john', {
+      hash,
+      hashType,
+      wordlist,
+      rules,
+      incremental,
+    })
+    return response.data
+  }
+
+  // Tool Count
+  async getToolCount(): Promise<{total_tools: number, ai_agents: number, categories: Record<string, string[]>}> {
+    const response = await this.client.get('/api/tools/count')
+    return response.data
+  }
+
   // Cache Management
   async getCacheStats(): Promise<CacheStats> {
     const response = await this.client.get<CacheStats>('/api/cache/stats')

@@ -60,10 +60,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, WebDriverException
-import mitmproxy
-from mitmproxy import http as mitmhttp
-from mitmproxy.tools.dump import DumpMaster
-from mitmproxy.options import Options as MitmOptions
 
 # ============================================================================
 # LOGGING CONFIGURATION (MUST BE FIRST)
@@ -93,6 +89,15 @@ logger = logging.getLogger(__name__)
 # Flask app configuration
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
+
+# 導入並註冊 API 藍圖
+try:
+    from api import api_bp
+    app.register_blueprint(api_bp)
+    print("✅ API Blueprint registered successfully")
+except ImportError as e:
+    print(f"⚠️  API Blueprint import failed: {e}")
+    print("Continuing with legacy API endpoints...")
 
 # API Configuration
 API_PORT = int(os.environ.get('HEXSTRIKE_PORT', 8888))
@@ -9144,6 +9149,32 @@ def health_check():
         "uptime": time.time() - telemetry.stats["start_time"]
     })
 
+@app.route("/api/tools/count", methods=["GET"])
+def get_tool_count():
+    """Get tool count and AI agent information"""
+    tools = {
+        "network": ["nmap", "rustscan", "masscan", "autorecon", "nbtscan", "arp-scan"],
+        "web": ["gobuster", "feroxbuster", "ffuf", "dirsearch", "katana", "httpx", "wafw00f"],
+        "vuln_scanning": ["nuclei", "wpscan", "nikto"],
+        "auth": ["hydra", "john", "hashcat", "medusa"],
+        "binary": ["ghidra", "radare2", "gdb", "binwalk", "checksec"],
+        "forensics": ["volatility3", "steghide", "foremost", "exiftool", "autopsy"],
+        "cloud": ["prowler", "trivy", "kube-hunter", "scout-suite"],
+        "osint": ["amass", "subfinder", "fierce", "theharvester", "sherlock"],
+        "exploitation": ["metasploit", "searchsploit"],
+        "database": ["sqlmap"],
+        "recon": ["enum4linux-ng", "responder"],
+    }
+    
+    total = sum(len(v) for v in tools.values())
+    
+    return jsonify({
+        "total_tools": total,
+        "categories": tools,
+        "ai_agents": 12,  # AI intelligence agents
+        "version": "6.0.0"
+    })
+
 @app.route("/api/command", methods=["POST"])
 def generic_command():
     """Execute any command provided in the request with enhanced logging"""
@@ -10334,6 +10365,15 @@ def create_comprehensive_bugbounty_assessment():
 # SECURITY TOOLS API ENDPOINTS
 # ============================================================================
 
+# Scan type mapping for semantic names
+SCAN_TYPE_MAPPING = {
+    "quick": "-F -sT",  # Fast scan top 100 ports
+    "comprehensive": "-sV -sC -A -sT",  # Service detection, scripts, OS detection
+    "stealth": "-sS -T2",  # SYN scan (requires root)
+    "udp": "-sU",  # UDP scan
+    "aggressive": "-A -T4",  # Aggressive scan
+}
+
 @app.route("/api/tools/nmap", methods=["POST"])
 def nmap():
     """Execute nmap scan with enhanced logging, caching, and intelligent error handling"""
@@ -10351,10 +10391,24 @@ def nmap():
                 "error": "Target parameter is required"
             }), 400
 
-        command = f"nmap {scan_type}"
+        # Check if scan_type is a semantic name and map it
+        if scan_type in SCAN_TYPE_MAPPING:
+            nmap_options = SCAN_TYPE_MAPPING[scan_type]
+            logger.info(f"🔍 Mapping semantic scan type '{scan_type}' to '{nmap_options}'")
+        else:
+            # Use scan_type as-is (raw nmap parameters)
+            nmap_options = scan_type
 
-        if ports:
-            command += f" -p {ports}"
+        # Handle ports parameter - if scan_type is "quick" and uses -F, don't add -p
+        # because -F already scans top 100 ports
+        if ports and scan_type == "quick" and "-F" in nmap_options:
+            # If user wants specific ports with quick scan, remove -F and just use -sT
+            nmap_options = "-sT"  # TCP connect scan without fast flag
+            command = f"nmap {nmap_options} -p {ports}"
+        else:
+            command = f"nmap {nmap_options}"
+            if ports:
+                command += f" -p {ports}"
 
         if additional_args:
             command += f" {additional_args}"
@@ -10389,7 +10443,7 @@ def gobuster():
     """Execute gobuster with enhanced logging and intelligent error handling"""
     try:
         params = request.json
-        url = params.get("url", "")
+        url = params.get("url") or params.get("target", "")
         mode = params.get("mode", "dir")
         wordlist = params.get("wordlist", "/usr/share/wordlists/dirb/common.txt")
         additional_args = params.get("additional_args", "")
@@ -10398,7 +10452,7 @@ def gobuster():
         if not url:
             logger.warning("🌐 Gobuster called without URL parameter")
             return jsonify({
-                "error": "URL parameter is required"
+                "error": "URL or target parameter is required"
             }), 400
 
         # Validate mode
@@ -10407,6 +10461,11 @@ def gobuster():
             return jsonify({
                 "error": f"Invalid mode: {mode}. Must be one of: dir, dns, fuzz, vhost"
             }), 400
+
+        # If wordlist is just a name (not a full path), add the standard path
+        if wordlist and "/" not in wordlist:
+            wordlist = f"/usr/share/wordlists/dirb/{wordlist}.txt"
+            logger.info(f"📁 Expanded wordlist to: {wordlist}")
 
         command = f"gobuster {mode} -u {url} -w {wordlist}"
 
@@ -17270,6 +17329,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the HexStrike AI API Server")
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument("--port", type=int, default=API_PORT, help=f"Port for the API server (default: {API_PORT})")
+    parser.add_argument("--host", type=str, default="0.0.0.0", help="Host address to bind (default: 0.0.0.0)")
     args = parser.parse_args()
 
     if args.debug:
@@ -17296,4 +17356,4 @@ if __name__ == "__main__":
         if line.strip():
             logger.info(line)
 
-    app.run(host="0.0.0.0", port=API_PORT, debug=DEBUG_MODE)
+    app.run(host=args.host, port=args.port, debug=args.debug)

@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import { apiClient } from '@/lib/api'
 import { StatusCard } from './StatusCard'
+import { ServerStatus } from './ServerStatus'
 import { ProcessMonitor } from './ProcessMonitor'
 import { SystemMetrics } from './SystemMetrics'
 import { RecentActivity } from './RecentActivity'
 import { QuickActions } from './QuickActions'
-import { Alert, AlertCircle, CheckCircle, Clock, Zap } from 'lucide-react'
+import { AlertCircle, CheckCircle, Clock, Zap } from 'lucide-react'
 
 export function Dashboard() {
   const [alerts, setAlerts] = useState([
@@ -108,6 +109,9 @@ export function Dashboard() {
         </div>
       )}
 
+      {/* Server Status */}
+      <ServerStatus />
+
       {/* Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatusCard
@@ -119,7 +123,7 @@ export function Dashboard() {
         />
         <StatusCard
           title="Active Processes"
-          value={processDashboard?.total_processes?.toString() || '0'}
+          value={String(processDashboard?.total_processes ?? 0)}
           icon={<Clock className="h-6 w-6" />}
           status="info"
           loading={processLoading}
@@ -128,14 +132,14 @@ export function Dashboard() {
           title="CPU Usage"
           value={`${telemetry?.cpu_usage || 0}%`}
           icon={<Zap className="h-6 w-6" />}
-          status={telemetry?.cpu_usage > 80 ? 'warning' : 'success'}
+          status={(telemetry?.cpu_usage || 0) > 80 ? 'warning' : 'success'}
           loading={telemetryLoading}
         />
         <StatusCard
           title="Memory Usage"
           value={`${telemetry?.memory_usage || 0}%`}
           icon={<AlertCircle className="h-6 w-6" />}
-          status={telemetry?.memory_usage > 80 ? 'warning' : 'success'}
+          status={(telemetry?.memory_usage || 0) > 80 ? 'warning' : 'success'}
           loading={telemetryLoading}
         />
       </div>
