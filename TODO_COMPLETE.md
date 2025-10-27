@@ -44,10 +44,10 @@
 - [x] 創建 API 藍圖目錄結構 ✅
 - [x] 創建 Swagger 配置文件 ✅
 - [x] 定義所有 API 的 Swagger models/schemas ✅
-- [ ] 重構工具端點為 Flask-RESTX 命名空間
+- [x] 重構工具端點為 Flask-RESTX 命名空間 ✅ (初步完成)
 - [ ] 重構 AI 智能端點為 Flask-RESTX 命名空間
 - [ ] 重構進程管理端點為 Flask-RESTX 命名空間
-- [ ] 生成 OpenAPI/Swagger JSON 端點
+- [x] 生成 OpenAPI/Swagger JSON 端點 ✅ (可通過 /api/swagger.json 訪問)
 - [ ] 設置 OpenAPI TypeScript 代碼生成
 - [ ] 集成自動生成的 TypeScript 客戶端
 - [ ] 更新 API 文檔以反映 Swagger 支持
