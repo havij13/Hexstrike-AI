@@ -25,7 +25,8 @@
   - Set up logging configuration in config/logging.py
   - _Requirements: 1.1, 1.2_
 
-- [-] 1.2 Extract and modularize AI agents
+- [x] 1.2 Extract and modularize AI agents
+
 
   - Create agents/base_agent.py with abstract base class
   - Move BugBountyWorkflowManager to agents/bugbounty_agent.py
@@ -34,7 +35,8 @@
   - Move BrowserAgent to agents/browser_agent.py
   - _Requirements: 1.1, 1.2_
 
-- [ ] 1.3 Modularize security tools
+- [-] 1.3 Modularize security tools
+
   - Create tools/base_tool.py interface
   - Organize tools by category (network/, web/, binary/, cloud/)
   - Extract individual tool implementations (nmap_tool.py, gobuster_tool.py, etc.)
