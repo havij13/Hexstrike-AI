@@ -55,7 +55,9 @@
 
 
 
-- [-] 1.5 Write unit tests for modular components
+- [x] 1.5 Write unit tests for modular components
+
+
 
 
 

@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>布拉格中歐10日行程</name>
+    <description>2025年2月 Prague - Dresden - Berlin - Vienna</description>
+    
+    <!-- 藍色標記 = 住宿 -->
+    <Style id="hotel">
+      <IconStyle>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/ms/icons/blue-dot.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    
+    <!-- 紅色標記 = 景點/博物館 -->
+    <Style id="landmark">
+      <IconStyle>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/ms/icons/red-dot.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    
+    <!-- 黃色標記 = 餐廳 -->
+    <Style id="restaurant">
+      <IconStyle>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/ms/icons/yellow-dot.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    
+    <!-- 紫色標記 = 演出場地 -->
+    <Style id="venue">
+      <IconStyle>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/ms/icons/purple-dot.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+
+    <!-- ========== PRAGUE (Day 1-2, Day 8-10) ========== -->
+    <Folder>
+      <name>🇨🇿 布拉格 (Prague)</name>
+      
+      <!-- 住宿 -->
+      <Placemark>
+        <name>住宿 - Žižkov 或 Karlín區</name>
+        <styleUrl>#hotel</styleUrl>
+        <description>建議住宿區域 (10晚)\nZižkov: 在地氛圍\nKarlín: 交通便利\nNTD 9,800預算</description>
+        <Point>
+          <coordinates>14.4423,50.0873</coordinates>
+        </Point>
+      </Placemark>
+
+      <!-- Day 1 景點 -->
+      <Placemark>
+        <name>Žižkov 電視塔</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 1 晚上散步 (19:00-20:30)\n城市夜景觀看點</description>
+        <Point>
+          <coordinates>14.4423,50.0873</coordinates>
+        </Point>
+      </Placemark>
+
+      <!-- Day 2 景點 -->
+      <Placemark>
+        <name>DOX 當代藝術中心</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 2 (10:00-13:00)\nHolešovice 區\n門票: CZK 400\n重點: 新媒體藝術、建築展</description>
+        <Point>
+          <coordinates>14.4546,50.0996</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Manifesto Market Anděl</name>
+        <styleUrl>#restaurant</styleUrl>
+        <description>Day 2 午餐 (13:00-14:30)\n設計商品市集 + 餐廳</description>
+        <Point>
+          <coordinates>14.4124,50.0716</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Forum Karlín + Kasárna Karlín</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 2 Karlín 區探索 (15:00-17:30)\n商場、設計店鋪、文創園區</description>
+        <Point>
+          <coordinates>14.4546,50.0848</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Cross Club</name>
+        <styleUrl>#venue</styleUrl>
+        <description>Day 2 晚上 (20:30-23:00)\n工業風複合空間\n演出: 實驗電子/後搖滾\nTickets: CZK 200</description>
+        <Point>
+          <coordinates>14.4499,50.0934</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>National Technical Museum</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 8 (16:00-18:30)\nLetná 區\n工業、交通、天文展覽\n門票: CZK 250</description>
+        <Point>
+          <coordinates>14.4389,50.1089</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>MeetFactory</name>
+        <styleUrl>#venue</styleUrl>
+        <description>Day 8 晚上 (20:30-23:00)\nHolešovice 區\n當代藝術中心 + 音樂場館</description>
+        <Point>
+          <coordinates>14.4481,50.0968</coordinates>
+        </Point>
+      </Placemark>
+
+      <!-- Day 10 景點 -->
+      <Placemark>
+        <name>Manifesto Market 設計選物</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 10 採購 (10:00-12:00)</description>
+        <Point>
+          <coordinates>14.4124,50.0716</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Kubista - 立體主義紀念品</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 10 採購 (10:00-12:00)\n老城區</description>
+        <Point>
+          <coordinates>14.4204,50.0841</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>老城廣場 + 天文鐘</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 10 (12:00-13:00)\n布拉格必訪景點</description>
+        <Point>
+          <coordinates>14.4204,50.0860</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>U Pinkasů - 傳統啤酒館 (1843年)</name>
+        <styleUrl>#restaurant</styleUrl>
+        <description>Day 10 午餐 (13:00-14:30)</description>
+        <Point>
+          <coordinates>14.4200,50.0848</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Vyšehrad 高堡</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 10 (14:30-16:00)\n俯瞰城市景點\n門票: CZK 200</description>
+        <Point>
+          <coordinates>14.4129,50.0647</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Speculum Alchemiae - 鍊金術博物館</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 10 私房景點 (需預約)\n門票: CZK 200</description>
+        <Point>
+          <coordinates>14.4243,50.0791</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Field / Sansho - Fine Dining 告別晚餐</name>
+        <styleUrl>#restaurant</styleUrl>
+        <description>Day 10 晚餐 (18:00-20:00)</description>
+        <Point>
+          <coordinates>14.4198,50.0890</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Náplavka 河岸酒吧區</name>
+        <styleUrl>#venue</styleUrl>
+        <description>Day 10 告別夜遊 (20:00-22:00)</description>
+        <Point>
+          <coordinates>14.4207,50.0747</coordinates>
+        </Point>
+      </Placemark>
+
+      <!-- 機場 -->
+      <Placemark>
+        <name>PRG 布拉格機場</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 1 抵達 (14:00)\nDay 11 離境 (11:00+)</description>
+        <Point>
+          <coordinates>14.2597,50.1008</coordinates>
+        </Point>
+      </Placemark>
+
+    </Folder>
+
+    <!-- ========== DRESDEN (Day 3-4) ========== -->
+    <Folder>
+      <name>🇩🇪 德勒斯登 (Dresden)</name>
+
+      <Placemark>
+        <name>住宿 - Dresden 市中心</name>
+        <styleUrl>#hotel</styleUrl>
+        <description>Day 3-4 住宿 (2晚)</description>
+        <Point>
+          <coordinates>13.7372,51.0504</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Albertinum 美術館</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 3 (12:00-15:00)\n或 HZDR 科研設施參訪</description>
+        <Point>
+          <coordinates>13.7372,51.0534</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Dresden 老城廣場 + 聖母教堂</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 3 (15:00-17:00)</description>
+        <Point>
+          <coordinates>13.7339,51.0510</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Zwinger Palace</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 4 (09:00-12:00)\n德勒斯登著名宮殿</description>
+        <Point>
+          <coordinates>13.7349,51.0556</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Dresden Castle</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 4 (14:00-16:30)\n或 Technik Museum 科技博物館</description>
+        <Point>
+          <coordinates>13.7372,51.0534</coordinates>
+        </Point>
+      </Placemark>
+
+    </Folder>
+
+    <!-- ========== BERLIN (Day 5-7) ========== -->
+    <Folder>
+      <name>🇩🇪 柏林 (Berlin)</name>
+
+      <Placemark>
+        <name>住宿 - Berlin 市中心或 Kreuzberg</name>
+        <styleUrl>#hotel</styleUrl>
+        <description>Day 5-7 住宿 (3晚)</description>
+        <Point>
+          <coordinates>13.4050,52.5200</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>East Side Gallery - 柏林牆塗鴉</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 5 (15:00-18:00)\n長1.3公里的柏林牆</description>
+        <Point>
+          <coordinates>13.4412,52.5050</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>BESSY II 同步輻射設施</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 6 (10:00-12:00)\n參觀預約: communications@helmholtz-berlin.de\n科技參訪重點</description>
+        <Point>
+          <coordinates>13.6950,52.4667</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Full Node - Web3.0 共創空間</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 6 (13:30-15:00)\n區塊鏈共創空間 (需預約drop-in)</description>
+        <Point>
+          <coordinates>13.4050,52.5050</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Urban Spree - 街頭藝術與畫廊</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 6 (15:30-17:00)</description>
+        <Point>
+          <coordinates>13.4412,52.5150</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>SO36 - Punk/Hardcore 演出場地</name>
+        <styleUrl>#venue</styleUrl>
+        <description>Day 6 (20:30-02:00)\n週一固定場次\n票價: EUR 10-25</description>
+        <Point>
+          <coordinates>13.4143,52.4951</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Musik &amp; Frieden - Metal/Rock 場地</name>
+        <styleUrl>#venue</styleUrl>
+        <description>Day 6 備選場地 (20:30-02:00)</description>
+        <Point>
+          <coordinates>13.3988,52.4754</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Hamburger Bahnhof 當代藝術館</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 7 備選方案 (10:00-13:00)\n若留在柏林</description>
+        <Point>
+          <coordinates>13.3879,52.5301</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Tempelhof 機場公園</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 7 備選方案 (14:00-17:00)\n超大城市空地、野餐、騎車</description>
+        <Point>
+          <coordinates>13.4053,52.4739</coordinates>
+        </Point>
+      </Placemark>
+
+    </Folder>
+
+    <!-- ========== VIENNA (Day 7) ========== -->
+    <Folder>
+      <name>🇦🇹 維也納 (Vienna) - 快閃一日</name>
+
+      <Placemark>
+        <name>mumok 現代美術館</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 7 (13:00-16:00)\n維也納快閃重點\n門票: EUR 15</description>
+        <Point>
+          <coordinates>13.1955,48.2117</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Leopold Museum</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 7 備選 (13:00-16:00)\nEgon Schiele 作品</description>
+        <Point>
+          <coordinates>13.1979,48.2104</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Café Westend</name>
+        <styleUrl>#restaurant</styleUrl>
+        <description>Day 7 咖啡時光 (16:00-17:00)</description>
+        <Point>
+          <coordinates>13.1890,48.2020</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Naschmarkt - 維也納市集</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 7 (17:00-18:00)\n著名市集</description>
+        <Point>
+          <coordinates>13.1960,48.2005</coordinates>
+        </Point>
+      </Placemark>
+
+    </Folder>
+
+    <!-- ========== BRNO (Day 9 備選) ========== -->
+    <Folder>
+      <name>🇨🇿 布爾諾 (Brno) - 可選參訪</name>
+
+      <Placemark>
+        <name>CEITEC 中央歐洲技術研究院</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 9 (12:30-16:00)\n生物科技、材料科學、奈米技術\n預約: info@ceitec.cz</description>
+        <Point>
+          <coordinates>16.5735,49.2109</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>Villa Tugendhat</name>
+        <styleUrl>#landmark</styleUrl>
+        <description>Day 9 (16:00-17:00)\nBrno 建築景點 (外觀)</description>
+        <Point>
+          <coordinates>16.6079,49.2044</coordinates>
+        </Point>
+      </Placemark>
+
+    </Folder>
+
+  </Document>
+</kml>

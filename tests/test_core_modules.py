@@ -63,10 +63,11 @@ class TestFlaskAppFactory:
 
     def test_app_context(self):
         """Test app context functionality"""
+        from flask import current_app
         app = create_app(testing=True)
         
         with app.app_context():
-            assert app == Flask.current_app
+            assert app == current_app
 
 
 class TestModernVisualEngine:

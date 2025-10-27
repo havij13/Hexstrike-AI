@@ -32,40 +32,28 @@ class TestAuthMiddleware:
         app.config['DEBUG_MODE'] = True
         return app
 
-    def test_get_token_from_header_valid(self):
+    def test_get_token_from_header_valid(self, app):
         """Test extracting valid token from header"""
-        with patch('api.middleware.auth_middleware.request') as mock_request:
-            mock_request.headers.get.return_value = 'Bearer test_token_123'
-            
+        with app.test_request_context(headers={'Authorization': 'Bearer test_token_123'}):
             token = get_token_from_header()
-            
             assert token == 'test_token_123'
 
-    def test_get_token_from_header_no_header(self):
+    def test_get_token_from_header_no_header(self, app):
         """Test extracting token when no header present"""
-        with patch('api.middleware.auth_middleware.request') as mock_request:
-            mock_request.headers.get.return_value = None
-            
+        with app.test_request_context():
             token = get_token_from_header()
-            
             assert token is None
 
-    def test_get_token_from_header_invalid_format(self):
+    def test_get_token_from_header_invalid_format(self, app):
         """Test extracting token with invalid format"""
-        with patch('api.middleware.auth_middleware.request') as mock_request:
-            mock_request.headers.get.return_value = 'InvalidFormat token'
-            
+        with app.test_request_context(headers={'Authorization': 'InvalidFormat token'}):
             token = get_token_from_header()
-            
             assert token is None
 
-    def test_get_token_from_header_missing_token(self):
+    def test_get_token_from_header_missing_token(self, app):
         """Test extracting token when Bearer keyword only"""
-        with patch('api.middleware.auth_middleware.request') as mock_request:
-            mock_request.headers.get.return_value = 'Bearer'
-            
+        with app.test_request_context(headers={'Authorization': 'Bearer'}):
             token = get_token_from_header()
-            
             assert token is None
 
     def test_verify_jwt_token_valid_mock(self, app):

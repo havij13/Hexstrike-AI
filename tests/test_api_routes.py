@@ -152,14 +152,15 @@ class TestScanRoutes:
         assert 'deleted successfully' in data['message']
 
     @patch('api.routes.scans.bugbounty_agent')
-    def test_create_bugbounty_workflow_success(self, mock_agent, client, auth_headers):
+    @patch('api.routes.scans.asyncio.run')
+    def test_create_bugbounty_workflow_success(self, mock_asyncio_run, mock_agent, client, auth_headers):
         """Test successful bug bounty workflow creation"""
         # Mock agent response
         mock_result = Mock()
         mock_result.success = True
         mock_result.data = {'workflow': 'reconnaissance', 'phases': []}
         mock_result.message = 'Workflow created'
-        mock_agent.execute.return_value = mock_result
+        mock_asyncio_run.return_value = mock_result
         
         workflow_data = {
             'target': 'example.com',
@@ -192,14 +193,15 @@ class TestScanRoutes:
         assert 'Target is required' in data['error']
 
     @patch('api.routes.scans.ctf_agent')
-    def test_create_ctf_workflow_success(self, mock_agent, client, auth_headers):
+    @patch('api.routes.scans.asyncio.run')
+    def test_create_ctf_workflow_success(self, mock_asyncio_run, mock_agent, client, auth_headers):
         """Test successful CTF workflow creation"""
         # Mock agent response
         mock_result = Mock()
         mock_result.success = True
         mock_result.data = {'challenge': 'web', 'tools': ['sqlmap']}
         mock_result.message = 'CTF workflow created'
-        mock_agent.execute.return_value = mock_result
+        mock_asyncio_run.return_value = mock_result
         
         workflow_data = {
             'target': 'https://ctf.example.com/challenge1',
