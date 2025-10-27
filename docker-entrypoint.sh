@@ -57,5 +57,5 @@ else
     python3 hexstrike_server.py --port "$HEXSTRIKE_PORT" --host "$HEXSTRIKE_HOST" &
 fi
 
-PID=$!
-wait $PID
+
+

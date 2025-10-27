@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   hexstrike:
     build:
@@ -38,4 +36,6 @@ services:
 networks:
   hexstrike-network:
     driver: bridge
+
+
 

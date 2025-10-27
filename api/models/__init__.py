@@ -1,13 +1,15 @@
 """
-HexStrike AI - API Models
-Contains all Flask-RESTX models for request/response validation and Swagger documentation.
+API Models
+
+This module contains data models and serializers for the API layer.
 """
 
-from flask_restx import fields
+from .user import User
+from .scan import Scan
+from .vulnerability import Vulnerability
 
-# Import all models
-from .tool_models import *
-from .ai_models import *
-from .process_models import *
-
-__all__ = ['api', 'tool_models', 'ai_models', 'process_models']
+__all__ = [
+    'User',
+    'Scan', 
+    'Vulnerability'
+]
