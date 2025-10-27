@@ -35,7 +35,8 @@
   - Move BrowserAgent to agents/browser_agent.py
   - _Requirements: 1.1, 1.2_
 
-- [-] 1.3 Modularize security tools
+- [x] 1.3 Modularize security tools
+
 
   - Create tools/base_tool.py interface
   - Organize tools by category (network/, web/, binary/, cloud/)
@@ -43,14 +44,21 @@
   - Implement tool registry and discovery system
   - _Requirements: 1.1, 1.2_
 
-- [ ] 1.4 Restructure API layer
+- [x] 1.4 Restructure API layer
+
+
   - Create api/routes/ directory with categorized route handlers
   - Implement api/middleware/ for authentication, CORS, rate limiting
   - Create api/models/ for data models and serializers
   - Set up proper error handling and response formatting
   - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 1.5 Write unit tests for modular components
+
+
+- [-] 1.5 Write unit tests for modular components
+
+
+
   - Create test suite for core modules
   - Write tests for agent interfaces and implementations
   - Test tool abstractions and implementations
