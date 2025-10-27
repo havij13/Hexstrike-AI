@@ -1,306 +1,298 @@
-# HexStrike AI Grafana Infrastructure
+# HexStrike AI Grafana Monitoring Setup
 
-This directory contains the complete Grafana monitoring infrastructure for HexStrike AI, including dashboards, data sources, and configuration files.
+This directory contains the Grafana configuration and dashboards for HexStrike AI system monitoring.
+
+## Overview
+
+The monitoring system provides three main dashboards:
+
+1. **System Overview** - High-level system health and activity metrics
+2. **Performance Monitoring** - API response times and performance metrics  
+3. **Resource Utilization** - CPU, memory, disk, and network usage
+
+## Directory Structure
+
+```
+docker/grafana/
+├── README.md                           # This file
+├── Dockerfile                          # Grafana container build
+├── grafana.ini                         # Grafana configuration
+└── provisioning/                       # Auto-provisioning configs
+    ├── datasources/
+    │   └── prometheus.yml              # Prometheus datasource config
+    └── dashboards/
+        ├── dashboard.yml               # Dashboard provider config
+        └── system/                     # System monitoring dashboards
+            ├── overview-dashboard.json
+            ├── performance-dashboard.json
+            └── resource-utilization-dashboard.json
+```
 
 ## Quick Start
 
-### 1. Start the Infrastructure
+### 1. Start Grafana with Docker Compose
 
 ```bash
-# Start all monitoring services
+# Start Grafana and Prometheus
 docker-compose -f docker-compose.grafana.yml up -d
 
-# Or use the setup script
-./scripts/setup-grafana.sh setup
+# Check service status
+docker-compose -f docker-compose.grafana.yml ps
 ```
 
-### 2. Access Services
+### 2. Deploy Dashboards
 
-- **Grafana Dashboard**: http://localhost:3000 (admin/admin123)
-- **Prometheus**: http://localhost:9090
-- **Node Exporter**: http://localhost:9100/metrics
-- **cAdvisor**: http://localhost:8080
-
-### 3. Verify Setup
-
+Using Python script:
 ```bash
-# Check service health
-./scripts/setup-grafana.sh status
+# Deploy all system monitoring dashboards
+python scripts/deploy-dashboards.py deploy
 
-# Or use Python health checker
-python monitoring/health_checks.py
+# Validate deployment
+python scripts/deploy-dashboards.py validate
+
+# Show dashboard URLs
+python scripts/deploy-dashboards.py urls
 ```
 
-## Architecture
+Using PowerShell (Windows):
+```powershell
+# Deploy dashboards
+.\scripts\deploy-dashboards.ps1 deploy
 
-### Services
+# Check Grafana health
+.\scripts\deploy-dashboards.ps1 health
+```
 
-1. **Grafana** (Port 3000)
-   - Main dashboard and visualization platform
-   - Pre-configured with Prometheus data source
-   - Organized dashboards for different aspects of HexStrike AI
+### 3. Access Dashboards
 
-2. **Prometheus** (Port 9090)
-   - Metrics collection and storage
-   - Scrapes metrics from HexStrike AI application
-   - Configured with alerting rules
+Default Grafana access:
+- URL: http://localhost:3000
+- Username: admin
+- Password: admin (change on first login)
 
-3. **Node Exporter** (Port 9100)
-   - System-level metrics (CPU, memory, disk, network)
-   - Provides host machine monitoring
+Dashboard URLs:
+- System Overview: http://localhost:3000/d/hexstrike-overview
+- Performance Monitoring: http://localhost:3000/d/hexstrike-performance  
+- Resource Utilization: http://localhost:3000/d/hexstrike-resources
 
-4. **cAdvisor** (Port 8080)
-   - Container-level metrics
-   - Docker container resource usage monitoring
+## Dashboard Details
 
-### Dashboard Organization
+### System Overview Dashboard
 
-Dashboards are organized into folders:
+**Purpose**: Provides a high-level view of system health and activity
 
-- **HexStrike System**: Overall system health and performance
-- **Security Scans**: Scan activity, progress, and results
-- **Tool Performance**: Individual security tool metrics
-- **User Analytics**: User activity and authentication metrics
+**Key Metrics**:
+- CPU usage percentage
+- Memory usage gauge
+- Active scans, connections, and sessions
+- Service health status (Application, Grafana)
+- HTTP request rate
+- Scan request rate
+
+**Use Cases**:
+- Quick system health check
+- Monitoring overall system activity
+- Identifying service outages
+
+### Performance Monitoring Dashboard
+
+**Purpose**: Monitors API performance and response times
+
+**Key Metrics**:
+- API response time percentiles (50th, 95th, 99th)
+- Average response time by endpoint
+- HTTP request rate by status code (2xx, 4xx, 5xx)
+- API success rate gauge
+- Database query performance
+- Database connection count
+
+**Use Cases**:
+- Identifying performance bottlenecks
+- Monitoring API health
+- Database performance analysis
+- SLA monitoring
+
+### Resource Utilization Dashboard
+
+**Purpose**: Tracks system resource consumption
+
+**Key Metrics**:
+- CPU utilization over time
+- Memory usage (used, total, available)
+- Memory and CPU usage gauges
+- Disk usage by device
+- Network I/O (bytes sent/received)
+- Disk I/O operations
+
+**Use Cases**:
+- Capacity planning
+- Resource optimization
+- Performance troubleshooting
+- Infrastructure monitoring
 
 ## Configuration
 
 ### Environment Variables
 
-Key environment variables for customization:
+Configure Grafana using environment variables:
 
 ```bash
-# Grafana Configuration
+# Basic configuration
 GRAFANA_ADMIN_USER=admin
-GRAFANA_ADMIN_PASSWORD=admin123
-GRAFANA_DOMAIN=localhost
-GRAFANA_ROOT_URL=http://localhost:3000
+GRAFANA_ADMIN_PASSWORD=your_secure_password
+GRAFANA_SECRET_KEY=your_secret_key
+GRAFANA_DOMAIN=your-domain.com
 
-# Auth0 Integration (Optional)
-GRAFANA_AUTH0_ENABLED=false
-GRAFANA_AUTH0_CLIENT_ID=your_client_id
-GRAFANA_AUTH0_CLIENT_SECRET=your_client_secret
-GRAFANA_AUTH0_DOMAIN=your_domain.auth0.com
+# Auth0 integration (optional)
+GRAFANA_AUTH0_ENABLED=true
+GRAFANA_AUTH0_CLIENT_ID=your_auth0_client_id
+GRAFANA_AUTH0_CLIENT_SECRET=your_auth0_client_secret
+GRAFANA_AUTH0_DOMAIN=your-auth0-domain.auth0.com
 
-# Prometheus
+# Prometheus configuration
 PROMETHEUS_URL=http://prometheus:9090
 ```
-
-### Auth0 Integration
-
-To enable Auth0 SSO for Grafana:
-
-1. Set up Auth0 application with appropriate callback URLs
-2. Configure environment variables:
-   ```bash
-   GRAFANA_AUTH0_ENABLED=true
-   GRAFANA_AUTH0_CLIENT_ID=your_client_id
-   GRAFANA_AUTH0_CLIENT_SECRET=your_client_secret
-   GRAFANA_AUTH0_DOMAIN=your_domain.auth0.com
-   ```
-3. Restart Grafana service
 
 ### Custom Dashboards
 
 To add custom dashboards:
 
-1. Create JSON dashboard files
-2. Place them in the appropriate provisioning directory:
+1. Create dashboard JSON file in appropriate folder:
    - System dashboards: `provisioning/dashboards/system/`
-   - Scan dashboards: `provisioning/dashboards/scans/`
+   - Security dashboards: `provisioning/dashboards/scans/`
    - Tool dashboards: `provisioning/dashboards/tools/`
    - User dashboards: `provisioning/dashboards/users/`
-3. Restart Grafana to load new dashboards
 
-## Metrics Integration
+2. Update `monitoring/dashboard_manager.py` to include new dashboard
 
-### HexStrike AI Metrics
+3. Deploy using the dashboard manager scripts
 
-The application exposes metrics on `/metrics` endpoint:
+### Data Sources
 
-```python
-from monitoring.metrics import metrics_collector
-
-# Record scan metrics
-metrics_collector.record_scan_request('nmap', 'success', 'network')
-metrics_collector.record_scan_duration('nmap', 30.5, 'network')
-
-# Record vulnerability findings
-metrics_collector.record_vulnerability('high', 'nuclei', 'xss', 7.5)
-
-# Update system health
-metrics_collector.update_app_health(True)
-```
-
-### Custom Metrics
-
-Add custom metrics by extending the MetricsCollector:
-
-```python
-from prometheus_client import Counter
-
-# Define custom metric
-custom_metric = Counter('hexstrike_custom_events_total', 'Custom events', ['event_type'])
-
-# Record events
-custom_metric.labels(event_type='scan_completed').inc()
-```
-
-## Alerting
-
-### Prometheus Alerts
-
-Alert rules are defined in `prometheus/rules/hexstrike_alerts.yml`:
-
-- System health alerts (service down, high resource usage)
-- Security-specific alerts (scan failures, high error rates)
-- Performance alerts (slow response times, timeouts)
-
-### Grafana Notifications
-
-Configure notification channels in Grafana:
-
-1. Go to Alerting > Notification channels
-2. Add channels for Slack, email, webhooks, etc.
-3. Configure alert rules to use notification channels
+The system automatically configures:
+- **Prometheus**: Primary metrics data source
+- **Prometheus-LongTerm**: For historical data (if using Thanos)
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Grafana won't start**
-   ```bash
-   # Check logs
-   docker-compose -f docker-compose.grafana.yml logs grafana
-   
-   # Verify permissions
-   sudo chown -R 472:472 grafana_data/
-   ```
+**Dashboard not loading**:
+```bash
+# Check Grafana logs
+docker logs hexstrike-grafana
 
-2. **Prometheus can't scrape metrics**
-   ```bash
-   # Check Prometheus targets
-   curl http://localhost:9090/api/v1/targets
-   
-   # Verify HexStrike AI metrics endpoint
-   curl http://localhost:5000/metrics
-   ```
+# Verify Prometheus connectivity
+curl http://localhost:9090/-/healthy
+```
 
-3. **No data in dashboards**
-   ```bash
-   # Check data source connection
-   curl -u admin:admin123 http://localhost:3000/api/datasources
-   
-   # Test Prometheus query
-   curl "http://localhost:9090/api/v1/query?query=up"
-   ```
+**Missing metrics**:
+```bash
+# Check if HexStrike AI is exposing metrics
+curl http://localhost:8000/metrics
+
+# Verify Prometheus is scraping
+curl http://localhost:9090/api/v1/targets
+```
+
+**Authentication issues**:
+```bash
+# Reset admin password
+docker exec -it hexstrike-grafana grafana-cli admin reset-admin-password newpassword
+```
 
 ### Health Checks
 
 Use the built-in health checker:
 
-```bash
-# Check all services
-python monitoring/health_checks.py
-
-# Check specific service
-python -c "
+```python
 from monitoring.health_checks import HealthChecker
+
 checker = HealthChecker()
-health = checker.check_grafana_health()
-print(f'Grafana: {health.status.value} - {health.message}')
-"
+health = checker.get_overall_health()
+print(f"System health: {health['overall_status']}")
 ```
 
-### Performance Tuning
+### Dashboard Validation
 
-For high-load environments:
+Validate dashboard deployment:
 
-1. **Increase Prometheus retention**:
-   ```yaml
-   # In docker-compose.grafana.yml
-   command:
-     - '--storage.tsdb.retention.time=30d'
-   ```
+```python
+from monitoring.dashboard_manager import DashboardManager
 
-2. **Configure Grafana caching**:
-   ```ini
-   # In grafana.ini
-   [caching]
-   enabled = true
-   ```
+manager = DashboardManager()
+validation = manager.validate_dashboards()
 
-3. **Optimize dashboard queries**:
-   - Use appropriate time ranges
-   - Limit data points with `$__interval`
-   - Use recording rules for complex queries
-
-## Security
-
-### Access Control
-
-- Default admin credentials should be changed in production
-- Use Auth0 or LDAP for enterprise authentication
-- Configure role-based access control (RBAC)
-- Enable HTTPS in production environments
-
-### Network Security
-
-- Use reverse proxy (nginx/traefik) for SSL termination
-- Restrict access to monitoring ports
-- Configure firewall rules appropriately
-- Use VPN for remote access to monitoring infrastructure
-
-## Backup and Recovery
-
-### Grafana Backup
-
-```bash
-# Backup Grafana database and configuration
-docker exec hexstrike-grafana grafana-cli admin export-dashboard > backup.json
-
-# Backup persistent volumes
-docker run --rm -v grafana_data:/data -v $(pwd):/backup alpine tar czf /backup/grafana-backup.tar.gz /data
+if validation["valid"]:
+    print("All dashboards are properly deployed")
+else:
+    print(f"Issues found: {validation['summary']}")
 ```
 
-### Prometheus Backup
+## Metrics Reference
 
-```bash
-# Backup Prometheus data
-docker run --rm -v prometheus_data:/data -v $(pwd):/backup alpine tar czf /backup/prometheus-backup.tar.gz /data
-```
+### Application Metrics
 
-## Monitoring Best Practices
+| Metric | Type | Description |
+|--------|------|-------------|
+| `hexstrike_cpu_usage_percent` | Gauge | CPU usage percentage |
+| `hexstrike_memory_usage_bytes` | Gauge | Memory usage in bytes |
+| `hexstrike_memory_total_bytes` | Gauge | Total memory in bytes |
+| `hexstrike_active_scans` | Gauge | Number of active scans |
+| `hexstrike_active_connections` | Gauge | Number of active connections |
+| `hexstrike_active_sessions` | Gauge | Number of active user sessions |
+| `hexstrike_app_health` | Gauge | Application health (1=healthy, 0=unhealthy) |
+| `hexstrike_grafana_health` | Gauge | Grafana health (1=healthy, 0=unhealthy) |
 
-1. **Dashboard Design**:
-   - Use consistent color schemes
-   - Group related metrics together
-   - Include context and documentation
-   - Set appropriate refresh intervals
+### HTTP Metrics
 
-2. **Alerting Strategy**:
-   - Define clear severity levels
-   - Avoid alert fatigue with proper thresholds
-   - Include runbook links in alert descriptions
-   - Test alert delivery regularly
+| Metric | Type | Labels | Description |
+|--------|------|--------|-------------|
+| `hexstrike_http_requests_total` | Counter | method, endpoint, status | Total HTTP requests |
+| `hexstrike_http_request_duration_seconds` | Histogram | method, endpoint | HTTP request duration |
 
-3. **Metrics Collection**:
-   - Use appropriate metric types (counter, gauge, histogram)
-   - Include relevant labels for filtering
-   - Avoid high-cardinality labels
-   - Document custom metrics
+### Security Metrics
 
-4. **Performance**:
-   - Monitor monitoring system resource usage
-   - Set appropriate retention policies
-   - Use recording rules for expensive queries
-   - Regular cleanup of old data
+| Metric | Type | Labels | Description |
+|--------|------|--------|-------------|
+| `hexstrike_scan_requests_total` | Counter | tool, status, target_type | Total scan requests |
+| `hexstrike_scan_duration_seconds` | Histogram | tool, target_type | Scan duration |
+| `hexstrike_vulnerabilities_found_total` | Counter | severity, tool, type | Total vulnerabilities found |
+
+### Database Metrics
+
+| Metric | Type | Labels | Description |
+|--------|------|--------|-------------|
+| `hexstrike_db_connections` | Gauge | - | Number of database connections |
+| `hexstrike_db_query_duration_seconds` | Histogram | operation | Database query duration |
+
+## Security Considerations
+
+1. **Change default credentials** immediately after setup
+2. **Enable HTTPS** in production environments
+3. **Configure proper authentication** (Auth0, LDAP, etc.)
+4. **Restrict network access** to Grafana port (3000)
+5. **Regular security updates** for Grafana and dependencies
+6. **Monitor access logs** for suspicious activity
+
+## Performance Optimization
+
+1. **Data retention**: Configure appropriate retention policies
+2. **Query optimization**: Use efficient Prometheus queries
+3. **Dashboard refresh rates**: Balance between real-time data and performance
+4. **Resource limits**: Set appropriate CPU/memory limits for containers
+5. **Caching**: Enable Grafana caching for better performance
 
 ## Support
 
 For issues and questions:
-
 1. Check the troubleshooting section above
-2. Review logs: `docker-compose -f docker-compose.grafana.yml logs`
-3. Verify configuration with health checks
-4. Consult Grafana and Prometheus documentation
-5. Open an issue in the HexStrike AI repository
+2. Review Grafana logs: `docker logs hexstrike-grafana`
+3. Validate metrics exposure: `curl http://localhost:8000/metrics`
+4. Test Prometheus connectivity: `curl http://localhost:9090/-/healthy`
+
+## References
+
+- [Grafana Documentation](https://grafana.com/docs/)
+- [Prometheus Documentation](https://prometheus.io/docs/)
+- [HexStrike AI Monitoring Guide](../../monitoring/README.md)

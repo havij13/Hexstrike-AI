@@ -5,7 +5,7 @@ Prometheus metrics collection for HexStrike AI monitoring
 import time
 import logging
 from typing import Dict, Any, List, Optional
-from prometheus_client import Counter, Histogram, Gauge, Info, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import Counter, Histogram, Gauge, Info, generate_latest, CONTENT_TYPE_LATEST, CollectorRegistry, REGISTRY
 from flask import Response
 import psutil
 import threading
@@ -17,15 +17,26 @@ logger = logging.getLogger(__name__)
 class MetricsCollector:
     """Prometheus metrics collector for HexStrike AI"""
     
+    _instance = None
+    _initialized = False
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(MetricsCollector, cls).__new__(cls)
+        return cls._instance
+    
     def __init__(self):
-        # Initialize metrics
-        self._init_system_metrics()
-        self._init_application_metrics()
-        self._init_security_metrics()
-        self._init_grafana_metrics()
-        
-        # Start background metric collection
-        self._start_background_collection()
+        if not self._initialized:
+            # Initialize metrics
+            self._init_system_metrics()
+            self._init_application_metrics()
+            self._init_security_metrics()
+            self._init_grafana_metrics()
+            
+            # Start background metric collection
+            self._start_background_collection()
+            
+            MetricsCollector._initialized = True
     
     def _init_system_metrics(self):
         """Initialize system-level metrics"""
@@ -357,7 +368,7 @@ class MetricsCollector:
     
     def get_metrics(self) -> str:
         """Get all metrics in Prometheus format"""
-        return generate_latest()
+        return generate_latest().decode('utf-8')
     
     def get_metrics_response(self) -> Response:
         """Get Flask response with metrics"""
@@ -365,6 +376,17 @@ class MetricsCollector:
     
     def get_metrics_summary(self) -> Dict[str, Any]:
         """Get summary of key metrics"""
+        # Helper function to safely get counter values
+        def get_counter_total(counter):
+            try:
+                total = 0
+                for family in counter.collect():
+                    for sample in family.samples:
+                        total += sample.value
+                return total
+            except:
+                return 0
+        
         return {
             "system": {
                 "cpu_usage": self.cpu_usage._value._value,
@@ -373,9 +395,9 @@ class MetricsCollector:
                 "active_connections": self.active_connections._value._value
             },
             "security": {
-                "total_scans": sum(family.samples for family in self.scan_requests_total.collect()),
-                "total_vulnerabilities": sum(family.samples for family in self.vulnerabilities_found_total.collect()),
-                "auth_failures": sum(family.samples for family in self.auth_failures_total.collect())
+                "total_scans": get_counter_total(self.scan_requests_total),
+                "total_vulnerabilities": get_counter_total(self.vulnerabilities_found_total),
+                "auth_failures": get_counter_total(self.auth_failures_total)
             },
             "grafana": {
                 "health": self.grafana_health._value._value,
