@@ -1,63 +1,147 @@
 """
-Swagger/OpenAPI Configuration for HexStrike AI API
+HexStrike AI - Swagger Configuration
+Configuration for OpenAPI/Swagger documentation.
 """
 
-from flask_restx import Api
+SWAGGER_CONFIG = {
+    'title': 'HexStrike AI API',
+    'version': '1.0.0',
+    'description': '''
+# HexStrike AI - Advanced Penetration Testing Framework
 
-# API 授權配置
-authorizations = {
-    'apikey': {
+A comprehensive security testing platform with 150+ security tools and 12+ AI agents.
+
+## Features
+- **Network Reconnaissance**: Nmap, Rustscan, Masscan, and more
+- **Web Application Security**: Nuclei, SQLMap, Gobuster, and more
+- **Authentication Testing**: Hydra, John, Hashcat, and more
+- **Binary Analysis**: Ghidra, Radare2, GDB, and more
+- **Cloud Security**: Prowler, Trivy, Kube-Hunter, and more
+- **AI Agents**: 12+ specialized AI agents for penetration testing
+
+## Getting Started
+
+1. **Authentication**: No authentication required for basic usage
+2. **Rate Limiting**: 100 requests per minute per IP
+3. **Response Format**: All responses follow JSON format
+
+## API Endpoints
+
+### Tools
+- `POST /api/v1/tools/{tool_name}` - Execute a security tool
+- `GET /api/v1/tools` - List all available tools
+
+### AI Agents
+- `POST /api/v1/ai/chat` - Interact with AI agents
+- `GET /api/v1/ai/agents` - List available AI agents
+
+### Process Management
+- `GET /api/v1/processes` - List running processes
+- `POST /api/v1/processes/{pid}/stop` - Stop a process
+
+## Examples
+
+### Execute Nmap Scan
+```bash
+curl -X POST https://api.hexstrike.ai/api/v1/tools/nmap \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "target": "example.com",
+    "scan_type": "syn",
+    "ports": "1-1000"
+  }'
+```
+
+### Execute Nuclei Scan
+```bash
+curl -X POST https://api.hexstrike.ai/api/v1/tools/nuclei \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "target": "https://example.com",
+    "severity": "high",
+    "tags": "xss,sqli"
+  }'
+```
+
+## Documentation
+
+For more information, visit:
+- **Documentation**: https://docs.hexstrike.ai
+- **GitHub**: https://github.com/hexstrike-ai
+- **Support**: support@hexstrike.ai
+    ''',
+    'termsOfService': 'https://hexstrike.ai/terms',
+    'contact': {
+        'name': 'HexStrike AI Support',
+        'email': 'support@hexstrike.ai',
+        'url': 'https://hexstrike.ai/contact'
+    },
+    'license': {
+        'name': 'MIT License',
+        'url': 'https://opensource.org/licenses/MIT'
+    },
+    'servers': [
+        {
+            'url': 'https://hexstrike-ai-v6-0.onrender.com',
+            'description': 'Production Server'
+        },
+        {
+            'url': 'http://localhost:8888',
+            'description': 'Local Development Server'
+        }
+    ],
+    'tags': [
+        {
+            'name': 'tools',
+            'description': 'Security tools operations (Nmap, Nuclei, SQLMap, etc.)'
+        },
+        {
+            'name': 'ai',
+            'description': 'AI agents and intelligent automation'
+        },
+        {
+            'name': 'processes',
+            'description': 'Process management and monitoring'
+        }
+    ]
+}
+
+# Security schemes for API documentation
+SECURITY_DEFINITIONS = {
+    'ApiKeyAuth': {
         'type': 'apiKey',
         'in': 'header',
-        'name': 'X-API-KEY'
+        'name': 'X-API-Key'
+    },
+    'BearerAuth': {
+        'type': 'http',
+        'scheme': 'bearer',
+        'bearerFormat': 'JWT'
     }
 }
 
-# 創建 Flask-RESTX API 實例
-api = Api(
-    version='6.0.0',
-    title='HexStrike AI API',
-    description='''
-    # HexStrike AI - Advanced Penetration Testing Framework
-    
-    ## 功能特色
-    
-    - **AI 驅動的滲透測試** - 智能目標分析和工具選擇
-    - **150+ 安全工具集成** - 網絡、Web、二進制、雲端安全工具
-    - **實時進程監控** - 完整的執行狀態追蹤
-    - **智能緩存系統** - 優化性能和資源使用
-    - **Bug Bounty 工作流** - 專業的安全測試流程
-    
-    ## 認證
-    
-    使用 API Key 進行認證，在請求頭中包含 `X-API-KEY`。
-    
-    ## 響應格式
-    
-    所有 API 端點都返回統一的 JSON 響應格式：
-    
-    ```json
-    {
-      "success": true,
-      "data": { ... },
-      "execution_time": 1.23,
-      "timestamp": "2025-10-24T12:00:00Z",
-      "cached": false
+# Response models
+RESPONSE_MODELS = {
+    'success': {
+        'description': 'Success response',
+        'schema': {
+            'type': 'object',
+            'properties': {
+                'success': {'type': 'boolean'},
+                'message': {'type': 'string'},
+                'data': {'type': 'object'}
+            }
+        }
+    },
+    'error': {
+        'description': 'Error response',
+        'schema': {
+            'type': 'object',
+            'properties': {
+                'success': {'type': 'boolean'},
+                'error': {'type': 'string'},
+                'details': {'type': 'object'}
+            }
+        }
     }
-    ```
-    ''',
-    doc='/api/docs/',
-    authorizations=authorizations,
-    security='apikey',
-    contact='HexStrike AI Team',
-    contact_email='support@hexstrike.ai',
-    contact_url='https://hexstrike.ai',
-    license='MIT',
-    license_url='https://opensource.org/licenses/MIT'
-)
-
-# 添加自定義標籤
-api.add_namespace = lambda ns: api.add_namespace(ns, path='/api')
-
-# OpenAPI JSON 端點將由 Flask-RESTX 自動生成
-# 訪問 /api/swagger.json 獲取 OpenAPI 3.0 規範
+}
