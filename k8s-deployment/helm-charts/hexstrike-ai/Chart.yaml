@@ -1,0 +1,20 @@
+apiVersion: v2
+name: hexstrike-ai
+description: HexStrike AI - Advanced Cybersecurity Automation Platform
+type: application
+version: 6.0.0
+appVersion: "6.0.0"
+home: https://github.com/0x4m4/hexstrike-ai
+sources:
+  - https://github.com/0x4m4/hexstrike-ai
+maintainers:
+  - name: HexStrike Team
+    email: team@hexstrike.ai
+keywords:
+  - security
+  - penetration-testing
+  - cybersecurity
+  - ai
+  - mcp
+annotations:
+  category: Security

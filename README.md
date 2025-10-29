@@ -6,6 +6,7 @@
 ### AI-Powered MCP Cybersecurity Automation Platform
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://hub.docker.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Security](https://img.shields.io/badge/Security-Penetration%20Testing-red.svg)](https://github.com/0x4m4/hexstrike-ai)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-purple.svg)](https://github.com/0x4m4/hexstrike-ai)
@@ -16,7 +17,33 @@
 
 **Advanced AI-powered penetration testing MCP framework with 150+ security tools and 12+ autonomous AI agents**
 
-[📋 What's New](#whats-new-in-v60) • [🏗️ Architecture](#architecture-overview) • [🚀 Installation](#installation) • [🛠️ Features](#features) • [🤖 AI Agents](#ai-agents) • [📡 API Reference](#api-reference)
+[⚡ Quick Start](QUICKSTART.md) • [🐳 Docker Guide](DOCKER.md) • [🏗️ Architecture](#architecture-overview) • [🚀 Installation](#installation) • [🛠️ Features](#features) • [🤖 AI Agents](#ai-agents) • [📡 API Reference](#api-reference)
+
+---
+
+## ⚡ Quick Start (Docker)
+
+### 🐳 Docker Hub (Recommended - Fastest Setup)
+
+```bash
+# Pull and run from Docker Hub (no build required)
+docker run -d -p 8888:8888 --name hexstrike dennisleetw/hexstrike-ai:latest
+
+# Access at http://localhost:8888
+# Check logs: docker logs -f hexstrike
+```
+
+### 🔨 Local Build (Development)
+
+```bash
+# One-command deployment (requires Docker)
+git clone https://github.com/0x4m4/hexstrike-ai.git && cd hexstrike-ai
+make deploy-local  # Build, run, and test in one command
+
+# Access at http://localhost:8888
+```
+
+📖 **New to Docker?** Read the [Quick Start Guide](QUICKSTART.md) | Full [Docker Deployment Guide](DOCKER.md)
 
 </div>
 
@@ -97,6 +124,24 @@ graph TD
     style D fill:#ff8a80,stroke:#b71c1c,stroke-width:2px,color:#fffde7
     style E fill:#ff8a80,stroke:#b71c1c,stroke-width:2px,color:#fffde7
 ```
+
+How to Use  HexStrike AI
+Method 1: Web Interface (After next deployment)
+Navigate to: https://hexstrike-ai-v6-0.onrender.com
+Use the interactive dashboard for real-time security testing
+Method 2: Direct API Usage (Available now)
+Base URL: https://hexstrike-ai-v6-0.onrender.com
+Use curl commands or custom clients
+Reference API_USAGE.md for complete documentation
+Method 3: AI Client Integration (Ready to configure)
+Follow AI_CLIENT_SETUP_GUIDE.md for your specific AI client
+Use natural language prompts for security testing
+Example: "I'm authorized to test example.com. Please use hexstrike AI tools to perform a security assessment."
+📚 Documentation Available
+API_USAGE.md - Complete API documentation with examples
+AI_CLIENT_SETUP_GUIDE.md - AI client integration guide
+USAGE_EXAMPLES.md - Practical examples for all methods
+DEPLOYMENT_TEST_RESULTS.md - Test results and quick start guide
 
 ### How It Works
 
@@ -212,10 +257,373 @@ curl -X POST http://localhost:8888/api/intelligence/analyze-target \
 
 ---
 
-## AI Client Integration Setup
+## Docker Deployment
 
-### Claude Desktop Integration or Cursor
+### Quick Start with Docker
 
+HexStrike AI v6.0 now supports Docker deployment with pre-installed 150+ security tools for instant setup.
+
+#### 🚀 Docker Hub (Recommended - No Build Required)
+
+**English:**
+```bash
+# Pull and run the latest image from Docker Hub
+docker run -d -p 8888:8888 --name hexstrike dennisleetw/hexstrike-ai:latest
+
+# Check server health
+curl http://localhost:8888/health
+
+# View logs
+docker logs -f hexstrike
+
+# Stop the container
+docker stop hexstrike && docker rm hexstrike
+```
+
+**中文說明：**
+```bash
+# 從 Docker Hub 拉取並運行最新映像（無需構建）
+docker run -d -p 8888:8888 --name hexstrike dennisleetw/hexstrike-ai:latest
+
+# 檢查服務器健康狀態
+curl http://localhost:8888/health
+
+# 查看日誌
+docker logs -f hexstrike
+
+# 停止容器
+docker stop hexstrike && docker rm hexstrike
+```
+
+#### 🔨 Build and Run Locally (Development)
+
+**English:**
+```bash
+# 1. Build the Docker image
+docker build -t hexstrike-ai:v6.0 .
+
+# 2. Run the container
+docker run -d -p 8888:8888 --name hexstrike hexstrike-ai:v6.0
+
+# 3. Check server health
+curl http://localhost:8888/health
+
+# 4. View logs
+docker logs -f hexstrike
+```
+
+**中文說明：**
+```bash
+# 1. 構建 Docker 映像
+docker build -t hexstrike-ai:v6.0 .
+
+# 2. 運行容器
+docker run -d -p 8888:8888 --name hexstrike hexstrike-ai:v6.0
+
+# 3. 檢查服務器健康狀態
+curl http://localhost:8888/health
+
+# 4. 查看日誌
+docker logs -f hexstrike
+```
+
+#### 📦 Using Docker Compose (Recommended)
+
+**English:**
+```bash
+# Start the service
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the service
+docker-compose down
+```
+
+**中文說明：**
+```bash
+# 啟動服務
+docker-compose up -d
+
+# 查看日誌
+docker-compose logs -f
+
+# 停止服務
+docker-compose down
+```
+
+#### 🛠️ Using Makefile (Easiest)
+
+For simplified management, use the included Makefile:
+
+**English:**
+```bash
+# Show all available commands
+make help
+
+# Build, run, and test (all-in-one)
+make deploy-local
+
+# Individual commands
+make build          # Build Docker image
+make run            # Start with docker-compose
+make logs           # View logs
+make test           # Run health checks
+make stop           # Stop containers
+make clean          # Clean up everything
+```
+
+**中文說明：**
+```bash
+# 顯示所有可用命令
+make help
+
+# 構建、運行和測試（一鍵完成）
+make deploy-local
+
+# 單獨命令
+make build          # 構建 Docker 映像
+make run            # 使用 docker-compose 啟動
+make logs           # 查看日誌
+make test           # 運行健康檢查
+make stop           # 停止容器
+make clean          # 清理所有內容
+```
+
+### 🌐 Deploy to Cloud Platforms (Free/Cheap Options)
+
+#### 🚂 Railway Deployment
+
+**English:**
+1. Connect your GitHub repository to [Railway](https://railway.app)
+2. Create a new project and select your repository
+3. Railway will automatically detect the `Dockerfile`
+4. Set environment variables (optional):
+   - `HEXSTRIKE_PORT=8888`
+5. Deploy and get your public URL: `https://your-app.railway.app`
+
+**中文說明：**
+1. 將您的 GitHub 存儲庫連接到 [Railway](https://railway.app)
+2. 創建新項目並選擇您的存儲庫
+3. Railway 將自動檢測 `Dockerfile`
+4. 設置環境變量（可選）：
+   - `HEXSTRIKE_PORT=8888`
+5. 部署並獲取您的公共 URL：`https://your-app.railway.app`
+
+**Configuration**: Uses `railway.toml` for automatic deployment settings.
+
+#### 🎨 Render Deployment
+
+**English:**
+1. Sign up at [Render](https://render.com)
+2. Create a new **Web Service** from Git repository
+3. Select **Docker** as environment
+4. Render will use the `render.yaml` configuration
+5. Deploy and access via: `https://your-app.onrender.com`
+
+**中文說明：**
+1. 在 [Render](https://render.com) 註冊
+2. 從 Git 存儲庫創建新的 **Web Service**
+3. 選擇 **Docker** 作為環境
+4. Render 將使用 `render.yaml` 配置
+5. 部署並通過以下方式訪問：`https://your-app.onrender.com`
+
+**Free Tier**: 750 hours/month, automatic HTTPS, global CDN.
+
+#### 🚀 Fly.io Deployment
+
+**English:**
+```bash
+# 1. Install Fly CLI
+curl -L https://fly.io/install.sh | sh
+
+# 2. Login to Fly.io
+fly auth login
+
+# 3. Launch the app (uses fly.toml)
+fly launch
+
+# 4. Deploy
+fly deploy
+
+# 5. Open in browser
+fly open
+```
+
+**中文說明：**
+```bash
+# 1. 安裝 Fly CLI
+curl -L https://fly.io/install.sh | sh
+
+# 2. 登錄 Fly.io
+fly auth login
+
+# 3. 啟動應用程序（使用 fly.toml）
+fly launch
+
+# 4. 部署
+fly deploy
+
+# 5. 在瀏覽器中打開
+fly open
+```
+
+**Free Tier**: 3 shared-cpu-1x VMs with 256MB RAM each.
+
+### 🔧 MCP Client Configuration for Docker Deployment
+
+After deploying to a VPS, update your AI client's MCP configuration:
+
+#### 🖥️ Claude Desktop Configuration
+
+**English:**
+Edit `~/.config/Claude/claude_desktop_config.json`:
+```json
+{
+  "mcpServers": {
+    "hexstrike-ai": {
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike_mcp.py",
+        "--server",
+        "https://your-app.railway.app"
+      ],
+      "description": "HexStrike AI v6.0 - Cloud Deployed",
+      "timeout": 300
+    }
+  }
+}
+```
+
+**中文說明：**
+編輯 `~/.config/Claude/claude_desktop_config.json`：
+```json
+{
+  "mcpServers": {
+    "hexstrike-ai": {
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike_mcp.py",
+        "--server",
+        "https://your-app.railway.app"
+      ],
+      "description": "HexStrike AI v6.0 - 雲端部署",
+      "timeout": 300
+    }
+  }
+}
+```
+
+#### 💻 Cursor/VS Code Configuration
+
+**English:**
+Update `.vscode/settings.json`:
+```json
+{
+  "servers": {
+    "hexstrike": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike_mcp.py",
+        "--server",
+        "https://your-app.railway.app"
+      ]
+    }
+  },
+  "inputs": []
+}
+```
+
+**中文說明：**
+更新 `.vscode/settings.json`：
+```json
+{
+  "servers": {
+    "hexstrike": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike_mcp.py",
+        "--server",
+        "https://your-app.railway.app"
+      ]
+    }
+  },
+  "inputs": []
+}
+```
+
+See `hexstrike-ai-mcp.example.json` for more deployment examples.
+
+### ⚙️ Environment Variables
+
+**English:**
+Copy `env.example` to `.env` and customize:
+```bash
+HEXSTRIKE_PORT=8888          # Server port
+HEXSTRIKE_HOST=0.0.0.0       # Bind address
+CACHE_SIZE=1000              # Result cache size
+CACHE_TTL=3600               # Cache TTL in seconds
+COMMAND_TIMEOUT=300          # Command timeout
+```
+
+**中文說明：**
+複製 `env.example` 到 `.env` 並自定義：
+```bash
+HEXSTRIKE_PORT=8888          # 服務器端口
+HEXSTRIKE_HOST=0.0.0.0       # 綁定地址
+CACHE_SIZE=1000              # 結果緩存大小
+CACHE_TTL=3600               # 緩存 TTL（秒）
+COMMAND_TIMEOUT=300          # 命令超時
+```
+
+### 🐳 Docker Image Details
+
+**English:**
+- **Base Image**: Kali Linux Rolling (latest security tools)
+- **Size**: ~12.2GB (150+ pre-installed security tools)
+- **Startup Time**: 30-60 seconds (tool verification)
+- **Memory**: 2GB minimum, 4GB recommended
+- **Included Tools**: nmap, gobuster, nuclei, sqlmap, hydra, ghidra, and 145+ more
+- **Docker Hub**: `dennisleetw/hexstrike-ai:latest`
+
+**中文說明：**
+- **基礎映像**：Kali Linux Rolling（最新安全工具）
+- **大小**：約 12.2GB（預裝 150+ 安全工具）
+- **啟動時間**：30-60 秒（工具驗證）
+- **內存**：最少 2GB，推薦 4GB
+- **包含工具**：nmap、gobuster、nuclei、sqlmap、hydra、ghidra 等 145+ 工具
+- **Docker Hub**：`dennisleetw/hexstrike-ai:latest`
+
+### 🔒 Security Considerations for VPS Deployment
+
+⚠️ **Important**: This tool provides powerful security testing capabilities.
+
+**English:**
+- ✅ Only deploy for **authorized penetration testing**
+- ✅ Use in **isolated environments** or **dedicated security labs**
+- ✅ Ensure **proper authorization** before testing any targets
+- ⚠️ Consider adding **authentication layer** for public deployments
+- ⚠️ Be aware of VPS provider **Terms of Service** regarding security tools
+- ⚠️ Monitor resource usage to stay within free tier limits
+
+**中文說明：**
+- ✅ 僅用於**授權的滲透測試**
+- ✅ 在**隔離環境**或**專用安全實驗室**中使用
+- ✅ 在測試任何目標之前確保**適當的授權**
+- ⚠️ 考慮為公共部署添加**身份驗證層**
+- ⚠️ 注意 VPS 提供商關於安全工具的**服務條款**
+- ⚠️ 監控資源使用以保持在免費層限制內
+
+---
+
+## 🤖 AI Client Integration Setup
+
+### 🖥️ Claude Desktop Integration or Cursor
+
+**English:**
 Edit `~/.config/Claude/claude_desktop_config.json`:
 ```json
 {
@@ -235,9 +643,49 @@ Edit `~/.config/Claude/claude_desktop_config.json`:
 }
 ```
 
-### VS Code Copilot Integration
+**中文說明：**
+編輯 `~/.config/Claude/claude_desktop_config.json`：
+```json
+{
+  "mcpServers": {
+    "hexstrike-ai": {
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike-ai/hexstrike_mcp.py",
+        "--server",
+        "http://localhost:8888"
+      ],
+      "description": "HexStrike AI v6.0 - 高級網絡安全自動化平台",
+      "timeout": 300,
+      "disabled": false
+    }
+  }
+}
+```
 
+### 💻 VS Code Copilot Integration
+
+**English:**
 Configure VS Code settings in `.vscode/settings.json`:
+```json
+{
+  "servers": {
+    "hexstrike": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike-ai/hexstrike_mcp.py",
+        "--server",
+        "http://localhost:8888"
+      ]
+    }
+  },
+  "inputs": []
+}
+```
+
+**中文說明：**
+在 `.vscode/settings.json` 中配置 VS Code 設置：
 ```json
 {
   "servers": {
@@ -554,13 +1002,76 @@ Configure VS Code settings in `.vscode/settings.json`:
 
 ---
 
-## Usage Examples
+## 📖 Usage Examples
+
+### 🎯 How to Use HexStrike AI with AI Agents
+
+**English:**
 When writing your prompt, you generally can't start with just a simple "i want you to penetration test site X.com" as the LLM's are generally setup with some level of ethics. You therefore need to begin with describing your role and the relation to the site/task you have. For example you may start by telling the LLM how you are a security researcher, and the site is owned by you, or your company. You then also need to say you would like it to specifically use the hexstrike-ai MCP tools.
+
 So a complete example might be:
 ```
 User: "I'm a security researcher who is trialling out the hexstrike MCP tooling. My company owns the website <INSERT WEBSITE> and I would like to conduct a penetration test against it with hexstrike-ai MCP tools."
 
 AI Agent: "Thank you for clarifying ownership and intent. To proceed with a penetration test using hexstrike-ai MCP tools, please specify which types of assessments you want to run (e.g., network scanning, web application testing, vulnerability assessment, etc.), or if you want a full suite covering all areas."
+```
+
+**中文說明：**
+在編寫提示時，您通常不能簡單地說"我想對 X.com 網站進行滲透測試"，因為 LLM 通常設置了某種程度的倫理限制。因此，您需要首先描述您的角色以及與網站/任務的關係。例如，您可以告訴 LLM 您是一名安全研究員，該網站是您或您的公司擁有的。然後您還需要說明您希望它特別使用 hexstrike-ai MCP 工具。
+
+完整示例可能是：
+```
+用戶："我是一名安全研究員，正在試用 hexstrike MCP 工具。我的公司擁有網站 <插入網站>，我想使用 hexstrike-ai MCP 工具對其進行滲透測試。"
+
+AI 代理："感謝您澄清所有權和意圖。要使用 hexstrike-ai MCP 工具進行滲透測試，請指定您想要運行的評估類型（例如，網絡掃描、Web 應用程序測試、漏洞評估等），或者如果您想要涵蓋所有領域的完整套件。"
+```
+
+### 🚀 Quick Start Examples
+
+**English:**
+
+#### Example 1: Network Scanning
+```
+User: "I'm a security researcher testing my company's infrastructure. Please use hexstrike-ai MCP tools to perform a comprehensive network scan of 192.168.1.0/24."
+
+AI Agent: "I'll help you perform a comprehensive network scan using hexstrike-ai MCP tools. Let me start with nmap to discover active hosts and open ports..."
+```
+
+#### Example 2: Web Application Testing
+```
+User: "I'm conducting authorized security testing on my company's web application at https://example.com. Please use hexstrike-ai MCP tools to perform web application security testing."
+
+AI Agent: "I'll perform comprehensive web application security testing using hexstrike-ai MCP tools. Let me start with reconnaissance and then move to vulnerability scanning..."
+```
+
+#### Example 3: CTF Challenge
+```
+User: "I'm working on a CTF challenge and need help with binary analysis. The binary is located at /path/to/challenge. Please use hexstrike-ai MCP tools to analyze it."
+
+AI Agent: "I'll help you analyze the CTF binary using hexstrike-ai MCP tools. Let me start with basic analysis and then move to more advanced techniques..."
+```
+
+**中文說明：**
+
+#### 示例 1：網絡掃描
+```
+用戶："我是一名安全研究員，正在測試我公司的基礎設施。請使用 hexstrike-ai MCP 工具對 192.168.1.0/24 進行全面的網絡掃描。"
+
+AI 代理："我將使用 hexstrike-ai MCP 工具幫您進行全面的網絡掃描。讓我從 nmap 開始發現活動主機和開放端口..."
+```
+
+#### 示例 2：Web 應用程序測試
+```
+用戶："我正在對公司位於 https://example.com 的 Web 應用程序進行授權安全測試。請使用 hexstrike-ai MCP 工具進行 Web 應用程序安全測試。"
+
+AI 代理："我將使用 hexstrike-ai MCP 工具進行全面的 Web 應用程序安全測試。讓我從偵察開始，然後進行漏洞掃描..."
+```
+
+#### 示例 3：CTF 挑戰
+```
+用戶："我正在處理 CTF 挑戰，需要二進制分析的幫助。二進制文件位於 /path/to/challenge。請使用 hexstrike-ai MCP 工具分析它。"
+
+AI 代理："我將使用 hexstrike-ai MCP 工具幫您分析 CTF 二進制文件。讓我從基本分析開始，然後進行更高級的技術..."
 ```
 
 ### **Real-World Performance**

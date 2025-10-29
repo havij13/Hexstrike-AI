@@ -1,0 +1,124 @@
+# HexStrike AI v6.0 - Docker Build & Push Workflow
+# 
+# 使用說明:
+# 1. 將此檔案重新命名為 docker-build.yml (移除 .example)
+# 2. 在 GitHub repository 設定以下 Secrets:
+#    - DOCKERHUB_USERNAME: 你的 Docker Hub 用戶名
+#    - DOCKERHUB_TOKEN: Docker Hub access token
+# 3. Push 到 main/master 分支時會自動觸發建置
+
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: hexstrike-ai
+  REGISTRY: docker.io  # 使用 Docker Hub (或改為 ghcr.io 使用 GitHub Container Registry)
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 如果使用 GitHub Container Registry，取消註解以下區塊
+      # - name: Log in to GitHub Container Registry
+      #   if: github.event_name != 'pull_request'
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=v6.0
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+          # 如果需要多架構支援，取消註解以下行
+          # platforms: linux/amd64,linux/arm64
+
+      - name: Image digest
+        run: echo ${{ steps.meta.outputs.digest }}
+
+  test:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Pull and run Docker image
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          docker run -d --name hexstrike -p 8888:8888 \
+            ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Wait for service to start
+        run: |
+          echo "Waiting for service to be ready..."
+          sleep 30
+
+      - name: Test health endpoint
+        run: |
+          curl -f http://localhost:8888/health || exit 1
+          echo "✅ Health check passed!"
+
+      - name: Show logs
+        if: always()
+        run: docker logs hexstrike
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop hexstrike || true
+          docker rm hexstrike || true
+

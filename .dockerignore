@@ -1,0 +1,64 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Trunk (linter)
+.trunk
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+dist
+build
+*.egg
+.pytest_cache
+.coverage
+htmlcov
+
+# Virtual environments
+hexstrike-env/
+hexstrike_env/
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+hexstrike.log
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Docker
+.dockerignore
+# Dockerfile - 允許 Dockerfile 被包含在構建中
+docker-compose.yml
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Temporary files
+*.tmp
+*.temp
+.cache
+
+
+

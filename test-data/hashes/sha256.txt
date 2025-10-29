@@ -1,0 +1,18 @@
+# SHA256 Hash Examples for Testing
+# These are example hashes for testing password cracking tools
+# DO NOT use these in production - they are for educational purposes only
+
+# Common passwords
+ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f:hello
+9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08:test
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855:
+a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3:hello
+
+# Bitcoin address examples (for educational purposes)
+1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2
+3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy
+
+# File hashes for verification
+sha256:abcd1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab
+sha256:efgh5678901234567890abcdef1234567890abcdef1234567890abcdef123456

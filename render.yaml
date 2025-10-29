@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: hexstrike-ai
+    env: docker
+    dockerfilePath: ./Dockerfile.render
+    plan: free
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+    envVars:
+      - key: HEXSTRIKE_PORT
+        value: 8888
+      - key: HEXSTRIKE_HOST
+        value: 0.0.0.0
+      - key: PYTHON_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+    buildCommand: echo "Building HexStrike AI for Render..."
+    startCommand: python3 hexstrike_server.py --port $PORT
+    
+  # Optional: Add a background worker for heavy tasks
+  - type: worker
+    name: hexstrike-worker
+    env: docker
+    dockerfilePath: ./Dockerfile.render
+    plan: free
+    region: oregon
+    branch: main
+    envVars:
+      - key: WORKER_MODE
+        value: "true"
+      - key: LOG_LEVEL
+        value: INFO
+    startCommand: python3 hexstrike_worker.py

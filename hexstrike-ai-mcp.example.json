@@ -1,0 +1,49 @@
+{
+  "mcpServers": {
+    "hexstrike-ai-local": {
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike_mcp.py",
+        "--server",
+        "http://localhost:8888"
+      ],
+      "description": "HexStrike AI v6.0 - Local Docker Instance",
+      "timeout": 300,
+      "alwaysAllow": []
+    },
+    "hexstrike-ai-railway": {
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike_mcp.py",
+        "--server",
+        "https://your-app.railway.app"
+      ],
+      "description": "HexStrike AI v6.0 - Railway Deployment",
+      "timeout": 300,
+      "alwaysAllow": []
+    },
+    "hexstrike-ai-render": {
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike_mcp.py",
+        "--server",
+        "https://your-app.onrender.com"
+      ],
+      "description": "HexStrike AI v6.0 - Render Deployment",
+      "timeout": 300,
+      "alwaysAllow": []
+    },
+    "hexstrike-ai-flyio": {
+      "command": "python3",
+      "args": [
+        "/path/to/hexstrike_mcp.py",
+        "--server",
+        "https://hexstrike-ai.fly.dev"
+      ],
+      "description": "HexStrike AI v6.0 - Fly.io Deployment",
+      "timeout": 300,
+      "alwaysAllow": []
+    }
+  }
+}
+

@@ -1,0 +1,199 @@
+.PHONY: help build run stop logs test clean deploy-local deploy-info monitoring security-scan
+
+# Enhanced Makefile with new integration features
+.DEFAULT_GOAL := help
+
+# Variables
+IMAGE_NAME := hexstrike-ai
+IMAGE_TAG := v6.0
+CONTAINER_NAME := hexstrike
+PORT := 8888
+MONITORING_STACK := monitoring
+
+help: ## Show enhanced help with new features
+	@echo "HexStrike AI v6.0 - Enhanced Docker Management"
+	@echo ""
+	@echo "🚀 Core Commands:"
+	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+	@echo ""
+	@echo "📊 Monitoring Stack: make monitoring-up"
+	@echo "🔒 Security Scanning: make security-scan"
+	@echo "🔗 Integration Tests: make integration-test"
+
+# Enhanced deployment with monitoring
+deploy-local-full: build monitoring-up run test ## Complete deployment with monitoring stack
+	@echo "✅ Full deployment complete with monitoring!"
+	@echo "   🎯 HexStrike AI: http://localhost:8888"
+	@echo "   📊 Grafana: http://localhost:3000 (admin/hexstrike2024)"
+	@echo "   🔍 Kibana: http://localhost:5601"
+	@echo "   📈 Prometheus: http://localhost:9090"
+
+monitoring-up: ## Start monitoring stack (ELK, Prometheus, Grafana)
+	@echo "🚀 Starting monitoring stack..."
+	@docker-compose -f docker-compose.monitoring.yml up -d elasticsearch redis prometheus grafana influxdb
+	@echo "⏳ Waiting for services to be ready..."
+	@sleep 30
+	@echo "✅ Monitoring stack ready!"
+
+monitoring-down: ## Stop monitoring stack
+	@echo "🛑 Stopping monitoring stack..."
+	@docker-compose -f docker-compose.monitoring.yml down
+	@echo "✅ Monitoring stack stopped"
+
+security-scan: ## Run comprehensive security scanning
+	@echo "🔒 Running security scans..."
+	@docker run --rm -v $(PWD):/app \
+		aquasec/trivy fs --security-checks vuln,config /app
+	@docker run --rm -v $(PWD):/src \
+		securecodewarrior/docker-snyk test --severity-threshold=high
+	@echo "✅ Security scan complete"
+
+integration-test: ## Run integration tests with monitoring
+	@echo "🧪 Running integration tests..."
+	@bash scripts/integration-test.sh
+	@echo "✅ Integration tests complete"
+
+# Enhanced build with security scanning
+build-secure: ## Build with integrated security scanning
+	@echo "🔨 Building with security scanning..."
+	@docker build --target security-scan -t $(IMAGE_NAME):security .
+	@docker build -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	@echo "✅ Secure build complete"
+
+# API Gateway setup
+gateway-up: ## Start API Gateway (Kong)
+	@echo "🚪 Starting API Gateway..."
+	@docker-compose -f docker-compose.monitoring.yml up -d kong
+	@echo "✅ API Gateway ready at http://localhost:8000"
+
+# Vault setup for secrets management
+vault-up: ## Start HashiCorp Vault
+	@echo "🔐 Starting Vault..."
+	@docker-compose -f docker-compose.monitoring.yml up -d vault
+	@echo "✅ Vault ready at http://localhost:8200"
+	@echo "   Root token: hexstrike-root-token"
+
+# MISP threat intelligence
+misp-up: ## Start MISP threat intelligence platform
+	@echo "🧠 Starting MISP..."
+	@docker-compose -f docker-compose.monitoring.yml up -d misp misp-db
+	@echo "✅ MISP ready at http://localhost:8080"
+
+# Complete infrastructure
+infra-up: monitoring-up gateway-up vault-up ## Start complete infrastructure
+	@echo "🏗️ Complete infrastructure ready!"
+
+infra-down: ## Stop complete infrastructure
+	@echo "🛑 Stopping infrastructure..."
+	@docker-compose -f docker-compose.monitoring.yml down -v
+	@echo "✅ Infrastructure stopped"
+
+# Enhanced logging
+logs-all: ## View logs from all services
+	@docker-compose -f docker-compose.monitoring.yml logs -f
+
+logs-security: ## View security-related logs only
+	@docker-compose -f docker-compose.monitoring.yml logs -f hexstrike-ai | grep -i "security\|vulnerability\|threat"
+
+# Performance monitoring
+perf-monitor: ## Monitor system performance
+	@echo "📊 Performance monitoring..."
+	@docker stats $(CONTAINER_NAME)
+
+# Backup and restore
+backup: ## Backup data and configurations
+	@echo "💾 Creating backup..."
+	@mkdir -p backups/$(shell date +%Y%m%d_%H%M%S)
+	@docker-compose -f docker-compose.monitoring.yml exec -T elasticsearch \
+		curl -X PUT "localhost:9200/_snapshot/backup" -H 'Content-Type: application/json' -d'{"type": "fs","settings": {"location": "/backup"}}'
+	@echo "✅ Backup complete"
+
+# Health checks
+health-check: ## Comprehensive health check
+	@echo "🏥 Running health checks..."
+	@curl -f http://localhost:8888/health || echo "❌ HexStrike AI unhealthy"
+	@curl -f http://localhost:9200/_cluster/health || echo "❌ Elasticsearch unhealthy"
+	@curl -f http://localhost:9090/-/healthy || echo "❌ Prometheus unhealthy"
+	@curl -f http://localhost:3000/api/health || echo "❌ Grafana unhealthy"
+	@echo "✅ Health check complete"
+
+# Load testing
+load-test: ## Run load tests
+	@echo "⚡ Running load tests..."
+	@docker run --rm -i grafana/k6 run - <scripts/load-test.js
+	@echo "✅ Load test complete"
+
+# Compliance checks
+compliance-check: ## Run compliance checks
+	@echo "📋 Running compliance checks..."
+	@docker run --rm -v $(PWD):/app \
+		bridgecrew/checkov -f /app/docker-compose.monitoring.yml
+	@echo "✅ Compliance check complete"
+
+# Update all images
+update-images: ## Update all Docker images
+	@echo "🔄 Updating images..."
+	@docker-compose -f docker-compose.monitoring.yml pull
+	@docker pull $(IMAGE_NAME):$(IMAGE_TAG)
+	@echo "✅ Images updated"
+
+# Development environment
+dev-setup: ## Setup development environment
+	@echo "🛠️ Setting up development environment..."
+	@python3 -m venv venv
+	@./venv/bin/pip install -r requirements.txt
+	@./venv/bin/pip install -r requirements-dev.txt
+	@echo "✅ Development environment ready"
+
+# CI/CD helpers
+ci-build: ## CI/CD build command
+	@docker build --cache-from $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	@docker tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMAGE_NAME):latest
+
+ci-test: ## CI/CD test command
+	@docker run --rm $(IMAGE_NAME):$(IMAGE_TAG) python -m pytest tests/
+
+ci-deploy: ## CI/CD deploy command
+	@docker push $(IMAGE_NAME):$(IMAGE_TAG)
+	@docker push $(IMAGE_NAME):latest
+
+# Kubernetes deployment
+k8s-deploy: ## Deploy to Kubernetes
+	@echo "☸️ Deploying to Kubernetes..."
+	@helm upgrade --install hexstrike-ai k8s-deployment/helm-charts/hexstrike-ai/
+	@echo "✅ Kubernetes deployment complete"
+
+k8s-status: ## Check Kubernetes deployment status
+	@kubectl get pods -l app.kubernetes.io/name=hexstrike-ai
+	@kubectl get services -l app.kubernetes.io/name=hexstrike-ai
+
+# Legacy commands (maintained for compatibility)
+build: ## Build Docker image
+	@echo "🔨 Building Docker image..."
+	@docker build -t $(IMAGE_NAME):$(IMAGE_TAG) .
+
+run: ## Start HexStrike AI container
+	@echo "🚀 Starting HexStrike AI..."
+	@docker-compose up -d hexstrike-ai
+	@echo "✅ HexStrike AI started at http://localhost:$(PORT)"
+
+stop: ## Stop all containers
+	@echo "🛑 Stopping containers..."
+	@docker-compose down
+	@docker-compose -f docker-compose.monitoring.yml down
+	@echo "✅ All containers stopped"
+
+clean: ## Clean up containers and images
+	@echo "🧹 Cleaning up..."
+	@docker-compose down -v --remove-orphans
+	@docker-compose -f docker-compose.monitoring.yml down -v --remove-orphans
+	@docker system prune -f
+	@echo "✅ Cleanup complete"
+
+logs: ## View HexStrike AI logs
+	@docker-compose logs -f hexstrike-ai
+
+test: ## Run basic tests
+	@echo "🧪 Running tests..."
+	@bash scripts/test-docker.sh
+	@echo "✅ Tests complete"

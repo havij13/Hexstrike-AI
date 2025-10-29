@@ -1,0 +1,77 @@
+2025-10-27 10:32:12 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:45:23 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:45:23 - api.routes.auth - INFO - Login attempt for user: testuser
+2025-10-27 10:46:00 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:00 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:00 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:00 - api.routes.scans - INFO - Created scan b355b47b-ea7e-4f3a-8229-8ba37ad92ba0 for target example.com by user analyst1
+2025-10-27 10:46:00 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:00 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:00 - api.routes.scans - ERROR - Create scan error: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2025-10-27 10:46:00 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.scans - INFO - Starting scan test_scan_123 by user analyst1
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.scans - INFO - Stopping scan test_scan_123 by user analyst1
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.scans - INFO - Deleting scan test_scan_123 by user analyst1
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.scans - ERROR - Bug bounty workflow error: a coroutine was expected, got <Mock name='bugbounty_agent.execute()' id='2612012562384'>
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.scans - ERROR - CTF workflow error: a coroutine was expected, got <Mock name='ctf_agent.execute()' id='2612012695888'>
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.auth - INFO - Login attempt for user: testuser
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.auth - ERROR - Login error: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.auth - INFO - User logout: analyst1
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.auth - INFO - Profile update for user: analyst1
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.auth - ERROR - Update profile error: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.auth - INFO - Password change for user: analyst1
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.auth - INFO - Token refresh for user: analyst1
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - core.app - ERROR - Unhandled exception: 405 Method Not Allowed: The method is not allowed for the requested URL.
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.scans - ERROR - Create scan error: Test error
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.scans - ERROR - Create scan error: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.scans - INFO - Created scan b6c4f3a7-16ad-487d-a723-d074224c9046 for target     by user analyst1
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - api.routes.scans - ERROR - Create scan error: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:46:01 - core.error_handler - WARNING - Medium severity error in nmap: Connection timeout
+2025-10-27 10:46:01 - core.error_handler - INFO - Retrying nmap after 5.0 seconds (attempt 1)
+2025-10-27 10:46:06 - core.error_handler - INFO - Retrying nmap after 1.0 seconds (attempt 1)
+2025-10-27 10:46:07 - tools.tool_registry - INFO - Initializing tool registry...
+2025-10-27 10:46:07 - tools.tool_registry - INFO - Tool registry initialized with 6 tools
+2025-10-27 10:46:07 - tools.tool_registry - INFO - Initializing tool registry...
+2025-10-27 10:46:07 - tools.tool_registry - INFO - Tool registry initialized with 7 tools
+2025-10-27 10:46:07 - tools.tool_registry - INFO - Initializing tool registry...
+2025-10-27 10:46:07 - tools.tool_registry - INFO - Tool registry initialized with 8 tools
+2025-10-27 10:46:51 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:49:02 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:49:02 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:49:02 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:49:02 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:49:02 - config.logging - INFO - Logging configured with level: INFO
+2025-10-27 10:49:03 - core.error_handler - WARNING - Medium severity error in nmap: Connection timeout
+2025-10-27 10:49:03 - core.error_handler - INFO - Retrying nmap after 5.0 seconds (attempt 1)
+2025-10-27 10:49:08 - core.error_handler - INFO - Retrying nmap after 1.0 seconds (attempt 1)

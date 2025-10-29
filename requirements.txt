@@ -15,6 +15,13 @@ psutil>=5.9.0,<6.0.0            # System utilities (psutil import)
 fastmcp>=0.2.0,<1.0.0           # MCP framework (from mcp.server.fastmcp import FastMCP)
 
 # ============================================================================
+# AUTHENTICATION & AUTHORIZATION (AUTH0 INTEGRATION)
+# ============================================================================
+authlib>=1.2.0,<2.0.0           # OAuth 2.0 and OpenID Connect client
+python-jose[cryptography]>=3.3.0,<4.0.0  # JWT token handling
+PyJWT>=2.8.0,<3.0.0             # JWT token validation
+
+# ============================================================================
 # WEB SCRAPING & AUTOMATION (ACTUALLY USED)
 # ============================================================================
 beautifulsoup4>=4.12.0,<5.0.0   # HTML parsing (from bs4 import BeautifulSoup)
